@@ -6,9 +6,30 @@
 
 2. [react-native-gesture-handler](https://www.npmjs.com/package/react-native-gesture-handler) 
 
-触摸+手势
+触摸 + 手势
 
+3. 导航
 
+方案一：
+
+[@react-navigation/native](https://reactnavigation.org/docs/getting-started/) 
+[@react-navigation/native-stack](xxx) 
+[react-native-screens](xx) 
+[react-native-safe-area-context](xx) 
+
+需要修改 android 目录下的内容
+
+**API**
+
+navigation: navigate push goBack popToTop
+
+方案二：
+
+[react-native-navigation](https://wix.github.io/react-native-navigation/docs/installing#npm-or-yarn) 
+
+4. 图标
+
+[react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 
 
 ============================================================
 
