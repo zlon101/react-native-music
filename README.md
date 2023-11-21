@@ -31,6 +31,15 @@ navigation: navigate push goBack popToTop
 
 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 
 
+4. 音频播放
+
+[react-native-track-player](https://rntp.dev/docs/basics/installation) 
+
+# 调试
+
+http://localhost:8081/index.bundle?platform=android&dev=true&minify=false&modulesOnly=false&runModule=true
+
+
 ============================================================
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).

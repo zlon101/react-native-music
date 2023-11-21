@@ -1,15 +1,10 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-// import Home from './pages/home';
+import Home from './pages/home';
+import Log from './pages/log';
 
 export const Stack = createNativeStackNavigator();
-
-const Home = () => (
-  <View>
-    <Text>Home</Text>
-  </View>
-);
 
 const Detail = () => (
   <View>
@@ -25,6 +20,10 @@ const routes = [
   {
     path: 'Detail',
     component: Detail,
+  },
+  {
+    path: 'Log',
+    component: Log,
   },
 ] as const;
 

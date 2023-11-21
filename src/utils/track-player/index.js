@@ -2,15 +2,22 @@ import TrackPlayer, { State, Capability } from 'react-native-track-player';
 import playbackService from './service';
 
 // 1. 注册
-export function registerPlaybackService() {
-  // TrackPlayer.registerPlaybackService(() => playbackService);
+export function registerService() {
+  TrackPlayer.registerPlaybackService(() => playbackService);
 }
 
 // 2. 初始化
 export async function setUp() {
-  await TrackPlayer.setupPlayer();
+  try {
+    await TrackPlayer.setupPlayer({
+      autoHandleInterruptions: true,
+    });
+  } catch (e) {
+    console.log('TrackPlayer.setupPlayer 失败:\n', e);
+  }
+
   await TrackPlayer.updateOptions({
-    // icon: ImgAsset.logoTransparent,
+    icon: require('@/assets/logo-transparent.png'),
     alwaysPauseOnInterruption: true,
     progressUpdateEventInterval: 1,
     capabilities: [
@@ -59,54 +66,42 @@ export async function setUp() {
 
 // 3. 新增
 // You can then [add](https://rntp.dev/docs/api/functions/queue#addtracks-insertbeforeindex) the items to the queue
-// var track1 = {
-//   url: 'http://example.com/avaritia.mp3', // Load media from the network
-//   title: 'Avaritia',
-//   artist: 'deadmau5',
-//   album: 'while(1<2)',
-//   genre: 'Progressive House, Electro House',
-//   date: '2014-05-20T07:00:00+00:00', // RFC 3339
-//   artwork: 'http://example.com/cover.png', // Load artwork from the network
-//   duration: 402 // Duration in seconds
-// };
-//
-// const track2 = {
-//   url: require('./coelacanth.ogg'), // Load media from the app bundle
-//   title: 'Coelacanth I',
-//   artist: 'deadmau5',
-//   artwork: require('./cover.jpg'), // Load artwork from the app bundle
-//   duration: 166
-// };
-//
-// const track3 = {
-//   url: 'file:///storage/sdcard0/Downloads/artwork.png', // Load media from the file system
-//   title: 'Ice Age',
-//   artist: 'deadmau5',
-//   // Load artwork from the file system:
-//   artwork: 'file:///storage/sdcard0/Downloads/cover.png',
-//   duration: 411
-// };
+const track1 = {
+  url: require('@/assets/成都.mp3'),
+  // Load media from the network
+  // url: 'http://example.com/avaritia.mp3',
+  // Load media from the file system
+  // url: 'file:///storage/sdcard0/Downloads/artwork.png',
+  title: 'Avaritia',
+  artist: 'deadmau5',
+  album: 'while(1<2)',
+  genre: 'Progressive House, Electro House',
+  date: '2014-05-20T07:00:00+00:00', // RFC 3339
+  artwork: 'http://example.com/cover.png', // Load artwork from the network
+  duration: 402444, // s
+};
+
 export async function add() {
+  await TrackPlayer.add([track1]);
   // await TrackPlayer.add([track1, track2, track3]);
 }
 
+export async function getQueue() {
+  return await TrackPlayer.getQueue();
+}
 
 // 播放状态
 export async function getState() {
-  const state = await TrackPlayer.getPlaybackState();
+  const {state, error} = await TrackPlayer.getPlaybackState();
+  if (error) {
+    console.log('\n❌ getPlaybackState 错误:\n', error);
+    return;
+  }
   if (state === State.Playing) {
     console.log('The player is playing');
   }
+  return state;
 }
-
-
-let trackIndex = await TrackPlayer.getCurrentTrack();
-let trackObject = await TrackPlayer.getTrack(trackIndex);
-console.log(`Title: ${trackObject.title}`);
-
-const position = await TrackPlayer.getPosition();
-const duration = await TrackPlayer.getDuration();
-console.log(`${duration - position} seconds left.`);
 
 // 修改状态
 

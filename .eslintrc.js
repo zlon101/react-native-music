@@ -29,5 +29,7 @@ module.exports = {
     'prettier/prettier': 'off',
     'react-native/no-inline-styles': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
+    'react/react-in-jsx-scope': 'off',
+    'react/jsx-uses-react': 'off',
   },
 };
