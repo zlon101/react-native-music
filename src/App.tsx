@@ -12,7 +12,7 @@ import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import router, { Stack } from '@/router';
-import {setUp} from '@/utils/track-player';
+// import {setUp} from '@/utils/track-player';
 import { LogProvider } from '@/pages/log/context';
 
 function App() {
@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     console.log('useEffect setUp!');
-    setUp();
+    // setUp();
   }, []);
 
   return (

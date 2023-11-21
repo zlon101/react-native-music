@@ -50,7 +50,7 @@ function CircularPlayBtn() {
     </CircularProgressBase>
   );
 }
-function MusicBar() {
+export default function MusicBar() {
   const musicItem = MusicQueue.useCurrentMusicItem();
 
   const [showKeyboard, setKeyboardStatus] = useState(false);
@@ -73,58 +73,55 @@ function MusicBar() {
     };
   }, []);
 
+  if (!musicItem || showKeyboard) {
+    return null;
+  }
   return (
-    <>
-      {musicItem && !showKeyboard && (
-        <Pressable
-          style={[
-            style.wrapper,
-            {
-              backgroundColor: colors.musicBar,
-              paddingLeft: safeAreaInsets.left + rpx(24),
-              paddingRight: safeAreaInsets.right + rpx(24),
-            },
-          ]}
+    <Pressable
+      style={[
+        style.wrapper,
+        {
+          // backgroundColor: colors.musicBar,
+          paddingLeft: safeAreaInsets.left + rpx(24),
+          paddingRight: safeAreaInsets.right + rpx(24),
+        },
+      ]}
+      accessible
+      accessibilityLabel={`歌曲: ${musicItem.title} 歌手: ${musicItem.artist}`}
+      onPress={() => {
+        // navigate(ROUTE_PATH.MUSIC_DETAIL);
+      }}
+    >
+      <View style={style.artworkWrapper}>
+        <FastImage style={style.artworkImg} uri={musicItem.artwork} emptySrc={ImgAsset.albumDefault} />
+      </View>
+      <Text ellipsizeMode="tail" accessible={false} style={style.textWrapper} numberOfLines={1}>
+        <ThemeText fontSize="content" fontColor="musicBarText">
+          {musicItem?.title}
+        </ThemeText>
+        {musicItem?.artist && (
+          <ThemeText fontSize="description" color={'red'}>
+            {' '}
+            -{musicItem.artist}
+          </ThemeText>
+        )}
+      </Text>
+      <View style={style.actionGroup}>
+        <CircularPlayBtn />
+        <Icon
           accessible
-          accessibilityLabel={`歌曲: ${musicItem.title} 歌手: ${musicItem.artist}`}
+          accessibilityLabel="播放列表"
+          name="playlist-music"
+          size={rpx(56)}
           onPress={() => {
-            navigate(ROUTE_PATH.MUSIC_DETAIL);
+            showPanel('PlayList');
           }}
-        >
-          <View style={style.artworkWrapper}>
-            <FastImage style={style.artworkImg} uri={musicItem.artwork} emptySrc={ImgAsset.albumDefault} />
-          </View>
-          <Text ellipsizeMode="tail" accessible={false} style={style.textWrapper} numberOfLines={1}>
-            <ThemeText fontSize="content" fontColor="musicBarText">
-              {musicItem?.title}
-            </ThemeText>
-            {musicItem?.artist && (
-              <ThemeText fontSize="description" color={'red'}>
-                {' '}
-                -{musicItem.artist}
-              </ThemeText>
-            )}
-          </Text>
-          <View style={style.actionGroup}>
-            <CircularPlayBtn />
-            <Icon
-              accessible
-              accessibilityLabel="播放列表"
-              name="playlist-music"
-              size={rpx(56)}
-              onPress={() => {
-                showPanel('PlayList');
-              }}
-              style={[style.actionIcon, { color: colors.musicBarText }]}
-            />
-          </View>
-        </Pressable>
-      )}
-    </>
+          style={[style.actionIcon, { color: colors.musicBarText }]}
+        />
+      </View>
+    </Pressable>
   );
 }
-
-export default memo(MusicBar, () => true);
 
 const style = StyleSheet.create({
   wrapper: {
