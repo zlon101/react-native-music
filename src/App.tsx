@@ -37,6 +37,9 @@ function App() {
             {/*<Stack.Screen name="Home" component={HomePage} options={{ title: 'Overview' }} />*/}
           </Stack.Navigator>
         </NavigationContainer>
+        <View>
+          <Text>cscscsscs</Text>
+        </View>
       </LogProvider>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
