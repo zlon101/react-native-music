@@ -18,7 +18,7 @@ export default ({ navigation }: IPageProps) => {
         // error reading value
       }
     };
-    getData();
+    // getData();
   }, []);
 
   const onAdd = () => {
@@ -30,28 +30,28 @@ export default ({ navigation }: IPageProps) => {
     console.log('\nlist:', list);
   };
 
-  return (<View>
-    <Text>Home AA</Text>
-    <Button title="add" onPress={onAdd} />
-    {/*<Button title="onGetQueue" onPress={onGetQueue} />*/}
-    <Icon
-      accessible
-      accessibilityLabel="播放列表"
-      name="playlist-music"
-      size={56}
-    />
-    <CircularProgressBase
-      activeStrokeWidth={4}
-      inActiveStrokeWidth={2}
-      inActiveStrokeOpacity={0.2}
-      value={43}
-      duration={100}
-      radius={36}
-      activeStrokeColor={'red'}
-      inActiveStrokeColor={'blue'}
-    />
-    <Button title="log" onPress={() => {
-      navigation.navigate('Log');
-    }} />
-  </View>);
+  return (
+    <View>
+      <Text>Home AA</Text>
+      <Button title="add" onPress={onAdd} />
+      {/*<Button title="onGetQueue" onPress={onGetQueue} />*/}
+      <Icon accessible accessibilityLabel="播放列表" name="playlist-music" size={56} />
+      <CircularProgressBase
+        activeStrokeWidth={4}
+        inActiveStrokeWidth={2}
+        inActiveStrokeOpacity={0.2}
+        value={43}
+        duration={100}
+        radius={36}
+        activeStrokeColor={'red'}
+        inActiveStrokeColor={'blue'}
+      />
+      <Button
+        title="log"
+        onPress={() => {
+          navigation.navigate('Log');
+        }}
+      />
+    </View>
+  );
 };
