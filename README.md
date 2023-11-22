@@ -27,11 +27,15 @@ navigation: navigate push goBack popToTop
 
 [react-native-navigation](https://wix.github.io/react-native-navigation/docs/installing#npm-or-yarn) 
 
-4. 图标
+4. tab
+
+[react-native-tab-view](https://reactnavigation.org/docs/tab-view/) 
+
+5. 图标
 
 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 
 
-4. 音频播放
+6. 音频播放
 
 [react-native-track-player](https://rntp.dev/docs/basics/installation) 
 

@@ -5,6 +5,7 @@ import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { add, getQueue } from '@/utils/track-player';
 import { IPageProps } from '@/types';
+import { ToastTest } from '@/test';
 
 export default ({ navigation }: IPageProps) => {
   useEffect(() => {
@@ -46,10 +47,17 @@ export default ({ navigation }: IPageProps) => {
         activeStrokeColor={'red'}
         inActiveStrokeColor={'blue'}
       />
+      <ToastTest />
       <Button
         title="log"
         onPress={() => {
           navigation.navigate('Log');
+        }}
+      />
+      <Button
+        title="debug"
+        onPress={() => {
+          navigation.navigate('Debug');
         }}
       />
     </View>
