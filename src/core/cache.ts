@@ -3,12 +3,12 @@ import { addFileScheme } from '@/utils/fileUtils';
 import { trace } from '@/utils/log';
 import { getMediaKey } from '@/utils/mediaItem';
 import { getStorage, setStorage } from '@/utils/storage';
-import produce from 'immer';
+import { produce } from 'immer';
 import LRUCache from 'lru-cache';
 import objectPath from 'object-path';
 import { exists, unlink } from 'react-native-fs';
 import MediaMeta from './mediaMeta';
-import PluginManager from './pluginManager';
+// import PluginManager from './pluginManager';
 
 /** 缓存一些解析结果、临时的歌词文件等等
  * 触发缓存的时机：播放、部分特殊设置
@@ -69,12 +69,12 @@ function updateCache(mediaItem: ICommon.IMediaBase, patch: ICommon.IMediaMeta | 
   const mediaKey = getMediaKey(mediaItem);
   let cacheData = cache.get(mediaKey);
   if (!cacheData || !patch) {
-    // 自动写入主键
-    const primaryKey = PluginManager.getByMedia(mediaItem)?.instance?.primaryKey ?? ['id'];
-    cacheData = {};
-    for (let k of primaryKey) {
-      cacheData[k] = mediaItem[k];
-    }
+    // // 自动写入主键
+    // const primaryKey = PluginManager.getByMedia(mediaItem)?.instance?.primaryKey ?? ['id'];
+    // cacheData = {};
+    // for (let k of primaryKey) {
+    //   cacheData[k] = mediaItem[k];
+    // }
   }
   if (Array.isArray(patch)) {
     cache.set(

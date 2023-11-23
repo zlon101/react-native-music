@@ -1,6 +1,6 @@
 import { internalSerializeKey, localPluginPlatform } from '@/constants/commonConst';
 import MediaMeta from '@/core/mediaMeta';
-import produce from 'immer';
+import { produce } from 'immer';
 import objectPath from 'object-path';
 
 /** 获取mediakey */

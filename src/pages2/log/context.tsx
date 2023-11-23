@@ -37,21 +37,11 @@ function logReducer(tasks: any[], action: IAction) {
 
 export function LogProvider(props: PropsWithChildren) {
   const { children } = props;
-  const [logState, dispatch] = useReducer(
-    logReducer,
-    []
-  );
+  const [logState, dispatch] = useReducer(logReducer, []);
 
-  return (
-    <LogContext.Provider value={{ logState, dispatch }}>
-      {children}
-    </LogContext.Provider>
-  );
+  return <LogContext.Provider value={{ logState, dispatch }}>{children}</LogContext.Provider>;
 }
 
 export function useLog() {
   return useContext(LogContext);
 }
-
-
-

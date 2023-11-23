@@ -7,14 +7,17 @@ import {
   Text,
   useColorScheme,
   View,
-  Button } from 'react-native';
+  LogBox } from 'react-native';
 import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import router, { Stack } from '@/router';
 // import {setUp} from '@/utils/track-player';
-import { LogProvider } from '@/pages/log/context';
+import { LogProvider } from '@/pages2/log/context';
+
+LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
+LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';

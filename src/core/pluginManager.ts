@@ -28,7 +28,7 @@ import he from 'he';
 import Network from './network';
 import LocalMusicSheet from './localMusicSheet';
 import { FileSystem } from 'react-native-file-access';
-import Mp3Util from '@/native/mp3Util';
+// import Mp3Util from '@/native/mp3Util';
 import { PluginMeta } from './pluginMeta';
 import { useEffect, useState } from 'react';
 
@@ -649,43 +649,43 @@ const localFilePlugin = new Plugin(function () {
     platform: localPluginPlatform,
     _path: '',
     async getMusicInfo(musicBase) {
-      const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
-      if (localPath) {
-        const coverImg = await Mp3Util.getMediaCoverImg(localPath);
-        return {
-          artwork: coverImg,
-        };
-      }
+      // const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
+      // if (localPath) {
+      //   const coverImg = await Mp3Util.getMediaCoverImg(localPath);
+      //   return {
+      //     artwork: coverImg,
+      //   };
+      // }
       return null;
     },
     async getLyric(musicBase) {
-      const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
-      let rawLrc: string | null = null;
-      if (localPath) {
-        // 读取内嵌歌词
-        try {
-          rawLrc = await Mp3Util.getLyric(localPath);
-        } catch (e) {
-          console.log('e', e);
-        }
-        if (!rawLrc) {
-          // 读取配置歌词
-          const lastDot = localPath.lastIndexOf('.');
-          const lrcPath = localPath.slice(0, lastDot) + '.lrc';
+      // const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
+      // let rawLrc: string | null = null;
+      // if (localPath) {
+      //   // 读取内嵌歌词
+      //   try {
+      //     rawLrc = await Mp3Util.getLyric(localPath);
+      //   } catch (e) {
+      //     console.log('e', e);
+      //   }
+      //   if (!rawLrc) {
+      //     // 读取配置歌词
+      //     const lastDot = localPath.lastIndexOf('.');
+      //     const lrcPath = localPath.slice(0, lastDot) + '.lrc';
 
-          try {
-            if (await exists(lrcPath)) {
-              rawLrc = await readFile(lrcPath, 'utf8');
-            }
-          } catch {}
-        }
-      }
+      //     try {
+      //       if (await exists(lrcPath)) {
+      //         rawLrc = await readFile(lrcPath, 'utf8');
+      //       }
+      //     } catch {}
+      //   }
+      // }
 
-      return rawLrc
-        ? {
-            rawLrc,
-          }
-        : null;
+      // return rawLrc
+      //   ? {
+      //       rawLrc,
+      //     }
+      //   : null;
     },
   };
 }, '');

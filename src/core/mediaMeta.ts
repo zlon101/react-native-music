@@ -1,12 +1,12 @@
 /**
  * 歌单管理
  */
-import produce from 'immer';
+import { produce } from 'immer';
 import { nanoid } from 'nanoid';
 import { getMultiStorage, getStorage, removeStorage, setStorage } from '@/utils/storage';
 import { StorageKeys } from '@/constants/commonConst';
 import objectPath from 'object-path';
-import PluginManager from './pluginManager';
+// import PluginManager from './pluginManager';
 
 // pluginname - tablekey
 let mediaMetaKeys: Record<string, string> = {};
@@ -67,15 +67,16 @@ async function updateMediaMeta(mediaItem: ICommon.IMediaBase, patch?: Record<str
     });
   }
   if (!newMetas[platform][id]) {
+    console.log(`\n\n如果没保存过，自动保存主键\n\n`);
     // 如果没保存过，自动保存主键
-    const primaryKey = PluginManager.getByMedia(mediaItem)?.instance?.primaryKey ?? ['id'];
-    const mediaData: Record<string, any> = {};
-    for (let k of primaryKey) {
-      mediaData[k] = mediaItem[k];
-    }
-    newMetas = produce(newMetas, _ => {
-      _[platform][id] = mediaData;
-    });
+    // const primaryKey = PluginManager.getByMedia(mediaItem)?.instance?.primaryKey ?? ['id'];
+    // const mediaData: Record<string, any> = {};
+    // for (let k of primaryKey) {
+    //   mediaData[k] = mediaItem[k];
+    // }
+    // newMetas = produce(newMetas, _ => {
+    //   _[platform][id] = mediaData;
+    // });
   }
   if (Array.isArray(patch)) {
     newMetas = produce(newMetas, draft => {

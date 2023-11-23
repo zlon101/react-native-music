@@ -1,9 +1,9 @@
-import { NativeModules } from 'react-native';
+// import { NativeModules } from 'react-native';
 
-interface INativeUtils {
-  exitApp: () => void;
-}
+// interface INativeUtils {
+//   exitApp: () => void;
+// }
 
-const NativeUtils = NativeModules.NativeUtils;
+// const NativeUtils = NativeModules.NativeUtils;
 
-export default NativeUtils as INativeUtils;
+// export default NativeUtils as INativeUtils;

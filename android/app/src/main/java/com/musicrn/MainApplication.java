@@ -12,6 +12,9 @@ import java.util.List;
 
 // react-native-fs
 import com.rnfs.RNFSPackage;
+// import fun.upup.musicfree.utils.UtilsPackage;
+// import fun.upup.musicfree.mp3Util.Mp3UtilPackage;
+// import fun.upup.musicfree.lyricUtil.LyricUtilPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 

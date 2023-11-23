@@ -17,9 +17,14 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.5",
     "@react-native-clipboard/clipboard": "^1.12.1",
+    "@react-native-community/netinfo": "^11.1.0",
+    "@react-native-community/slider": "^4.4.3",
     "@react-native-cookies/cookies": "^6.2.1",
+    "@react-navigation/drawer": "^6.6.6",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
+    "@sayem314/react-native-keep-awake": "^1.2.2",
+    "@shopify/flash-list": "^1.6.3",
     "axios": "^1.6.2",
     "big-integer": "^1.6.52",
     "cheerio": "^1.0.0-rc.12",
@@ -30,7 +35,7 @@
     "he": "^1.2.0",
     "jotai": "^2.5.1",
     "lodash.shuffle": "^4.2.0",
-    "lru-cache": "^10.0.3",
+    "lru-cache": "^7.18.3",
     "nanoid": "^5.0.3",
     "object-path": "^0.11.8",
     "p-queue": "^7.4.1",
@@ -41,11 +46,13 @@
     "react-native-background-timer": "^2.4.1",
     "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-device-info": "^10.11.0",
+    "react-native-document-picker": "^9.0.1",
     "react-native-fast-image": "^8.6.3",
     "react-native-file-access": "^3.0.4",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^2.13.4",
     "react-native-get-random-values": "^1.10.0",
+    "react-native-image-colors": "^2.3.0",
     "react-native-logs": "^5.0.1",
     "react-native-pager-view": "^6.2.2",
     "react-native-permissions": "^3.10.1",
@@ -53,6 +60,7 @@
     "react-native-root-toast": "^3.5.1",
     "react-native-safe-area-context": "^4.7.4",
     "react-native-screens": "^3.27.0",
+    "react-native-share": "^10.0.1",
     "react-native-svg": "^14.0.0",
     "react-native-tab-view": "^3.5.2",
     "react-native-toast-message": "^2.1.7",
@@ -62,6 +70,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@babel/plugin-transform-private-methods": "^7.23.3",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
     "@react-native/eslint-config": "^0.72.2",
@@ -79,6 +88,7 @@
     "typescript": "4.8.4"
   },
   "engines": {
-    "node": ">=16"
+    "node": ">=16",
+    "npm": ">=8"
   }
 }

@@ -1,8 +1,5 @@
-react-native-fs      有问题
 react-native-image-picker  不需要
 react-native-file-access  待定 
-
-
 
 只有 src/pages 没拷贝
 

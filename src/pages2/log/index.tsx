@@ -3,7 +3,7 @@ import { StyleSheet, VirtualizedList, Text, View, TextInput } from 'react-native
 import { IPageProps } from '@/types';
 import { useLog } from './context';
 
-const Item = (props: {item: any}) => {
+const Item = (props: { item: any }) => {
   const itemData = props.item;
 
   let str = '';
@@ -13,9 +13,11 @@ const Item = (props: {item: any}) => {
     console.error('itemData');
     str = 'itemData 无法 json 序列号';
   }
-  return (<View style={styles.item}>
-    <Text>{str}</Text>
-  </View>);
+  return (
+    <View style={styles.item}>
+      <Text>{str}</Text>
+    </View>
+  );
 };
 
 const getItem = (_data: any, index: number) => {
@@ -27,26 +29,22 @@ export default () => {
   const [text, onChangeText] = React.useState('Useless Text');
 
   const onSubmit = useCallback(() => {
-    text && dispatch({
-      type: 'add',
-      label: '测试',
-      text,
-    });
+    text &&
+      dispatch({
+        type: 'add',
+        label: '测试',
+        text,
+      });
   }, [text]);
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        value={text}
-        onChangeText={onChangeText}
-        onSubmitEditing={onSubmit}
-      />
+      <TextInput style={styles.input} value={text} onChangeText={onChangeText} onSubmitEditing={onSubmit} />
       <VirtualizedList
         style={styles.listWrap}
         data={logState}
         initialNumToRender={Math.min(24, logState.length)}
-        renderItem={({item}) => <Item item={item} />}
+        renderItem={({ item }) => <Item item={item} />}
         keyExtractor={(item: any) => item.id}
         getItemCount={() => Math.min(24, logState.length)}
         getItem={getItem}

@@ -1,27 +1,21 @@
-import TrackPlayer, {Event, State} from 'react-native-track-player';
+import TrackPlayer, { Event, State } from 'react-native-track-player';
 // import Config from '@/core/config';
 // import musicIsPaused from '@/utils/musicIsPaused';
 // import MusicQueue from '../core/musicQueue';
 
 let resumeState;
 
-export default async function() {
+export default async function () {
   // 媒体控制
   TrackPlayer.addEventListener(Event.RemotePlay, () => TrackPlayer.play());
   TrackPlayer.addEventListener(Event.RemotePause, () => TrackPlayer.pause());
-  TrackPlayer.addEventListener(Event.RemotePrevious, () =>
-    TrackPlayer.skipToPrevious(),
-  );
-  TrackPlayer.addEventListener(Event.RemoteNext, () =>
-    TrackPlayer.skipToNext(),
-  );
-  TrackPlayer.addEventListener(
-    Event.RemoteDuck,
-    async ({paused, permanent}) => {
-      if (permanent || paused) {
-        return TrackPlayer.pause();
-      }
-      /*****
+  TrackPlayer.addEventListener(Event.RemotePrevious, () => TrackPlayer.skipToPrevious());
+  TrackPlayer.addEventListener(Event.RemoteNext, () => TrackPlayer.skipToNext());
+  TrackPlayer.addEventListener(Event.RemoteDuck, async ({ paused, permanent }) => {
+    if (permanent || paused) {
+      return TrackPlayer.pause();
+    }
+    /*****
       const tempRemoteDuckConf = Config.get(
         'setting.basic.tempRemoteDuck',
       );
@@ -43,8 +37,7 @@ export default async function() {
         }
       }
        **/
-    },
-  );
+  });
   TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, evt => {
     // Config.set('status.music.progress', evt.position, false);
   });

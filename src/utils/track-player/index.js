@@ -20,24 +20,9 @@ export async function setUp() {
     icon: require('@/assets/logo-transparent.png'),
     alwaysPauseOnInterruption: true,
     progressUpdateEventInterval: 1,
-    capabilities: [
-      Capability.Play,
-      Capability.Pause,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious,
-    ],
-    compactCapabilities: [
-      Capability.Play,
-      Capability.Pause,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious,
-    ],
-    notificationCapabilities: [
-      Capability.Play,
-      Capability.Pause,
-      Capability.SkipToNext,
-      Capability.SkipToPrevious,
-    ],
+    capabilities: [Capability.Play, Capability.Pause, Capability.SkipToNext, Capability.SkipToPrevious],
+    compactCapabilities: [Capability.Play, Capability.Pause, Capability.SkipToNext, Capability.SkipToPrevious],
+    notificationCapabilities: [Capability.Play, Capability.Pause, Capability.SkipToNext, Capability.SkipToPrevious],
   });
 
   // TrackPlayer.updateOptions({
@@ -62,7 +47,6 @@ export async function setUp() {
   //   icon: require('./notification-icon.png')
   // });
 }
-
 
 // 3. 新增
 // You can then [add](https://rntp.dev/docs/api/functions/queue#addtracks-insertbeforeindex) the items to the queue
@@ -92,7 +76,7 @@ export async function getQueue() {
 
 // 播放状态
 export async function getState() {
-  const {state, error} = await TrackPlayer.getPlaybackState();
+  const { state, error } = await TrackPlayer.getPlaybackState();
   if (error) {
     console.log('\n❌ getPlaybackState 错误:\n', error);
     return;
@@ -104,4 +88,3 @@ export async function getState() {
 }
 
 // 修改状态
-

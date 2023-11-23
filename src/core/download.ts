@@ -6,7 +6,7 @@ import { isSameMediaItem } from '@/utils/mediaItem';
 import { getQualityOrder } from '@/utils/qualities';
 import StateMapper from '@/utils/stateMapper';
 import Toast from '@/utils/toast';
-import produce from 'immer';
+import { produce } from 'immer';
 import { InteractionManager } from 'react-native';
 import { downloadFile, exists } from 'react-native-fs';
 

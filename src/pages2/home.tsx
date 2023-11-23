@@ -50,6 +50,12 @@ export default ({ navigation }: IPageProps) => {
           navigation.navigate('Debug');
         }}
       />
+      <Button
+        title="Home2"
+        onPress={() => {
+          navigation.navigate('Home2');
+        }}
+      />
     </View>
   );
 };
