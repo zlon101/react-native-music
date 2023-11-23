@@ -1,6 +1,7 @@
-# 
+# 调试
 
-adb -s Q5S5T19328007841 reverse tcp:8081 tcp:8081
+[真机调试](https://reactnative.dev/docs/running-on-device) 
+
 
 # 依赖
 

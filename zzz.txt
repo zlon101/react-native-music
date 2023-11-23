@@ -1,13 +1,11 @@
+react-native-fs      有问题
+react-native-image-picker  不需要
 react-native-file-access  待定 
 
 
 
+只有 src/pages 没拷贝
+
 删除 useCheckUpdate
-
-
-react-native-fs 有问题
-react-native-toast-message 未生效
-react-native-image-picker  不需要
-
 
 依赖查找  import[^'"]+['"][^.@]

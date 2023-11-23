@@ -6,8 +6,6 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 // react-native-screens 额外配置
 import android.os.Bundle;
-// react-native-fs
-// import com.rnfs.RNFSPackage;
 
 public class MainActivity extends ReactActivity {
 
