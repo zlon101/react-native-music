@@ -1,0 +1,13 @@
+react-native-file-access  待定 
+
+
+
+删除 useCheckUpdate
+
+
+react-native-fs 有问题
+react-native-toast-message 未生效
+react-native-image-picker  不需要
+
+
+依赖查找  import[^'"]+['"][^.@]

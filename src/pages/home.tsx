@@ -5,7 +5,7 @@ import { CircularProgressBase } from 'react-native-circular-progress-indicator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { add, getQueue } from '@/utils/track-player';
 import { IPageProps } from '@/types';
-import { ToastTest } from '@/test';
+import { ToastTest, getDevice } from '@/test';
 
 export default ({ navigation }: IPageProps) => {
   useEffect(() => {
@@ -20,6 +20,7 @@ export default ({ navigation }: IPageProps) => {
       }
     };
     // getData();
+    getDevice();
   }, []);
 
   const onAdd = () => {
@@ -33,7 +34,7 @@ export default ({ navigation }: IPageProps) => {
 
   return (
     <View>
-      <Text>Home AA</Text>
+      <Text>Home AA BB CC DD</Text>
       <Button title="add" onPress={onAdd} />
       {/*<Button title="onGetQueue" onPress={onGetQueue} />*/}
       <Icon accessible accessibilityLabel="播放列表" name="playlist-music" size={56} />

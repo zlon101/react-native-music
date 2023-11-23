@@ -2,6 +2,7 @@ import * as React from 'react';
 import Toast from 'react-native-toast-message';
 import { Button, View, useWindowDimensions } from 'react-native'
 import { TabView, SceneMap } from 'react-native-tab-view';
+import DeviceInfo from 'react-native-device-info';
 
 export const ToastTest = () => {
   const showToast = () => {
@@ -13,10 +14,11 @@ export const ToastTest = () => {
     });
   };
 
+  console.log('\nrender Toast')
+
   return (
     <View>
-      <Toast />
-      <Button title='Toast' onPress={showToast} />
+      <Button title='Toast Test' onPress={showToast} />
     </View>
   );
 }
@@ -54,4 +56,10 @@ export function TabViewExample() {
       initialLayout={{ width: layout.width }}
     />
   );
+}
+
+export function getDevice() {
+  DeviceInfo.getAndroidId().then((androidId) => {
+    console.log('getAndroidId', androidId);
+  });;
 }

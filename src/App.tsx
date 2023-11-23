@@ -11,6 +11,7 @@ import {
 import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 import router, { Stack } from '@/router';
 // import {setUp} from '@/utils/track-player';
 import { LogProvider } from '@/pages/log/context';
@@ -40,6 +41,7 @@ function App() {
         <View>
           <Text>cscscsscs</Text>
         </View>
+        <Toast />
       </LogProvider>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}

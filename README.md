@@ -1,3 +1,7 @@
+# 
+
+adb -s Q5S5T19328007841 reverse tcp:8081 tcp:8081
+
 # 依赖
 
 1. [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/) 
@@ -38,6 +42,10 @@ navigation: navigate push goBack popToTop
 6. 音频播放
 
 [react-native-track-player](https://rntp.dev/docs/basics/installation) 
+
+7. 开屏动画
+
+[react-native-bootsplash](https://github.com/zoontek/react-native-bootsplash) 
 
 # 调试
 
