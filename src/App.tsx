@@ -13,8 +13,9 @@ import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import router, { Stack } from '@/router';
+
 // import {setUp} from '@/utils/track-player';
-import { LogProvider } from '@/pages2/log/context';
+import { LogProvider } from '@/pages/log/context';
 
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
 LogBox.ignoreLogs(['new NativeEventEmitter']);
@@ -38,7 +39,6 @@ function App() {
             {
               router.map(item => <Stack.Screen name={item.path} component={item.component} key={item.path} />)
             }
-            {/*<Stack.Screen name="Home" component={HomePage} options={{ title: 'Overview' }} />*/}
           </Stack.Navigator>
         </NavigationContainer>
         <View>

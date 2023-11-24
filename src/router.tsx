@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 import {View, Text} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import Home from './pages2/home';
-import Log from './pages2/log';
-import Debug from './pages2/debug';
+import Home from './pages/home/home2';
+import Log from './pages/log';
+import Debug from './pages/debug';
 import Home2 from './pages/home';
 
 export const Stack = createNativeStackNavigator();

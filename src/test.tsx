@@ -15,8 +15,6 @@ export const ToastTest = () => {
     });
   };
 
-  console.log('\nrender Toast');
-
   return (
     <View>
       <Button title="Toast Test" onPress={showToast} />
