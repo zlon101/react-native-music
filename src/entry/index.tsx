@@ -18,12 +18,11 @@ import { BootstrapComp } from './useBootstrap';
 import { routes } from './router';
 // import router from '@/router';
 import { log } from '@/utils/tool';
-
 /**
  * 字体颜色
  */
 
-// bootstrap();
+bootstrap();
 const Stack = createNativeStackNavigator<any>();
 
 function App() {

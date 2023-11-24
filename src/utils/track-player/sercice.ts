@@ -1,10 +1,10 @@
 import Config from '@/core/config';
 import musicIsPaused from '@/utils/musicIsPaused';
 import TrackPlayer, { Event, State } from 'react-native-track-player';
-import MusicQueue from '../core/musicQueue';
+import MusicQueue from '@/core/musicQueue';
 
 let resumeState: State | null;
-module.exports = async function () {
+export default async function() {
   TrackPlayer.addEventListener(Event.RemotePlay, () => MusicQueue.play());
   TrackPlayer.addEventListener(Event.RemotePause, () => MusicQueue.pause());
   TrackPlayer.addEventListener(Event.RemotePrevious, () => MusicQueue.skipToPrevious());

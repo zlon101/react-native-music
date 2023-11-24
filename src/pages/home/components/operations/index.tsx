@@ -38,13 +38,13 @@ export default function Operations(props: IOperationsProps) {
         navigate(ROUTE_PATH.RECOMMEND_SHEETS);
       },
     },
-    // {
-    //   iconName: 'trophy-outline',
-    //   title: '榜单',
-    //   action() {
-    //     navigate(ROUTE_PATH.TOP_LIST);
-    //   },
-    // },
+    {
+      iconName: 'trophy-outline',
+      title: '榜单',
+      action() {
+        navigate(ROUTE_PATH.TOP_LIST);
+      },
+    },
     {
       iconName: 'history',
       title: '播放记录',

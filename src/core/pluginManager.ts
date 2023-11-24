@@ -11,7 +11,7 @@ import DeviceInfo from 'react-native-device-info';
 import StateMapper from '@/utils/stateMapper';
 import MediaMeta from './mediaMeta';
 import { nanoid } from 'nanoid';
-import { devLog, errorLog, trace } from '../utils/log';
+import { devLog, errorLog, trace } from '@/utils/log';
 import Cache from './cache';
 import { getInternalData, InternalDataType, isSameMediaItem, resetMediaItem } from '@/utils/mediaItem';
 import {
@@ -113,7 +113,6 @@ export class Plugin {
                     }
                 `)()(_require, _require, _module, _module.exports, _console, env);
 
-        console.log('\n\n执行完成\n\n');
         if (_module.exports.default) {
           _instance = _module.exports.default as IPlugin.IPluginInstance;
         } else {
@@ -763,7 +762,6 @@ async function installPluginFromUrl(url: string) {
           throw new Error('已安装更新版本的插件');
         }
       }
-
       if (plugin.hash !== '') {
         const fn = nanoid();
         const _pluginPath = `${pathConst.pluginPath}${fn}.js`;

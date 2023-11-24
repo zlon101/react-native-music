@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "react-native run-android --deviceId Q5S5T19328007841",
     "ios": "react-native run-ios",
     "start": "react-native start --reset-cache",
     "connect-device": "adb -s Q5S5T19328007841 reverse tcp:8081 tcp:8081",
@@ -35,7 +35,7 @@
     "jotai": "^2.5.1",
     "lodash.shuffle": "^4.2.0",
     "lru-cache": "^7.18.3",
-    "nanoid": "^5.0.3",
+    "nanoid": "4.0.2",
     "object-path": "^0.11.8",
     "p-queue": "^7.4.1",
     "path-browserify": "^1.0.1",

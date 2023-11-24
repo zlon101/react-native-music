@@ -1,5 +1,5 @@
 import TrackPlayer, { State, Capability } from 'react-native-track-player';
-import playbackService from './service';
+import playbackService from './sercice';
 
 // 1. 注册
 export function registerService() {

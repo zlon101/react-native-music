@@ -2,9 +2,8 @@ import MusicQueue from '@/core/musicQueue';
 import MusicSheet from '@/core/musicSheet';
 import { check, PERMISSIONS, request } from 'react-native-permissions';
 import TrackPlayer, { Capability } from 'react-native-track-player';
-import 'react-native-get-random-values';
 import Config from '@/core/config';
-import RNBootSplash from 'react-native-bootsplash';
+// import RNBootSplash from 'react-native-bootsplash';
 import pathConst from '@/constants/pathConst';
 import { checkAndCreateDir } from '@/utils/fileUtils';
 import { errorLog, trace } from '@/utils/log';
@@ -104,5 +103,5 @@ export default async function () {
   }
   // 隐藏开屏动画
   console.log('HIDE');
-  RNBootSplash.hide({ fade: true });
+  // RNBootSplash.hide({ fade: true });
 }

@@ -6,6 +6,8 @@ https://github.com/maotoumao/MusicFree
 
 [真机调试](https://reactnative.dev/docs/running-on-device) 
 
+http://localhost:8081/index.bundle?platform=android&dev=true&minify=false&modulesOnly=false&runModule=true
+
 # 依赖
 
 1. [react-native-reanimated](https://docs.swmansion.com/react-native-reanimated/) 
@@ -51,10 +53,12 @@ navigation: navigate push goBack popToTop
 
 [react-native-bootsplash](https://github.com/zoontek/react-native-bootsplash) 
 
-# 调试
+8. 随机字符
 
-http://localhost:8081/index.bundle?platform=android&dev=true&minify=false&modulesOnly=false&runModule=true
+[react-native-get-random-values](https://github.com/LinusU/react-native-get-random-values) 
+[nanoid](https://github.com/ai/nanoid#react-native) 
 
+react-native-get-random-values 必须在全局入口处导入
 
 ============================================================
 
