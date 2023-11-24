@@ -1,13 +1,16 @@
 module.exports = {
   root: true,
-  extends: '@react-native',
+  extends: ['@react-native', 'plugin:prettier/recommended'],
+  // extends: ['@react-native-community', 'plugin:prettier/recommended'],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     // 0:off 1:warn 2:error
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-var': 'error', // 禁用var
     // 'no-unused-vars': [2, { args: 'none' }], // 消除未使用的变量  不检查函数的参数
-    'no-redeclare': 2, // 禁止多次声明同一变量
+    // 'no-redeclare': 2, // 禁止多次声明同一变量
     'no-dupe-keys': 2, // 在创建对象字面量时不允许键重复
     'no-underscore-dangle': 0, // 允许下划线开头结尾
     'comma-dangle': ['error', 'always-multiline'],
@@ -27,9 +30,10 @@ module.exports = {
     'eol-last': 'off',
     // 关闭 prettier/prettier 语法报错
     'prettier/prettier': 'off',
-    'react-native/no-inline-styles': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
+    'react-native/no-inline-styles': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/jsx-uses-react': 'off',
+    'react-hooks/exhaustive-deps': 'warn',
   },
 };

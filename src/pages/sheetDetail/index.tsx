@@ -5,6 +5,7 @@ import SheetMusicList from './components/sheetMusicList';
 import StatusBar from '@/components/base/statusBar';
 import VerticalSafeAreaView from '@/components/base/verticalSafeAreaView';
 import globalStyle from '@/constants/globalStyle';
+import {log} from '@/utils/tool';
 
 export default function SheetDetail() {
   return (

@@ -8,6 +8,7 @@ import Toast from '@/utils/toast';
 import { showDialog } from '@/components/dialogs/useDialog';
 import AppBar from '@/components/base/appBar';
 
+// 本地音乐
 export default function MainPage() {
   const navigate = useNavigate();
   return (

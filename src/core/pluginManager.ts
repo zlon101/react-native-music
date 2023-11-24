@@ -60,7 +60,7 @@ const _require = (packageName: string) => {
   return pkg;
 };
 
-const _consoleBind = function (method: 'log' | 'error' | 'info' | 'warn', ...args: any) {
+const _consoleBind = function(method: 'log' | 'error' | 'info' | 'warn', ...args: any) {
   const fn = console[method];
   if (fn) {
     fn(...args);
@@ -112,6 +112,8 @@ export class Plugin {
                         ${funcCode}
                     }
                 `)()(_require, _require, _module, _module.exports, _console, env);
+
+        console.log('\n\n执行完成\n\n');
         if (_module.exports.default) {
           _instance = _module.exports.default as IPlugin.IPluginInstance;
         } else {
@@ -644,7 +646,7 @@ const pluginStateMapper = new StateMapper(() => plugins);
 
 //#region 本地音乐插件
 /** 本地插件 */
-const localFilePlugin = new Plugin(function () {
+const localFilePlugin = new Plugin(function() {
   return {
     platform: localPluginPlatform,
     _path: '',
@@ -686,7 +688,7 @@ const localFilePlugin = new Plugin(function () {
       //   : null;
     },
   };
-}, '');
+} as any, '');
 localFilePlugin.hash = localPluginHash;
 
 //#endregion

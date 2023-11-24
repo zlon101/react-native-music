@@ -1,9 +1,6 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback } from 'react';
-import { LogBox } from 'react-native';
 import Home from '../pages/home';
-
-/******
 import ArtistDetail from '@/pages/artistDetail';
 import Downloading from '@/pages/downloading';
 import FileSelector from '@/pages/fileSelector';
@@ -13,15 +10,14 @@ import SearchMusicList from '@/pages/searchMusicList';
 import AlbumDetail from '../pages/albumDetail';
 import SearchPage from '../pages/searchPage';
 import Setting from '../pages/setting';
-import SheetDetail from '../pages/sheetDetail';
 import TopListDetail from '@/pages/topListDetail';
 import RecommendSheets from '@/pages/recommendSheets';
 import PluginSheetDetail from '@/pages/pluginSheetDetail';
 import History from '@/pages/history';
 import SetCustomTheme from '@/pages/setCustomTheme';
- **/
 import MusicDetail from '../pages/musicDetail';
 import TopList from '@/pages/topList';
+import SheetDetail from '../pages/sheetDetail';
 
 /** 路由key */
 export const ROUTE_PATH = {
@@ -83,7 +79,11 @@ export const routes: Array<IRoutes> = [
   {
     path: ROUTE_PATH.TOP_LIST,
     component: TopList,
-  } /****
+  },
+  {
+    path: ROUTE_PATH.LOCAL_SHEET_DETAIL,
+    component: SheetDetail,
+  },
   {
     path: ROUTE_PATH.TOP_LIST_DETAIL,
     component: TopListDetail,
@@ -91,10 +91,6 @@ export const routes: Array<IRoutes> = [
   {
     path: ROUTE_PATH.SEARCH_PAGE,
     component: SearchPage,
-  },
-  {
-    path: ROUTE_PATH.LOCAL_SHEET_DETAIL,
-    component: SheetDetail,
   },
   {
     path: ROUTE_PATH.ALBUM_DETAIL,
@@ -144,7 +140,6 @@ export const routes: Array<IRoutes> = [
     path: ROUTE_PATH.SET_CUSTOM_THEME,
     component: SetCustomTheme,
   },
-   **/,
 ];
 
 type RouterParamsBase = Record<RoutePaths, any>;
