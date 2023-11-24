@@ -16,8 +16,7 @@ export default function LinkText(props: ILinkTextProps) {
     <TouchableOpacity
       onPress={() => {
         props?.linkTo && openUrl(props.linkTo);
-      }}
-    >
+      }}>
       <ThemeText {...props} style={style.linkText}>
         {props.children}
       </ThemeText>

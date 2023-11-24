@@ -139,8 +139,7 @@ class Log extends Component {
                       borderColor: '#959595a1',
                       borderWidth: 1,
                     },
-                  ]}
-                >
+                  ]}>
                   <Text style={styles.headerTextLevel}>{key}</Text>
                 </TouchableOpacity>
               );
@@ -190,8 +189,7 @@ class Log extends Component {
           try {
             Alert.alert('提示', '复制成功', [{ text: '确认' }]);
           } catch (error) {}
-        }}
-      >
+        }}>
         <View style={styles.logItem}>
           <View style={{ flexDirection: 'row' }}>
             <View style={{ flex: 0.8 }}>

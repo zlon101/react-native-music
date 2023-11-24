@@ -11,19 +11,17 @@ import LocalMusic from '@/pages/localMusic';
 import MusicListEditor from '@/pages/musicListEditor';
 import SearchMusicList from '@/pages/searchMusicList';
 import AlbumDetail from '../pages/albumDetail';
-import MusicDetail from '../pages/musicDetail';
 import SearchPage from '../pages/searchPage';
 import Setting from '../pages/setting';
 import SheetDetail from '../pages/sheetDetail';
-import TopList from '@/pages/topList';
 import TopListDetail from '@/pages/topListDetail';
 import RecommendSheets from '@/pages/recommendSheets';
 import PluginSheetDetail from '@/pages/pluginSheetDetail';
 import History from '@/pages/history';
 import SetCustomTheme from '@/pages/setCustomTheme';
  **/
-
-LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
+import MusicDetail from '../pages/musicDetail';
+import TopList from '@/pages/topList';
 
 /** 路由key */
 export const ROUTE_PATH = {
@@ -78,7 +76,6 @@ export const routes: Array<IRoutes> = [
     path: ROUTE_PATH.HOME,
     component: Home,
   },
-  /****
   {
     path: ROUTE_PATH.MUSIC_DETAIL,
     component: MusicDetail,
@@ -86,7 +83,7 @@ export const routes: Array<IRoutes> = [
   {
     path: ROUTE_PATH.TOP_LIST,
     component: TopList,
-  },
+  } /****
   {
     path: ROUTE_PATH.TOP_LIST_DETAIL,
     component: TopListDetail,
@@ -147,7 +144,7 @@ export const routes: Array<IRoutes> = [
     path: ROUTE_PATH.SET_CUSTOM_THEME,
     component: SetCustomTheme,
   },
-   **/
+   **/,
 ];
 
 type RouterParamsBase = Record<RoutePaths, any>;

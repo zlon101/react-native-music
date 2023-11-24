@@ -16,8 +16,7 @@ export default function LyricItem(props: IAlbumResultsProps) {
       withHorizonalPadding
       onPress={() => {
         onPress?.(lyricItem);
-      }}
-    >
+      }}>
       <ListItem.ListItemImage uri={lyricItem.artwork} fallbackImg={ImgAsset.albumDefault} />
       <ListItem.Content
         description={lyricItem.artist ?? ''}

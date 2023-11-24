@@ -32,8 +32,7 @@ export default function TypeTag(props: ITypeTagProps) {
             borderColor: colors.divider,
           },
           _style,
-        ]}
-      >
+        ]}>
         <ThemeText fontSize="subTitle" fontColor={selected ? 'primary' : 'text'}>
           {title}
         </ThemeText>

@@ -175,8 +175,7 @@ export default function Body() {
                   },
                 });
               }}
-              style={styles.colorItemBlockContainer}
-            >
+              style={styles.colorItemBlockContainer}>
               <View style={[styles.colorBlockContainer]}>
                 <Image resizeMode="repeat" emptySrc={ImgAsset.transparentBg} style={styles.transparentBg} />
                 <View

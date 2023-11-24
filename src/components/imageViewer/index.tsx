@@ -32,8 +32,7 @@ export function ImageViewComponent() {
     <TouchableWithoutFeedback
       onPress={() => {
         currentImgSrcState.setValue(null);
-      }}
-    >
+      }}>
       <View style={style.wrapper}>
         <Image
           style={
@@ -70,8 +69,7 @@ export function ImageViewComponent() {
                   Toast.warn(`保存失败: ${e?.message ?? e}`);
                 });
             }
-          }}
-        >
+          }}>
           <View style={style.button}>
             <ThemeText color="white">点击保存</ThemeText>
           </View>

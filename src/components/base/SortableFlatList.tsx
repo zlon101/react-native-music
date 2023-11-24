@@ -296,8 +296,7 @@ function _SortableFlatListItem(props: ISortableFlatListItemProps) {
           setScrollEnabled(false);
           setActiveItem(item);
         }}
-        style={styleRef.current.btn}
-      >
+        style={styleRef.current.btn}>
         <Icon name="menu" size={iconSizeConst.normal} color={textColor} />
       </Pressable>
     </View>
@@ -344,8 +343,7 @@ const FakeFlatListItem = forwardRef(function (
   return (
     <View
       ref={ref}
-      style={[styleRef.current.viewWrapper, style.activeItemDefault, backgroundColor ? { backgroundColor } : {}]}
-    >
+      style={[styleRef.current.viewWrapper, style.activeItemDefault, backgroundColor ? { backgroundColor } : {}]}>
       {item ? renderItem({ item, index: -1 }) : null}
       <Pressable style={styleRef.current.btn}>
         <Icon name="menu" size={iconSizeConst.normal} color={textColor} />

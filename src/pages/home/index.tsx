@@ -51,8 +51,7 @@ export default function App() {
         },
       }}
       initialRouteName="HOME-MAIN"
-      drawerContent={props => <HomeDrawer {...props} />}
-    >
+      drawerContent={props => <HomeDrawer {...props} />}>
       <LeftDrawer.Screen name="HOME-MAIN" component={Home} />
     </LeftDrawer.Navigator>
   );

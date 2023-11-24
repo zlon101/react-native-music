@@ -1,13 +1,6 @@
 import React, { useEffect } from 'react';
 import type { PropsWithChildren } from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  LogBox } from 'react-native';
+import { ScrollView, StatusBar, StyleSheet, Text, useColorScheme, View, LogBox } from 'react-native';
 import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { gestureHandlerRootHOC } from 'react-native-gesture-handler';
@@ -16,9 +9,6 @@ import router, { Stack } from '@/router';
 
 // import {setUp} from '@/utils/track-player';
 import { LogProvider } from '@/pages/log/context';
-
-LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
-LogBox.ignoreLogs(['new NativeEventEmitter']);
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -36,9 +26,9 @@ function App() {
       <LogProvider>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Home">
-            {
-              router.map(item => <Stack.Screen name={item.path} component={item.component} key={item.path} />)
-            }
+            {router.map(item => (
+              <Stack.Screen name={item.path} component={item.component} key={item.path} />
+            ))}
           </Stack.Navigator>
         </NavigationContainer>
         <View>

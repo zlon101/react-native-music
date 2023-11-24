@@ -32,16 +32,14 @@ export default function ThemeSwitch(props: ISwitchProps) {
     <TouchableWithoutFeedback
       onPress={() => {
         onValueChange?.(!value);
-      }}
-    >
+      }}>
       <View
         style={[
           styles.container,
           {
             backgroundColor: value ? colors.primary : colors.textSecondary,
           },
-        ]}
-      >
+        ]}>
         <Animated.View style={[styles.thumb, thumbStyle]} />
       </View>
     </TouchableWithoutFeedback>

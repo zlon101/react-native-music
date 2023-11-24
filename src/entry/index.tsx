@@ -44,8 +44,7 @@ function App() {
                 headerShown: false,
                 animation: 'slide_from_right',
                 animationDuration: 100,
-              }}
-            >
+              }}>
               {routes.map(route => (
                 <Stack.Screen key={route.path} name={route.path} component={route.component} />
               ))}

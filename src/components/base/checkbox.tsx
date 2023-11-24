@@ -30,8 +30,7 @@ export default function Checkbox(props: ICheckboxProps) {
               borderColor: colors.text,
             },
         style,
-      ]}
-    >
+      ]}>
       {checked ? <Icon name="check" color={colors.appBarText} size={rpx(34)} /> : null}
     </View>
   );
@@ -44,8 +43,7 @@ export default function Checkbox(props: ICheckboxProps) {
         top: slop,
         bottom: slop,
       }}
-      onPress={onPress}
-    >
+      onPress={onPress}>
       {innerNode}
     </TouchableOpacity>
   ) : (

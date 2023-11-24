@@ -23,8 +23,7 @@ export default function Fab(props: IFabProps) {
           backgroundColor: colors.backdrop,
           shadowColor: colors.shadow,
         },
-      ]}
-    >
+      ]}>
       {icon ? <Icon name={icon} color={colors.text} size={iconSizeConst.normal} /> : null}
     </Pressable>
   );

@@ -20,8 +20,7 @@ export default function AlbumItem(props: IAlbumResultsProps) {
         navigate(ROUTE_PATH.ALBUM_DETAIL, {
           albumItem,
         });
-      }}
-    >
+      }}>
       <ListItem.ListItemImage uri={albumItem.artwork} fallbackImg={ImgAsset.albumDefault} />
       <ListItem.Content
         title={<TitleAndTag title={albumItem.title} tag={albumItem.platform} />}

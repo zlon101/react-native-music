@@ -33,8 +33,7 @@ function CircularPlayBtn() {
       duration={100}
       radius={rpx(36)}
       activeStrokeColor={colors.musicBarText}
-      inActiveStrokeColor={colors.textSecondary}
-    >
+      inActiveStrokeColor={colors.textSecondary}>
       <IconButton
         accessibilityLabel={isPaused ? '播放' : '暂停'}
         name={isPaused ? 'play' : 'pause'}
@@ -90,8 +89,7 @@ function MusicBar() {
           accessibilityLabel={`歌曲: ${musicItem.title} 歌手: ${musicItem.artist}`}
           onPress={() => {
             navigate(ROUTE_PATH.MUSIC_DETAIL);
-          }}
-        >
+          }}>
           <View style={style.artworkWrapper}>
             <FastImage style={style.artworkImg} uri={musicItem.artwork} emptySrc={ImgAsset.albumDefault} />
           </View>

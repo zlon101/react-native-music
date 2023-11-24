@@ -179,8 +179,7 @@ export default function FileSelector() {
             } else {
               selectPath(filesData, true);
             }
-          }}
-        >
+          }}>
           {currentPageAllChecked ? '全不选' : '全选'}
         </Button>
       </View>
@@ -232,16 +231,14 @@ export default function FileSelector() {
               navigation.goBack();
             }
           }
-        }}
-      >
+        }}>
         <View
           style={[
             style.scanBtn,
             {
               backgroundColor: colors.appBar,
             },
-          ]}
-        >
+          ]}>
           <ThemeText fontColor={'appBarText'} opacity={checkedItems.length > 0 ? undefined : 0.6}>
             {actionText}
             {multi && checkedItems?.length > 0 ? ` (选中${checkedItems.length})` : ''}

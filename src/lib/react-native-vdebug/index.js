@@ -229,8 +229,7 @@ class VDebug extends PureComponent {
                 this.scrollToTop();
               }
             }}
-            style={[styles.panelHeaderItem, index === this.state.currentPageIndex && styles.activeTab]}
-          >
+            style={[styles.panelHeaderItem, index === this.state.currentPageIndex && styles.activeTab]}>
             <Text style={styles.panelHeaderItemText}>{item.title}</Text>
           </TouchableOpacity>
         ))}
@@ -279,8 +278,7 @@ class VDebug extends PureComponent {
           height: this.state.historyFilter.length ? 120 : 40,
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: '#d9d9d9',
-        }}
-      >
+        }}>
         <View style={[styles.historyContainer, { height: this.state.historyFilter.length ? 80 : 0 }]}>
           <ScrollView>
             {this.state.historyFilter.map(text => {
@@ -296,8 +294,7 @@ class VDebug extends PureComponent {
                         commandValue: text.toString(),
                       });
                     }
-                  }}
-                >
+                  }}>
                   <Text style={{ lineHeight: 25 }}>{text}</Text>
                 </TouchableOpacity>
               );
@@ -340,8 +337,7 @@ class VDebug extends PureComponent {
           <TouchableOpacity
             onPress={this.showDev.bind(this)}
             onLongPress={this.reloadDev.bind(this)}
-            style={styles.panelBottomBtn}
-          >
+            style={styles.panelBottomBtn}>
             <Text style={styles.panelBottomBtnText}>Dev</Text>
           </TouchableOpacity>
         )}
@@ -372,8 +368,7 @@ class VDebug extends PureComponent {
           pagingEnabled={true}
           showsHorizontalScrollIndicator={false}
           horizontal={true}
-          style={styles.panelContent}
-        >
+          style={styles.panelContent}>
           {this.state.panels.map((item, index) => {
             return (
               <View key={index} style={{ width: width }}>

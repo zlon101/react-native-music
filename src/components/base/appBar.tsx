@@ -110,8 +110,7 @@ export default function AppBar(props: IAppBarProps) {
               fontSize="title"
               fontWeight="bold"
               numberOfLines={1}
-              color={titleTextOpacity !== 1 ? color(contentColor).alpha(titleTextOpacity).toString() : contentColor}
-            >
+              color={titleTextOpacity !== 1 ? color(contentColor).alpha(titleTextOpacity).toString() : contentColor}>
               {children}
             </ThemeText>
           ) : (
@@ -149,8 +148,7 @@ export default function AppBar(props: IAppBarProps) {
           <TouchableWithoutFeedback
             onPress={() => {
               setShowMenu(false);
-            }}
-          >
+            }}>
             <View style={styles.blocker} />
           </TouchableWithoutFeedback>
         ) : null}
@@ -185,8 +183,7 @@ export default function AppBar(props: IAppBarProps) {
               },
               transformStyle,
               styles.menu,
-            ]}
-          >
+            ]}>
             {menu.map(it =>
               it.show !== false ? (
                 <ListItem
@@ -196,8 +193,7 @@ export default function AppBar(props: IAppBarProps) {
                   onPress={() => {
                     it.onPress?.();
                     setShowMenu(false);
-                  }}
-                >
+                  }}>
                   <ListItem.ListItemIcon icon={it.icon} />
                   <ListItem.Content title={it.title} />
                 </ListItem>

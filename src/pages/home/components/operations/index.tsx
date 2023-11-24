@@ -38,13 +38,13 @@ export default function Operations(props: IOperationsProps) {
         navigate(ROUTE_PATH.RECOMMEND_SHEETS);
       },
     },
-    {
-      iconName: 'trophy-outline',
-      title: '榜单',
-      action() {
-        navigate(ROUTE_PATH.TOP_LIST);
-      },
-    },
+    // {
+    //   iconName: 'trophy-outline',
+    //   title: '榜单',
+    //   action() {
+    //     navigate(ROUTE_PATH.TOP_LIST);
+    //   },
+    // },
     {
       iconName: 'history',
       title: '播放记录',
@@ -59,8 +59,7 @@ export default function Operations(props: IOperationsProps) {
       style={orientation === 'vertical' ? style.wrapper : style.horizonalWrapper}
       showsHorizontalScrollIndicator={false}
       horizontal={orientation === 'vertical'}
-      contentContainerStyle={orientation === 'vertical' ? style.contentWrapper : style.horizonalContentWrapper}
-    >
+      contentContainerStyle={orientation === 'vertical' ? style.contentWrapper : style.horizonalContentWrapper}>
       {/* {index !== 0 ? <Divider vertical={orientation === 'vertical'}></Divider> : null} */}
       {actionButtons.map((action, idx) => (
         <ActionButton {...action} key={action.title} />

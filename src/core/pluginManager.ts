@@ -672,7 +672,6 @@ const localFilePlugin = new Plugin(function () {
       //     // 读取配置歌词
       //     const lastDot = localPath.lastIndexOf('.');
       //     const lrcPath = localPath.slice(0, lastDot) + '.lrc';
-
       //     try {
       //       if (await exists(lrcPath)) {
       //         rawLrc = await readFile(lrcPath, 'utf8');
@@ -680,7 +679,6 @@ const localFilePlugin = new Plugin(function () {
       //     } catch {}
       //   }
       // }
-
       // return rawLrc
       //   ? {
       //       rawLrc,

@@ -30,8 +30,7 @@ function FileItem(props: IProps) {
         onPress={() => {
           onItemPress(checked);
         }}
-        style={styles.pathWrapper}
-      >
+        style={styles.pathWrapper}>
         <Icon
           name={type === 'folder' ? 'folder-outline' : 'file-outline'}
           color={textColor}
@@ -45,8 +44,7 @@ function FileItem(props: IProps) {
         onPress={() => {
           onCheckChange(!checked);
         }}
-        style={styles.checkIcon}
-      >
+        style={styles.checkIcon}>
         <Checkbox checked={checked} />
       </TouchableOpacity>
     </View>

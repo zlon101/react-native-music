@@ -24,8 +24,7 @@ export default function Chip(props: IChipProps) {
           backgroundColor: colors.placeholder,
         },
         containerStyle,
-      ]}
-    >
+      ]}>
       {typeof children === 'string' ? <ThemeText fontSize="subTitle">{children}</ThemeText> : children}
       <IconButton onPress={onClose} name="close" sizeType="small" style={styles.icon} />
     </Pressable>

@@ -274,15 +274,13 @@ class Network extends Component {
             this.setState(state => ({
               showingId: state.showingId === _item.id ? null : _item.id,
             }));
-          }}
-        >
+          }}>
           <View
             style={[
               styles.nwHeader,
               this.state.showingId === _item.id && styles.active,
               _item.status >= 400 && styles.error,
-            ]}
-          >
+            ]}>
             <Text numberOfLines={1} ellipsizeMode="middle" style={[styles.nwHeaderTitle, styles.flex3]}>
               {`(${_item.index})${_item.host}`}
             </Text>
@@ -302,8 +300,7 @@ class Network extends Component {
                   borderColor: '#eeeeee',
                   borderWidth: 1,
                 },
-              ]}
-            >
+              ]}>
               <Text>{_item.costTime}</Text>
             </TouchableOpacity>
           </View>
@@ -315,15 +312,13 @@ class Network extends Component {
               <TouchableOpacity
                 onPress={() => {
                   this.copy2cURL(_item);
-                }}
-              >
+                }}>
                 <Text>{'[ Copy cURL to clipboard ]'}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
                   Clipboard.setString(_item.response);
-                }}
-              >
+                }}>
                 <Text>{'[ Copy response to clipboard ]'}</Text>
               </TouchableOpacity>
             </View>

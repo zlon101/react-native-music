@@ -20,8 +20,7 @@ function ToastBase(props: IToastBaseProps) {
         {
           backgroundColor: colors.backdrop,
         },
-      ]}
-    >
+      ]}>
       <Icon style={[styles.icon]} name={iconName} color={iconColor ?? colors.text} />
       <Text style={[styles.text, { color: colors.text }]} numberOfLines={2}>
         {text}

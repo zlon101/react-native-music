@@ -27,8 +27,7 @@ export default function (props: IProps) {
           if (musicList) {
             MusicQueue.playWithReplaceQueue(musicList[0], musicList);
           }
-        }}
-      >
+        }}>
         <Icon name="play-circle-outline" style={style.playAllIcon} size={iconSizeConst.normal} color={colors.text} />
         <ThemeText fontWeight="bold">播放全部</ThemeText>
       </Pressable>

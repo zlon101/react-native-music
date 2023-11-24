@@ -20,12 +20,10 @@ export default function SetCustomTheme() {
             onPress={() => {
               navigation.goBack();
             }}
-            fontColor="appBarText"
-          >
+            fontColor="appBarText">
             完成
           </Button>
-        }
-      >
+        }>
         自定义背景
       </AppBar>
       <Body />

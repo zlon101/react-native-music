@@ -23,8 +23,7 @@ export default function History() {
             if (musicHistoryList.length) {
               musicHistory.clearMusic();
             }
-          }}
-        >
+          }}>
           清空
         </Button>
       </View>

@@ -69,8 +69,7 @@ function ListItem(props: IListItemProps) {
       style={styles.container}
       underlayColor={colors.listActive}
       onPress={onPress}
-      onLongPress={onLongPress}
-    >
+      onLongPress={onLongPress}>
       <View style={[styles.container, defaultStyle, style]}>{children}</View>
     </TouchableHighlight>
   );

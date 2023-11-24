@@ -31,7 +31,7 @@ export async function getAllMusic() {
     const response = await fetch(url, cfg);
     const resJson = await response.json();
     // mp3/xxx  /mp3\//.test(item.path)
-    return resJson.filter(item => item.type === 'blob').map(item => ({...item, key: item.name}));
+    return resJson.filter(item => item.type === 'blob').map(item => ({ ...item, key: item.name }));
   } catch (err) {
     console.error('getAllMusic 错误', err);
   }
@@ -72,7 +72,11 @@ function formatQuery(val) {
     }, {});
   }
   if (typeof val === 'object') {
-    return encodeURIComponent(Object.keys(val).map(k => `${k}=${val[k]}`).join('&'));
+    return encodeURIComponent(
+      Object.keys(val)
+        .map(k => `${k}=${val[k]}`)
+        .join('&'),
+    );
   }
   return val;
 }

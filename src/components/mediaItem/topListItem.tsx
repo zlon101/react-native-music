@@ -21,8 +21,7 @@ export default function TopListItem(props: ITopListResultsProps) {
           pluginHash: pluginHash,
           topList: topListItem,
         });
-      }}
-    >
+      }}>
       <ListItem.ListItemImage uri={topListItem?.coverImg} fallbackImg={ImgAsset.albumDefault} />
       <ListItem.Content title={topListItem.title} description={`${topListItem.description ?? ''}`} />
     </ListItem>

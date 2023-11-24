@@ -42,8 +42,7 @@ export default function ArtistDetail() {
               });
             },
           },
-        ]}
-      >
+        ]}>
         作者
       </AppBar>
       <View style={orientation === 'horizonal' ? style.horizonal : globalStyle.flex1}>

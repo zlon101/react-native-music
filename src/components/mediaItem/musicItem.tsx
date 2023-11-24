@@ -48,8 +48,7 @@ export default function MusicItem(props: IMusicItemProps) {
         } else {
           MusicQueue.play(musicItem);
         }
-      }}
-    >
+      }}>
       {Left ? <Left /> : null}
       {index !== undefined ? (
         <ListItem.ListItemText width={rpx(82)} position="none" fixedWidth contentStyle={styles.indexText}>
