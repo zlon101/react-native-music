@@ -16,8 +16,10 @@ import { showPanel } from '@/components/panels/usePanel';
 import Divider from '@/components/base/divider';
 
 const ITEM_HEIGHT = rpx(108);
+
 function HomeDrawer(props: any) {
   const navigate = useNavigate();
+
   function navigateToSetting(settingType: string) {
     navigate(ROUTE_PATH.SETTING, {
       type: settingType,

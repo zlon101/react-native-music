@@ -5,6 +5,7 @@ import { produce } from 'immer';
 import { useEffect, useState } from 'react';
 
 type ExceptionType = IMusic.IMusicItem | IMusic.IMusicItem[] | IMusic.IQuality;
+
 interface IConfig {
   setting: {
     basic: {
@@ -128,6 +129,7 @@ type PartialConfig = DeepPartial<IConfig> | null;
 type IConfigPathsObj = KeyPathsObj<DeepPartial<IConfig>, IConfigPaths>;
 
 let config: PartialConfig = null;
+
 /** 初始化config */
 async function setup() {
   config = (await getStorage('local-config')) ?? {};
@@ -187,6 +189,7 @@ function getPathValue(obj: Record<string, any>, path: string) {
 
 /** 同步hook */
 const notifyCbs = new Set<() => void>();
+
 function notify() {
   notifyCbs.forEach(_ => _?.());
 }
@@ -197,9 +200,11 @@ function useConfig<T extends IConfigPaths>(key: T): IConfigPathsObj[T];
 function useConfig(key?: string) {
   // TODO: 应该有性能损失
   const [_cfg, _setCfg] = useState<PartialConfig>(config);
+
   function setCfg() {
     _setCfg(config);
   }
+
   useEffect(() => {
     notifyCbs.add(setCfg);
     return () => {

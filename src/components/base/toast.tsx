@@ -10,6 +10,7 @@ interface IToastBaseProps {
   iconName: string;
   iconColor: string;
 }
+
 function ToastBase(props: IToastBaseProps) {
   const { text, iconName, iconColor } = props;
   const colors = useColors();

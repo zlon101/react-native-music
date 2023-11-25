@@ -12,6 +12,7 @@ const portalsAtom = atom<IPortalNode[]>([]);
 interface IPortalProps {
   children: ReactNode;
 }
+
 export default function Portal(props: IPortalProps) {
   const { children } = props;
 

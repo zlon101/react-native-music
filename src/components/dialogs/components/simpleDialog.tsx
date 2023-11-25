@@ -7,6 +7,7 @@ interface ISimpleDialogProps {
   content: string | JSX.Element;
   onOk?: () => void;
 }
+
 export default function SimpleDialog(props: ISimpleDialogProps) {
   const { title, content, onOk } = props;
   return (

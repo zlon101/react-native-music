@@ -231,6 +231,7 @@ interface IInstallResult {
   code: 'success' | 'fail';
   message?: string;
 }
+
 async function installPluginFromUrl(text: string): Promise<IInstallResult> {
   try {
     let urls: string[] = [];

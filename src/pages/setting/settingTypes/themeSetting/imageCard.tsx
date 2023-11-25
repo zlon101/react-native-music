@@ -10,6 +10,7 @@ interface IImageCardProps {
   uri?: string;
   emptySrc: any;
 }
+
 export default function ImageCard(props: IImageCardProps) {
   const { uri, emptySrc, onPress, title } = props;
   return (

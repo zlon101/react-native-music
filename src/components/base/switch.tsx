@@ -6,6 +6,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-na
 import { timingConfig } from '@/constants/commonConst';
 
 interface ISwitchProps extends SwitchProps {}
+
 const fixedWidth = rpx(40);
 
 export default function ThemeSwitch(props: ISwitchProps) {

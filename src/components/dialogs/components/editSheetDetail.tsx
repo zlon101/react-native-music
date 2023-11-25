@@ -21,6 +21,7 @@ import Button from '@/components/base/button';
 interface IEditSheetDetailProps {
   musicSheet: IMusic.IMusicSheetItem;
 }
+
 export default function EditSheetDetailDialog(props: IEditSheetDetailProps) {
   const { musicSheet } = props;
   const colors = useColors();

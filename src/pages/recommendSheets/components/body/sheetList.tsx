@@ -21,6 +21,7 @@ function SheetList(props: ISheetListProps) {
   function renderItem({ item }: { item: IMusic.IMusicSheetItemBase }) {
     return <SheetItem sheetInfo={item} pluginHash={pluginHash} />;
   }
+
   const orientation = useOrientation();
 
   return (

@@ -7,6 +7,7 @@ interface IAlbumResultsProps {
   lyricItem: ILyric.ILyricItem;
   onPress?: (musicItem: ILyric.ILyricItem) => void;
 }
+
 export default function LyricItem(props: IAlbumResultsProps) {
   const { lyricItem, onPress } = props;
 

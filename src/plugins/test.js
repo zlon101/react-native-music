@@ -6,6 +6,7 @@ const qs = require('qs');
 const bigInt = require('big-integer');
 const dayjs = require('dayjs');
 const cheerio = require('cheerio');
+
 function a() {
   var d,
     e,
@@ -14,6 +15,7 @@ function a() {
   for (d = 0; 16 > d; d += 1) (e = Math.random() * b.length), (e = Math.floor(e)), (c += b.charAt(e));
   return c;
 }
+
 function b(a, b) {
   var c = CryptoJs.enc.Utf8.parse(b),
     d = CryptoJs.enc.Utf8.parse('0102030405060708'),
@@ -24,6 +26,7 @@ function b(a, b) {
     });
   return f.toString();
 }
+
 function c(text) {
   text = text.split('').reverse().join('');
   const d = '010001';
@@ -39,6 +42,7 @@ function c(text) {
     .join('')
     .concat(res);
 }
+
 function getParamsAndEnc(text) {
   const first = b(text, '0CoJUm6Qyw8W8jud');
   const rand = a();
@@ -49,6 +53,7 @@ function getParamsAndEnc(text) {
     encSecKey,
   };
 }
+
 function formatMusicItem(_) {
   var _a, _b, _c, _d;
   const album = _.al || _.album;
@@ -76,6 +81,7 @@ function formatMusicItem(_) {
     copyrightId: _ === null || _ === void 0 ? void 0 : _.copyrightId,
   };
 }
+
 function formatAlbumItem(_) {
   return {
     id: _.id,
@@ -86,6 +92,7 @@ function formatAlbumItem(_) {
     date: dayjs.unix(_.publishTime / 1000).format('YYYY-MM-DD'),
   };
 }
+
 function musicCanPlayFilter(_) {
   var _a;
   return (
@@ -93,7 +100,9 @@ function musicCanPlayFilter(_) {
     (!_.privilege || ((_a = _.privilege) === null || _a === void 0 ? void 0 : _a.st) >= 0)
   );
 }
+
 const pageSize = 30;
+
 async function searchBase(query, page, type) {
   const data = {
     s: query,
@@ -127,6 +136,7 @@ async function searchBase(query, page, type) {
   ).data;
   return res;
 }
+
 async function searchMusic(query, page) {
   const res = await searchBase(query, page, 1);
   const songs = res.result.songs.filter(musicCanPlayFilter).map(formatMusicItem);
@@ -135,6 +145,7 @@ async function searchMusic(query, page) {
     data: songs,
   };
 }
+
 async function searchAlbum(query, page) {
   const res = await searchBase(query, page, 10);
   const albums = res.result.albums.map(formatAlbumItem);
@@ -143,6 +154,7 @@ async function searchAlbum(query, page) {
     data: albums,
   };
 }
+
 async function searchArtist(query, page) {
   const res = await searchBase(query, page, 100);
   const artists = res.result.artists.map(_ => ({
@@ -156,6 +168,7 @@ async function searchArtist(query, page) {
     data: artists,
   };
 }
+
 async function searchMusicSheet(query, page) {
   const res = await searchBase(query, page, 1000);
   const playlists = res.result.playlists.map(_ => {
@@ -174,6 +187,7 @@ async function searchMusicSheet(query, page) {
     data: playlists,
   };
 }
+
 async function searchLyric(query, page) {
   var _a, _b;
   const res = await searchBase(query, page, 1006);
@@ -199,6 +213,7 @@ async function searchLyric(query, page) {
     data: lyrics,
   };
 }
+
 async function getArtistWorks(artistItem, page, type) {
   const data = {
     csrf_token: '',
@@ -246,10 +261,12 @@ async function getArtistWorks(artistItem, page, type) {
     };
   }
 }
+
 async function getTopListDetail(topListItem) {
   const musicList = await getSheetMusicById(topListItem.id);
   return Object.assign(Object.assign({}, topListItem), { musicList });
 }
+
 async function getLyric(musicItem) {
   const headers = {
     Referer: 'https://y.music.163.com/',
@@ -274,6 +291,7 @@ async function getLyric(musicItem) {
     rawLrc: result.lrc.lyric,
   };
 }
+
 async function getAlbumInfo(albumItem) {
   const headers = {
     Referer: 'https://y.music.163.com/',
@@ -304,6 +322,7 @@ async function getAlbumInfo(albumItem) {
     musicList: (res.songs || []).filter(musicCanPlayFilter).map(formatMusicItem),
   };
 }
+
 async function getValidMusicItems(trackIds) {
   const headers = {
     Referer: 'https://y.music.163.com/',
@@ -343,6 +362,7 @@ async function getValidMusicItems(trackIds) {
     return [];
   }
 }
+
 async function getSheetMusicById(id) {
   const headers = {
     Referer: 'https://y.music.163.com/',
@@ -366,6 +386,7 @@ async function getSheetMusicById(id) {
   }
   return result;
 }
+
 async function importMusicSheet(urlLike) {
   const matchResult = urlLike.match(
     /(?:https:\/\/y\.music\.163.com\/m\/playlist\?id=([0-9]+))|(?:https?:\/\/music\.163\.com\/playlist\/([0-9]+)\/.*)|(?:https?:\/\/music.163.com(?:\/#)?\/playlist\?id=(\d+))|(?:^\s*(\d+)\s*$)/,
@@ -373,6 +394,7 @@ async function importMusicSheet(urlLike) {
   const id = matchResult[1] || matchResult[2] || matchResult[3] || matchResult[4];
   return getSheetMusicById(id);
 }
+
 async function getTopLists() {
   const res = await axios_1.default.get('https://music.163.com/discover/toplist', {
     headers: {
@@ -417,12 +439,14 @@ async function getTopLists() {
   }
   return groups;
 }
+
 const qualityLevels = {
   low: '',
   standard: 'standard',
   high: 'exhigh',
   super: 'lossless',
 };
+
 async function getMediaSource(musicItem, quality) {
   if (quality !== 'standard') {
     return;
@@ -431,6 +455,7 @@ async function getMediaSource(musicItem, quality) {
     url: `https://music.163.com/song/media/outer/url?id=${musicItem.id}.mp3`,
   };
 }
+
 const headers = {
   authority: 'music.163.com',
   'user-agent':
@@ -444,6 +469,7 @@ const headers = {
   referer: 'https://music.163.com/',
   'accept-language': 'zh-CN,zh;q=0.9',
 };
+
 async function getRecommendSheetTags() {
   const data = {
     csrf_token: '',
@@ -484,6 +510,7 @@ async function getRecommendSheetTags() {
     data: catData,
   };
 }
+
 async function getRecommendSheetsByTag(tag, page) {
   const pageSize = 20;
   const data = {
@@ -519,6 +546,7 @@ async function getRecommendSheetsByTag(tag, page) {
     data: playLists,
   };
 }
+
 async function getMusicSheetInfo(sheet, page) {
   let trackIds = sheet._trackIds;
   if (!trackIds) {
@@ -548,6 +576,7 @@ async function getMusicSheetInfo(sheet, page) {
   }
   return Object.assign({ isEnd: trackIds.length <= page * pageSize, musicList: res }, extra);
 }
+
 module.exports = {
   platform: '网易云',
   version: '0.2.1',

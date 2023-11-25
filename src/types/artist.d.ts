@@ -8,9 +8,11 @@ declare namespace IArtist {
     avatar: string;
     worksNum: number;
   }
+
   export interface IArtistItem extends IArtistItemBase {
     musicList: IMusic.IMusicItemBase;
     albumList: IAlbum.IAlbumItemBase;
+
     [k: string]: any;
   }
 

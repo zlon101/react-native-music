@@ -34,6 +34,7 @@ function PageBackground() {
     </>
   );
 }
+
 export default memo(PageBackground, () => true);
 
 const style = StyleSheet.create({

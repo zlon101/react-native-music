@@ -89,6 +89,7 @@ interface IBottomIconProps {
   color?: 'text' | 'textSecondary';
   onPress: () => void;
 }
+
 function BottomIcon(props: IBottomIconProps) {
   const { icon, title, onPress, color = 'text' } = props;
   const colors = useColors();

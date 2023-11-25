@@ -6,6 +6,7 @@ interface IDividerProps {
   vertical?: boolean;
   style?: StyleProp<ViewProps>;
 }
+
 export default function Divider(props: IDividerProps) {
   const { vertical, style } = props;
   const colors = useColors();

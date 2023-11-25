@@ -14,6 +14,7 @@ interface IDialogProps {
   onDismiss?: () => void;
   children?: ReactNode;
 }
+
 function Dialog(props: IDialogProps) {
   const { children, onDismiss } = props;
 

@@ -9,6 +9,7 @@ interface IArtistResultsProps {
   index: number;
   pluginHash: string;
 }
+
 export default function ArtistResultItem(props: IArtistResultsProps) {
   const { item: artistItem, pluginHash } = props;
   const navigate = useNavigate();

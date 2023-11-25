@@ -37,8 +37,10 @@ declare namespace IMusic {
     rawLrc?: string;
     /** 音质信息 */
     qualities?: IQuality;
+
     /** 其他可以被序列化的信息 */
     [k: string]: any;
+
     /** 内部信息 */
     [k: symbol]: any;
   }

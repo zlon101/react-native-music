@@ -50,6 +50,7 @@ function CircularPlayBtn() {
     </CircularProgressBase>
   );
 }
+
 function MusicBar() {
   const musicItem = MusicQueue.useCurrentMusicItem();
 

@@ -19,6 +19,7 @@ interface IResultWrapperProps<T extends ICommon.SupportMediaType = ICommon.Suppo
   searchResult: ISearchResult<T>;
   pluginSearchResultRef: React.MutableRefObject<ISearchResult<T>>;
 }
+
 function ResultWrapper(props: IResultWrapperProps) {
   const { tab, pluginHash, searchResult, pluginSearchResultRef } = props;
   const search = useSearch();

@@ -7,6 +7,7 @@ import BoardPanel from './boardPanel';
 interface IBoardPanelProps {
   hash: string;
 }
+
 export default function BoardPanelWrapper(props: IBoardPanelProps) {
   const { hash } = props ?? {};
   const topLists = useAtomValue(pluginsTopListAtom);

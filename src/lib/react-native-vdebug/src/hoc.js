@@ -5,6 +5,7 @@ export default (WrappedComponent, getRef = () => {}) => {
     constructor(props) {
       super(props);
     }
+
     render() {
       return (
         <WrappedComponent

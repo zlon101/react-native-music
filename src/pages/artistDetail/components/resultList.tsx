@@ -17,6 +17,7 @@ interface IResultListProps<T = IArtist.ArtistMediaType> {
   data: IQueryResult<T>;
   renderItem: (...args: any) => any;
 }
+
 export default function ResultList(props: IResultListProps) {
   const { data, renderItem, tab } = props;
   const [scrollToTopState, setScrollToTopState] = useAtom(scrollToTopAtom);

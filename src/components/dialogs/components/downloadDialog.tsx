@@ -17,6 +17,7 @@ interface IDownloadDialogProps {
   fromUrl: string;
   backUrl?: string;
 }
+
 export default function DownloadDialog(props: IDownloadDialogProps) {
   const { content, fromUrl, backUrl, version } = props;
   const [skipState, setSkipState] = useState(false);

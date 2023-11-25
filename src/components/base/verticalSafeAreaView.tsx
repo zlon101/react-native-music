@@ -7,6 +7,7 @@ interface IVerticalSafeAreaViewProps {
   children: JSX.Element | JSX.Element[];
   style?: StyleProp<ViewStyle>;
 }
+
 export default function VerticalSafeAreaView(props: IVerticalSafeAreaViewProps) {
   const { children, style, mode } = props;
   return (

@@ -143,6 +143,7 @@ export const routes: Array<IRoutes> = [
 ];
 
 type RouterParamsBase = Record<RoutePaths, any>;
+
 /** 路由参数 */
 interface RouterParams extends RouterParamsBase {
   home: undefined;

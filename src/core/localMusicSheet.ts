@@ -104,6 +104,7 @@ function localMediaFilter(_: FileStat) {
 }
 
 let importToken: string | null = null;
+
 // 获取本地的文件列表
 async function getMusicStats(folderPaths: string[]) {
   const _importToken = nanoid();
@@ -139,6 +140,7 @@ function cancelImportLocal() {
 
 // 导入本地音乐
 const groupNum = 25;
+
 async function importLocal(_folderPaths: string[]) {
   const folderPaths = [..._folderPaths];
   const { musicList, token } = await getMusicStats(folderPaths);

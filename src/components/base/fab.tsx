@@ -9,6 +9,7 @@ interface IFabProps {
   icon?: string;
   onPress?: () => void;
 }
+
 export default function Fab(props: IFabProps) {
   const { icon, onPress } = props;
 

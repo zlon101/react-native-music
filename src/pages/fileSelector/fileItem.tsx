@@ -17,6 +17,7 @@ interface IProps {
   onItemPress: (currentChecked?: boolean) => void;
   onCheckedChange: (checked: boolean) => void;
 }
+
 function FileItem(props: IProps) {
   const { type, path, parentPath, checked, onItemPress, onCheckedChange: onCheckChange } = props;
 

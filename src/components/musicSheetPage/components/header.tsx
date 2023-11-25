@@ -11,6 +11,7 @@ interface IHeaderProps {
   topListDetail: IMusic.IMusicSheetItem | null;
   musicList: IMusic.IMusicItem[] | null;
 }
+
 export default function Header(props: IHeaderProps) {
   const { topListDetail, musicList } = props;
   const colors = useColors();

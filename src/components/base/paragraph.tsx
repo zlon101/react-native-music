@@ -4,6 +4,7 @@ import ThemeText from './themeText';
 import { fontSizeConst } from '@/constants/uiConst';
 
 interface IParagraphProps extends TextProps {}
+
 export default function Paragraph(props: IParagraphProps) {
   return <ThemeText style={styles.container} {...props} />;
 }

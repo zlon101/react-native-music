@@ -7,6 +7,7 @@ interface ITitleAndTagProps {
   title: string;
   tag?: string;
 }
+
 export default function TitleAndTag(props: ITitleAndTagProps) {
   const { title, tag } = props;
   return (

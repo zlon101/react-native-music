@@ -4,7 +4,7 @@ import TrackPlayer, { Event, State } from 'react-native-track-player';
 import MusicQueue from '@/core/musicQueue';
 
 let resumeState: State | null;
-export default async function() {
+export default async function () {
   TrackPlayer.addEventListener(Event.RemotePlay, () => MusicQueue.play());
   TrackPlayer.addEventListener(Event.RemotePause, () => MusicQueue.pause());
   TrackPlayer.addEventListener(Event.RemotePrevious, () => MusicQueue.skipToPrevious());
@@ -39,4 +39,4 @@ export default async function() {
   TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, evt => {
     Config.set('status.music.progress', evt.position, false);
   });
-};
+}

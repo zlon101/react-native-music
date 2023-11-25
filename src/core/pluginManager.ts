@@ -60,7 +60,7 @@ const _require = (packageName: string) => {
   return pkg;
 };
 
-const _consoleBind = function(method: 'log' | 'error' | 'info' | 'warn', ...args: any) {
+const _consoleBind = function (method: 'log' | 'error' | 'info' | 'warn', ...args: any) {
   const fn = console[method];
   if (fn) {
     fn(...args);
@@ -177,15 +177,18 @@ export class Plugin {
     return true;
   }
 }
+
 //#endregion
 
 //#region 基于插件类封装的方法，供给APP侧直接调用
 /** 有缓存等信息 */
 class PluginMethods implements IPlugin.IPluginInstanceMethods {
   private plugin;
+
   constructor(plugin: Plugin) {
     this.plugin = plugin;
   }
+
   /** 搜索 */
   async search<T extends ICommon.SupportMediaType>(
     query: string,
@@ -545,6 +548,7 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
       return [];
     }
   }
+
   /** 导入单曲 */
   async importMusicItem(urlLike: string): Promise<IMusic.IMusicItem | null> {
     try {
@@ -560,6 +564,7 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
       return null;
     }
   }
+
   /** 获取榜单 */
   async getTopLists(): Promise<IMusic.IMusicSheetGroupItem[]> {
     try {
@@ -573,6 +578,7 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
       return [];
     }
   }
+
   /** 获取榜单详情 */
   async getTopListDetail(
     topListItem: IMusic.IMusicSheetItemBase,
@@ -610,6 +616,7 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
       };
     }
   }
+
   /** 获取某个tag的推荐歌单 */
   async getRecommendSheetsByTag(
     tagItem: ICommon.IUnique,
@@ -638,6 +645,7 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
     }
   }
 }
+
 //#endregion
 
 let plugins: Array<Plugin> = [];
@@ -645,49 +653,52 @@ const pluginStateMapper = new StateMapper(() => plugins);
 
 //#region 本地音乐插件
 /** 本地插件 */
-const localFilePlugin = new Plugin(function() {
-  return {
-    platform: localPluginPlatform,
-    _path: '',
-    async getMusicInfo(musicBase) {
-      // const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
-      // if (localPath) {
-      //   const coverImg = await Mp3Util.getMediaCoverImg(localPath);
-      //   return {
-      //     artwork: coverImg,
-      //   };
-      // }
-      return null;
-    },
-    async getLyric(musicBase) {
-      // const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
-      // let rawLrc: string | null = null;
-      // if (localPath) {
-      //   // 读取内嵌歌词
-      //   try {
-      //     rawLrc = await Mp3Util.getLyric(localPath);
-      //   } catch (e) {
-      //     console.log('e', e);
-      //   }
-      //   if (!rawLrc) {
-      //     // 读取配置歌词
-      //     const lastDot = localPath.lastIndexOf('.');
-      //     const lrcPath = localPath.slice(0, lastDot) + '.lrc';
-      //     try {
-      //       if (await exists(lrcPath)) {
-      //         rawLrc = await readFile(lrcPath, 'utf8');
-      //       }
-      //     } catch {}
-      //   }
-      // }
-      // return rawLrc
-      //   ? {
-      //       rawLrc,
-      //     }
-      //   : null;
-    },
-  };
-} as any, '');
+const localFilePlugin = new Plugin(
+  function () {
+    return {
+      platform: localPluginPlatform,
+      _path: '',
+      async getMusicInfo(musicBase) {
+        // const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
+        // if (localPath) {
+        //   const coverImg = await Mp3Util.getMediaCoverImg(localPath);
+        //   return {
+        //     artwork: coverImg,
+        //   };
+        // }
+        return null;
+      },
+      async getLyric(musicBase) {
+        // const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
+        // let rawLrc: string | null = null;
+        // if (localPath) {
+        //   // 读取内嵌歌词
+        //   try {
+        //     rawLrc = await Mp3Util.getLyric(localPath);
+        //   } catch (e) {
+        //     console.log('e', e);
+        //   }
+        //   if (!rawLrc) {
+        //     // 读取配置歌词
+        //     const lastDot = localPath.lastIndexOf('.');
+        //     const lrcPath = localPath.slice(0, lastDot) + '.lrc';
+        //     try {
+        //       if (await exists(lrcPath)) {
+        //         rawLrc = await readFile(lrcPath, 'utf8');
+        //       }
+        //     } catch {}
+        //   }
+        // }
+        // return rawLrc
+        //   ? {
+        //       rawLrc,
+        //     }
+        //   : null;
+      },
+    };
+  } as any,
+  '',
+);
 localFilePlugin.hash = localPluginHash;
 
 //#endregion

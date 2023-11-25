@@ -29,6 +29,7 @@ export default function PluginSort() {
       </View>
     );
   }
+
   return (
     <>
       <AppBar>插件排序</AppBar>

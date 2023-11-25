@@ -11,6 +11,7 @@ interface IChipProps {
   onPress?: () => void;
   onClose?: () => void;
 }
+
 export default function Chip(props: IChipProps) {
   const { containerStyle, children, onPress, onClose } = props;
   const colors = useColors();

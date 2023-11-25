@@ -20,11 +20,13 @@ let musicSheets = [defaultSheet];
 let sheetMusicMap: Record<string, IMusic.IMusicItem[]> = {};
 
 const sheetsCallBacks: Set<Function> = new Set([]);
+
 function notifyMusicSheets() {
   sheetsCallBacks.forEach(cb => {
     cb();
   });
 }
+
 const getSheets = () => ({
   musicSheets,
   sheetMusicMap,

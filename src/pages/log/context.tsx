@@ -9,6 +9,7 @@ const LogContext = createContext<{
 interface IAction {
   type: string;
   label: string;
+
   [k: string]: any;
 }
 
