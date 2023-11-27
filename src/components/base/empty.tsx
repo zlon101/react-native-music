@@ -6,7 +6,6 @@ import ThemeText from './themeText';
 interface IEmptyProps {
   content?: string;
 }
-
 export default function Empty(props: IEmptyProps) {
   return (
     <View style={style.wrapper}>

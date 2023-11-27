@@ -12,7 +12,6 @@ interface ILoadingDialogProps<T extends any = any> {
   onReject?: (reason: any, hideDialog: () => void) => void;
   onCancel?: (hideDialog: () => void) => void;
 }
-
 export default function LoadingDialog(props: ILoadingDialogProps) {
   const { title, onResolve, onReject, promise, onCancel } = props;
 

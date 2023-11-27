@@ -21,7 +21,6 @@ interface IMusicItemProps {
   left?: () => ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
 }
-
 export default function MusicItem(props: IMusicItemProps) {
   const {
     musicItem,

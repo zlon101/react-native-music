@@ -19,7 +19,6 @@ interface ILyricListWrapperProps {
     title: string;
   };
 }
-
 export default function LyricListWrapper(props: ILyricListWrapperProps) {
   const hash = props.route.key;
   const dataStore = searchResultStore.useValue();
@@ -31,7 +30,6 @@ interface ILyricListProps {
 }
 
 const ITEM_HEIGHT = rpx(120);
-
 function LyricListImpl(props: ILyricListProps) {
   const data = props.data;
   const searchState = data?.state ?? RequestStateCode.IDLE;

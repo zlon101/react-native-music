@@ -1,23 +1,24 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback } from 'react';
-import Home from '../pages/home';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import ArtistDetail from '@/pages/artistDetail';
 import Downloading from '@/pages/downloading';
 import FileSelector from '@/pages/fileSelector';
 import LocalMusic from '@/pages/localMusic';
 import MusicListEditor from '@/pages/musicListEditor';
 import SearchMusicList from '@/pages/searchMusicList';
-import AlbumDetail from '../pages/albumDetail';
-import SearchPage from '../pages/searchPage';
-import Setting from '../pages/setting';
+import AlbumDetail from '@/pages/albumDetail';
+import Home from '@/pages/home';
+import MusicDetail from '@/pages/musicDetail';
+import SearchPage from '@/pages/searchPage';
+import Setting from '@/pages/setting';
+import SheetDetail from '@/pages/sheetDetail';
+import TopList from '@/pages/topList';
 import TopListDetail from '@/pages/topListDetail';
 import RecommendSheets from '@/pages/recommendSheets';
 import PluginSheetDetail from '@/pages/pluginSheetDetail';
 import History from '@/pages/history';
 import SetCustomTheme from '@/pages/setCustomTheme';
-import MusicDetail from '../pages/musicDetail';
-import TopList from '@/pages/topList';
-import SheetDetail from '../pages/sheetDetail';
+
 
 /** 路由key */
 export const ROUTE_PATH = {
@@ -81,16 +82,16 @@ export const routes: Array<IRoutes> = [
     component: TopList,
   },
   {
-    path: ROUTE_PATH.LOCAL_SHEET_DETAIL,
-    component: SheetDetail,
-  },
-  {
     path: ROUTE_PATH.TOP_LIST_DETAIL,
     component: TopListDetail,
   },
   {
     path: ROUTE_PATH.SEARCH_PAGE,
     component: SearchPage,
+  },
+  {
+    path: ROUTE_PATH.LOCAL_SHEET_DETAIL,
+    component: SheetDetail,
   },
   {
     path: ROUTE_PATH.ALBUM_DETAIL,
@@ -143,7 +144,6 @@ export const routes: Array<IRoutes> = [
 ];
 
 type RouterParamsBase = Record<RoutePaths, any>;
-
 /** 路由参数 */
 interface RouterParams extends RouterParamsBase {
   home: undefined;

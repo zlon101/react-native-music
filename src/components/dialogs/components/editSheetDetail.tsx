@@ -21,7 +21,6 @@ import Button from '@/components/base/button';
 interface IEditSheetDetailProps {
   musicSheet: IMusic.IMusicSheetItem;
 }
-
 export default function EditSheetDetailDialog(props: IEditSheetDetailProps) {
   const { musicSheet } = props;
   const colors = useColors();
@@ -34,17 +33,17 @@ export default function EditSheetDetailDialog(props: IEditSheetDetailProps) {
   const onChangeCoverPress = async () => {
     console.log('\n react-native-image-picker');
     // try {
-    //   const result = await launchImageLibrary({
-    //     mediaType: 'photo',
-    //   });
-    //   const uri = result.assets?.[0].uri;
-    //   if (!uri) {
-    //     return;
-    //   }
+      //   const result = await launchImageLibrary({
+        //     mediaType: 'photo',
+      //   });
+      //   const uri = result.assets?.[0].uri;
+      //   if (!uri) {
+        //     return;
+      //   }
     //   console.log(uri);
-    //   setCoverImg(uri);
+      //   setCoverImg(uri);
     // } catch (e) {
-    //   console.log(e);
+      //   console.log(e);
     // }
   };
 

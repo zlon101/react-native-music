@@ -12,7 +12,6 @@ interface IBoardPanelProps {
   hash: string;
   topListData: IPluginTopListResult;
 }
-
 function BoardPanel(props: IBoardPanelProps) {
   const { hash, topListData } = props ?? {};
 

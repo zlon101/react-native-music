@@ -12,7 +12,6 @@ interface IButtonProps {
   fontColor?: keyof CustomizedColors;
   onPress?: () => void;
 }
-
 export default function (props: IButtonProps) {
   const { children, onPress, fontColor, hitSlop, withHorizonalPadding } = props;
   return (

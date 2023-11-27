@@ -20,20 +20,18 @@ let musicSheets = [defaultSheet];
 let sheetMusicMap: Record<string, IMusic.IMusicItem[]> = {};
 
 const sheetsCallBacks: Set<Function> = new Set([]);
-
 function notifyMusicSheets() {
   sheetsCallBacks.forEach(cb => {
     cb();
   });
 }
-
 const getSheets = () => ({
   musicSheets,
   sheetMusicMap,
 });
 
 async function setup() {
-  log('musicSheet setup 函数');
+log('musicSheet setup 函数');
   try {
     const _musicSheets: IMusic.IMusicSheetItemBase[] = await getStorage('music-sheets');
     if (!Array.isArray(_musicSheets)) {
@@ -68,7 +66,7 @@ async function updateAndSaveSheet(
     musicList?: IMusic.IMusicItem[];
   },
 ) {
-  log('musicSheet updateAndSaveSheet 函数');
+log('musicSheet updateAndSaveSheet 函数');
   const targetSheetIndex = musicSheets.findIndex(_ => _.id === id);
   if (targetSheetIndex === -1) {
     return;

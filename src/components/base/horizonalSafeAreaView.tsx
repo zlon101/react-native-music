@@ -7,7 +7,6 @@ interface IHorizonalSafeAreaViewProps {
   children: JSX.Element | JSX.Element[];
   style?: StyleProp<ViewStyle>;
 }
-
 export default function HorizonalSafeAreaView(props: IHorizonalSafeAreaViewProps) {
   const { children, style, mode } = props;
   return (

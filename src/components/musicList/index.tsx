@@ -23,7 +23,6 @@ interface IMusicListProps {
   loadMore?: 'loading' | 'done' | 'idle';
   onEndReached?: () => void;
 }
-
 const ITEM_HEIGHT = rpx(120);
 
 /** 音乐列表 */

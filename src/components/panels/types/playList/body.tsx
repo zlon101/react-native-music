@@ -79,7 +79,6 @@ const PlayListItem = React.memo(
 interface IBodyProps {
   loading?: boolean;
 }
-
 export default function Body(props: IBodyProps) {
   const { loading } = props;
   const musicQueue = MusicQueue.useMusicQueue();

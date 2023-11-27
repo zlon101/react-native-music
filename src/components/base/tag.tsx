@@ -9,7 +9,6 @@ interface ITagProps {
   containerStyle?: StyleProp<ViewStyle>;
   style?: StyleProp<TextStyle>;
 }
-
 export default function Tag(props: ITagProps) {
   const colors = useColors();
   return (

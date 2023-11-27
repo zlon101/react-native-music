@@ -13,7 +13,6 @@ interface IProps {
   containerStyle?: StyleProp<ViewStyle>;
   children?: string;
 }
-
 export default function (props: IProps) {
   const { icon, children, onPress, containerStyle } = props;
   const colors = useColors();

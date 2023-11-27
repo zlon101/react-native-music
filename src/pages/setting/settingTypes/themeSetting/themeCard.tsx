@@ -12,7 +12,6 @@ interface IThemeCardProps {
   onPress?: () => void;
   title?: string;
 }
-
 export default function ThemeCard(props: IThemeCardProps) {
   const { selected, preview, onPress, title } = props;
 

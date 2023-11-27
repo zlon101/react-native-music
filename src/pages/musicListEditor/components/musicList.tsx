@@ -17,7 +17,6 @@ interface IMusicEditorItemProps {
   index: number;
   editorMusicItem: IEditorMusicItem;
 }
-
 function _MusicEditorItem(props: IMusicEditorItemProps) {
   const { index, editorMusicItem } = props;
   const setEditingMusicList = useSetAtom(editingMusicListAtom);

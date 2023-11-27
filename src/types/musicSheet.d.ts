@@ -13,7 +13,6 @@ declare namespace IMusic {
     worksNum?: number;
     platform?: string;
   }
-
   /** 歌单项 */
   export interface IMusicSheetItem extends IMusicSheetItemBase {
     musicList: Array<IMusic.IMusicItem>;

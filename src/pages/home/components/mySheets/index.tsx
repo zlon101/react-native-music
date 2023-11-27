@@ -13,34 +13,34 @@ import useColors from '@/hooks/useColors';
 
 const renderMySheetItem: ListRenderItem<IMusic.IMusicSheetItem> = function ({ item: sheet }) {
   const navigate = useNavigate();
-  return (
-    <ListItem
-      key={`${sheet.id}`}
-      withHorizonalPadding
-      onPress={() => {
-        navigate(ROUTE_PATH.LOCAL_SHEET_DETAIL, {
-          id: sheet.id,
-        });
-      }}>
-      <ListItem.ListItemImage uri={sheet.coverImg} fallbackImg={ImgAsset.albumDefault} />
-      <ListItem.Content title={sheet.title} description={`${sheet.musicList.length ?? '-'}首`} />
-      <ListItem.ListItemIcon
-        position="right"
-        icon="trash-can-outline"
+      return (
+      <ListItem
+        key={`${sheet.id}`}
+        withHorizonalPadding
         onPress={() => {
-          showDialog('SimpleDialog', {
-            title: '删除歌单',
-            content: `确定删除歌单「${sheet.title}」吗?`,
-            onOk: async () => {
-              await MusicSheet.removeSheet(sheet.id);
-              Toast.success('已删除');
-            },
+          navigate(ROUTE_PATH.LOCAL_SHEET_DETAIL, {
+            id: sheet.id,
           });
-        }}
-      />
-    </ListItem>
-  );
-};
+        }}>
+        <ListItem.ListItemImage uri={sheet.coverImg} fallbackImg={ImgAsset.albumDefault} />
+        <ListItem.Content title={sheet.title} description={`${sheet.musicList.length ?? '-'}首`} />
+        <ListItem.ListItemIcon
+          position="right"
+          icon="trash-can-outline"
+          onPress={() => {
+            showDialog('SimpleDialog', {
+              title: '删除歌单',
+              content: `确定删除歌单「${sheet.title}」吗?`,
+              onOk: async () => {
+                await MusicSheet.removeSheet(sheet.id);
+                Toast.success('已删除');
+              },
+            });
+          }}
+        />
+      </ListItem>
+    );
+  };
 
 function MySheets() {
   const orientation = useOrientation();

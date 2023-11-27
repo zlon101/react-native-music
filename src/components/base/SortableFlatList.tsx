@@ -255,7 +255,6 @@ interface ISortableFlatListItemProps<T extends any = any> {
   setActiveItem: (item: T | null) => void;
   activeRef: React.MutableRefObject<number>;
 }
-
 function _SortableFlatListItem(props: ISortableFlatListItemProps) {
   const { itemHeight, setScrollEnabled, renderItem, setActiveItem, itemJustifyContent, item, index, activeRef } = props;
 

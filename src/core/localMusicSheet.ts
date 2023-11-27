@@ -104,7 +104,6 @@ function localMediaFilter(_: FileStat) {
 }
 
 let importToken: string | null = null;
-
 // 获取本地的文件列表
 async function getMusicStats(folderPaths: string[]) {
   const _importToken = nanoid();
@@ -140,7 +139,6 @@ function cancelImportLocal() {
 
 // 导入本地音乐
 const groupNum = 25;
-
 async function importLocal(_folderPaths: string[]) {
   const folderPaths = [..._folderPaths];
   const { musicList, token } = await getMusicStats(folderPaths);
@@ -149,11 +147,11 @@ async function importLocal(_folderPaths: string[]) {
   }
   // 分组请求，不然序列化可能出问题
   // let metas: IBasicMeta[] = [];
-  let metas: any[] = [];
+let metas: any[] = [];
   const groups = Math.ceil(musicList.length / groupNum);
   for (let i = 0; i < groups; ++i) {
     // metas = metas.concat(
-    //   await mp3Util.getMediaMeta(musicList.slice(i * groupNum, (i + 1) * groupNum).map(_ => _.path)),
+      //   await mp3Util.getMediaMeta(musicList.slice(i * groupNum, (i + 1) * groupNum).map(_ => _.path)),
     // );
   }
   if (token !== importToken) {

@@ -61,7 +61,7 @@ export default function PluginList() {
   async function onInstallFromLocalClick() {
     try {
       // const result = await DocumentPicker.pickMultiple();
-      const result = await DocumentPicker.pick();
+const result = await DocumentPicker.pick();
       setLoading(true);
       // 初步过滤
       const validResult = result?.filter(_ => _.uri.endsWith('.js') || _.name?.endsWith('.js'));
@@ -231,7 +231,6 @@ interface IInstallResult {
   code: 'success' | 'fail';
   message?: string;
 }
-
 async function installPluginFromUrl(text: string): Promise<IInstallResult> {
   try {
     let urls: string[] = [];
@@ -254,7 +253,7 @@ async function installPluginFromUrl(text: string): Promise<IInstallResult> {
     await Promise.all(
       urls.map(url =>
         PluginManager.installPluginFromUrl(url).catch(e => {
-          console.log(e);
+console.log(e);
           failedPlugins.push(e?.message ?? '');
         }),
       ),

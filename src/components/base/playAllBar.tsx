@@ -14,7 +14,6 @@ interface IProps {
   musicList: IMusic.IMusicItem[] | null;
   sheetName?: string;
 }
-
 export default function (props: IProps) {
   const { musicList, sheetName } = props;
   const colors = useColors();

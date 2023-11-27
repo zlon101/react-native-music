@@ -7,7 +7,6 @@ interface IFastImageProps {
   emptySrc?: number;
   uri?: string;
 }
-
 export default function (props: IFastImageProps) {
   const { style, emptySrc, uri, defaultSource } = props ?? {};
   const [isError, setIsError] = useState(false);

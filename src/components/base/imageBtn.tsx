@@ -12,7 +12,6 @@ interface IImageBtnProps {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
 }
-
 export default function ImageBtn(props: IImageBtnProps) {
   const { onPress, uri, title, style: _style } = props ?? {};
   return (

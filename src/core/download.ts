@@ -99,7 +99,6 @@ function removeFromDownloadingQueue(item: IDownloadMusicOptions) {
 
 /** 防止高频同步 */
 let progressNotifyTimer: any = null;
-
 function startNotifyProgress() {
   if (progressNotifyTimer) {
     return;
@@ -141,7 +140,6 @@ function generateFilename(musicItem: IMusic.IMusicItem) {
 // }
 
 let maxDownload = 3;
-
 /** 队列下载*/
 async function downloadNext() {
   // todo 最大同时下载3个，可设置

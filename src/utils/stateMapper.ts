@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 export default class StateMapper<T> {
   private getFun: () => T;
   private cbs: Set<Function> = new Set([]);
-
   constructor(getFun: () => T) {
     this.getFun = getFun;
   }

@@ -6,7 +6,6 @@ import Empty from '@/components/base/empty';
 interface ISearchResultProps {
   result: IMusic.IMusicItem[];
 }
-
 export default function SearchResult(props: ISearchResultProps) {
   const { result } = props;
   return (

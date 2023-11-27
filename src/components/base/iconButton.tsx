@@ -15,7 +15,6 @@ interface IIconButtonProps extends IconProps {
   onPress?: () => void;
   accessibilityLabel?: string;
 }
-
 export function IconButtonWithGesture(props: IIconButtonProps) {
   const { name, sizeType: size = 'normal', fontColor = 'normal', onPress, style, accessibilityLabel } = props;
   const colors = useColors();
