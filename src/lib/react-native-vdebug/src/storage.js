@@ -1,7 +1,7 @@
 const storage = {
-    support: function () {
-        return false;
-    },
+  support: function () {
+    return false;
+  },
 };
 
 export default storage;

@@ -1,16 +1,16 @@
 import React from 'react';
-import {Image, ImageProps} from 'react-native';
+import { Image, ImageProps } from 'react-native';
 
 interface IImageProps extends ImageProps {
-    uri?: string | null;
-    emptySrc?: any;
+  uri?: string | null;
+  emptySrc?: any;
 }
 export default function (props: Omit<IImageProps, 'source'>) {
-    const {uri, emptySrc} = props;
-    const source = uri
-        ? {
-              uri,
-          }
-        : emptySrc;
-    return <Image {...props} source={source} />;
+  const { uri, emptySrc } = props;
+  const source = uri
+    ? {
+        uri,
+      }
+    : emptySrc;
+  return <Image {...props} source={source} />;
 }

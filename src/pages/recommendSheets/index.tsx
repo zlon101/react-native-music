@@ -7,12 +7,12 @@ import Body from './components/body';
 import AppBar from '@/components/base/appBar';
 
 export default function RecommendSheets() {
-    return (
-        <VerticalSafeAreaView style={globalStyle.fwflex1}>
-            <StatusBar />
-            <AppBar>推荐歌单</AppBar>
-            <Body />
-            <MusicBar />
-        </VerticalSafeAreaView>
-    );
+  return (
+    <VerticalSafeAreaView style={globalStyle.fwflex1}>
+      <StatusBar />
+      <AppBar>推荐歌单</AppBar>
+      <Body />
+      <MusicBar />
+    </VerticalSafeAreaView>
+  );
 }

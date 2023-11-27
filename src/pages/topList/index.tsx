@@ -7,13 +7,13 @@ import HorizonalSafeAreaView from '@/components/base/horizonalSafeAreaView';
 import AppBar from '@/components/base/appBar';
 
 export default function TopList() {
-    return (
-        <VerticalSafeAreaView style={globalStyle.fwflex1}>
-            <AppBar withStatusBar>榜单</AppBar>
-            <HorizonalSafeAreaView style={globalStyle.flex1}>
-                <TopListBody />
-            </HorizonalSafeAreaView>
-            <MusicBar />
-        </VerticalSafeAreaView>
-    );
+  return (
+    <VerticalSafeAreaView style={globalStyle.fwflex1}>
+      <AppBar withStatusBar>榜单</AppBar>
+      <HorizonalSafeAreaView style={globalStyle.flex1}>
+        <TopListBody />
+      </HorizonalSafeAreaView>
+      <MusicBar />
+    </VerticalSafeAreaView>
+  );
 }

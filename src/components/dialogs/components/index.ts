@@ -6,12 +6,12 @@ import SimpleDialog from './simpleDialog';
 import SubscribePluginDialog from './subscribePluginDialog';
 
 const dialogs = {
-    SimpleDialog,
-    RadioDialog,
-    DownloadDialog,
-    SubscribePluginDialog,
-    LoadingDialog,
-    EditSheetDetailDialog,
+  SimpleDialog,
+  RadioDialog,
+  DownloadDialog,
+  SubscribePluginDialog,
+  LoadingDialog,
+  EditSheetDetailDialog,
 };
 
 export default dialogs;

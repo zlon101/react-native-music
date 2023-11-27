@@ -1,21 +1,21 @@
-import React, {useEffect, useMemo} from 'react';
+import React, { useEffect, useMemo } from 'react';
 import useGetTopList from '../hooks/useGetTopList';
-import {useAtomValue} from 'jotai';
-import {pluginsTopListAtom} from '../store/atoms';
+import { useAtomValue } from 'jotai';
+import { pluginsTopListAtom } from '../store/atoms';
 import BoardPanel from './boardPanel';
 
 interface IBoardPanelProps {
-    hash: string;
+  hash: string;
 }
 export default function BoardPanelWrapper(props: IBoardPanelProps) {
-    const {hash} = props ?? {};
-    const topLists = useAtomValue(pluginsTopListAtom);
-    const getTopList = useGetTopList();
-    const topListData = useMemo(() => topLists[hash], [topLists]);
+  const { hash } = props ?? {};
+  const topLists = useAtomValue(pluginsTopListAtom);
+  const getTopList = useGetTopList();
+  const topListData = useMemo(() => topLists[hash], [topLists]);
 
-    useEffect(() => {
-        getTopList(hash);
-    }, []);
+  useEffect(() => {
+    getTopList(hash);
+  }, []);
 
-    return <BoardPanel topListData={topListData} hash={hash} />;
+  return <BoardPanel topListData={topListData} hash={hash} />;
 }

@@ -2,44 +2,38 @@ import useColors from '@/hooks/useColors';
 import rpx from '@/utils/rpx';
 import Color from 'color';
 import React from 'react';
-import {StyleSheet, TextInput, TextInputProps} from 'react-native';
+import { StyleSheet, TextInput, TextInputProps } from 'react-native';
 
 interface IInputProps extends TextInputProps {
-    fontColor?: string;
-    hasHorizonalPadding?: boolean;
+  fontColor?: string;
+  hasHorizonalPadding?: boolean;
 }
 
 export default function Input(props: IInputProps) {
-    const {fontColor, hasHorizonalPadding = true} = props;
-    const colors = useColors();
+  const { fontColor, hasHorizonalPadding = true } = props;
+  const colors = useColors();
 
-    const currentColor = fontColor ?? colors.text;
+  const currentColor = fontColor ?? colors.text;
 
-    const defaultStyle = {
-        color: currentColor,
-    };
+  const defaultStyle = {
+    color: currentColor,
+  };
 
-    return (
-        <TextInput
-            placeholderTextColor={Color(currentColor).alpha(0.7).toString()}
-            {...props}
-            style={[
-                hasHorizonalPadding
-                    ? styles.container
-                    : styles.containerWithoutPadding,
-                defaultStyle,
-                props?.style,
-            ]}
-        />
-    );
+  return (
+    <TextInput
+      placeholderTextColor={Color(currentColor).alpha(0.7).toString()}
+      {...props}
+      style={[hasHorizonalPadding ? styles.container : styles.containerWithoutPadding, defaultStyle, props?.style]}
+    />
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        paddingVertical: 0,
-        paddingHorizontal: rpx(24),
-    },
-    containerWithoutPadding: {
-        padding: 0,
-    },
+  container: {
+    paddingVertical: 0,
+    paddingHorizontal: rpx(24),
+  },
+  containerWithoutPadding: {
+    padding: 0,
+  },
 });
