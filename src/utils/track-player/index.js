@@ -17,7 +17,7 @@ export async function setUp() {
   }
 
   await TrackPlayer.updateOptions({
-    icon: require('@/assets/logo-transparent.png'),
+    icon: require('@/assets/imgs/logo-transparent.png'),
     alwaysPauseOnInterruption: true,
     progressUpdateEventInterval: 1,
     capabilities: [Capability.Play, Capability.Pause, Capability.SkipToNext, Capability.SkipToPrevious],
@@ -51,7 +51,8 @@ export async function setUp() {
 // 3. 新增
 // You can then [add](https://rntp.dev/docs/api/functions/queue#addtracks-insertbeforeindex) the items to the queue
 const track1 = {
-  url: require('@/assets/成都.mp3'),
+  // url: require('@/assets/成都.mp3'),
+  url: require('@/assets/sounds/fake-audio.mp3'),
   // Load media from the network
   // url: 'http://example.com/avaritia.mp3',
   // Load media from the file system

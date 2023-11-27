@@ -60,6 +60,34 @@ navigation: navigate push goBack popToTop
 
 react-native-get-random-values 必须在全局入口处导入
 
+# 更新记录
+
+package.json
+
+  @react-native-masked-view/masked-view  删除
+  deepmerge 删除
+  immer 删除
+  qrcode-generator 删除
+  react-native-bootsplash 删除
+  react-native-image-picker 删除
+  react-native-url-polyfill 删除
+  react-native-view-shot 删除
+  react-qr-code 删除
+  recyclerlistview 删除
+  webdav 删除
+
+
+android
+  gradle.properties
+  build.gradle
+  app/build.gradle
+  app/src/main/res/balues/styles.xml
+
+src
+
+  immer 引用： `import produce from 'immer'` 改为 `import { produce } from 'immer';`
+
+
 ============================================================
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
