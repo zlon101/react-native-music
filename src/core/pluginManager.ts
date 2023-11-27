@@ -11,7 +11,7 @@ import DeviceInfo from 'react-native-device-info';
 import StateMapper from '@/utils/stateMapper';
 import MediaMeta from './mediaMeta';
 import { nanoid } from 'nanoid';
-import { devLog, errorLog, trace } from '@/utils/log';
+import { devLog, errorLog, trace } from '../utils/log';
 import Cache from './cache';
 import { getInternalData, InternalDataType, isSameMediaItem, resetMediaItem } from '@/utils/mediaItem';
 import {
@@ -31,6 +31,7 @@ import { FileSystem } from 'react-native-file-access';
 // import Mp3Util from '@/native/mp3Util';
 import { PluginMeta } from './pluginMeta';
 import { useEffect, useState } from 'react';
+import { getFileName } from '@/utils/fileUtils';
 
 axios.defaults.timeout = 2000;
 
@@ -103,6 +104,7 @@ export class Plugin {
           getUserVariables: () => {
             return PluginMeta.getPluginMeta(this)?.userVariables ?? {};
           },
+          os: 'android',
         };
 
         // eslint-disable-next-line no-new-func
@@ -119,6 +121,10 @@ export class Plugin {
         }
       } else {
         _instance = funcCode();
+      }
+      // 插件初始化后的一些操作
+      if (Array.isArray(_instance.userVariables)) {
+        _instance.userVariables = _instance.userVariables.filter(it => it?.key);
       }
       this.checkValid(_instance);
     } catch (e: any) {
@@ -225,12 +231,14 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
     const localPath =
       getInternalData<string>(musicItem, InternalDataType.LOCALPATH) ??
       getInternalData<string>(LocalMusicSheet.isLocalMusic(musicItem), InternalDataType.LOCALPATH);
-    if (localPath && (await FileSystem.exists(localPath))) {
+    if (localPath && (localPath.startsWith('content://') || (await FileSystem.exists(localPath)))) {
       trace('本地播放', localPath);
       return {
         url: localPath,
       };
     }
+    console.log('BFFF2');
+
     if (musicItem.platform === localPluginPlatform) {
       throw new Error('本地音乐不存在');
     }
@@ -659,36 +667,55 @@ const localFilePlugin = new Plugin(function () {
       return null;
     },
     async getLyric(musicBase) {
-      // const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
-      // let rawLrc: string | null = null;
-      // if (localPath) {
-        //   // 读取内嵌歌词
-        //   try {
-          //     rawLrc = await Mp3Util.getLyric(localPath);
-        //   } catch (e) {
-          //     console.log('e', e);
-        //   }
-        //   if (!rawLrc) {
-          //     // 读取配置歌词
-          //     const lastDot = localPath.lastIndexOf('.');
-          //     const lrcPath = localPath.slice(0, lastDot) + '.lrc';
-//     try {
-            //       if (await exists(lrcPath)) {
-              //         rawLrc = await readFile(lrcPath, 'utf8');
-            //       }
-        //     } catch {}
-        //   }
-        // }
-        // return rawLrc
-        //   ? {
-        //       rawLrc,
-        //     }
-        //   : null;
+      const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
+      let rawLrc: string | null = null;
+      if (localPath) {
+        // 读取内嵌歌词
+        try {
+          // rawLrc = await Mp3Util.getLyric(localPath);
+        } catch (e) {
+          console.log('读取内嵌歌词失败', e);
+        }
+        if (!rawLrc) {
+          // 读取配置歌词
+          const lastDot = localPath.lastIndexOf('.');
+          const lrcPath = localPath.slice(0, lastDot) + '.lrc';
+
+          try {
+            if (await exists(lrcPath)) {
+              rawLrc = await readFile(lrcPath, 'utf8');
+            }
+          } catch {}
+        }
+      }
+
+      return rawLrc
+        ? {
+            rawLrc,
+          }
+        : null;
+    },
+    async importMusicItem(urlLike) {
+      let meta: any = {};
+      try {
+        // meta = await Mp3Util.getBasicMeta(urlLike);
+      } catch {}
+      const id = await FileSystem.hash(urlLike, 'MD5');
+      return {
+        id: id,
+        platform: '本地',
+        title: meta?.title ?? getFileName(urlLike),
+        artist: meta?.artist ?? '未知歌手',
+        duration: parseInt(meta?.duration ?? '0') / 1000,
+        album: meta?.album ?? '未知专辑',
+        artwork: '',
+        [internalSerializeKey]: {
+          localPath: urlLike,
+        },
+      };
     },
   };
-} as any,
-  '',
-);
+}, '');
 localFilePlugin.hash = localPluginHash;
 
 //#endregion
@@ -714,9 +741,16 @@ async function setup() {
     }
 
     plugins = _plugins;
-    pluginStateMapper.notify();
     /** 初始化meta信息 */
-    PluginMeta.setupMeta(plugins.map(_ => _.name));
+    await PluginMeta.setupMeta(plugins.map(_ => _.name));
+    /** 查看一下是否有禁用的标记 */
+    const allMeta = PluginMeta.getPluginMetaAll() ?? {};
+    for (let plugin of plugins) {
+      if (allMeta[plugin.name]?.enabled === false) {
+        plugin.state = 'disabled';
+      }
+    }
+    pluginStateMapper.notify();
   } catch (e: any) {
     ToastAndroid.show(`插件初始化失败:${e?.message ?? e}`, ToastAndroid.LONG);
     errorLog('插件初始化失败', e?.message);
@@ -724,30 +758,50 @@ async function setup() {
   }
 }
 
-// 安装插件
-async function installPlugin(pluginPath: string) {
-  // if (pluginPath.endsWith('.js')) {
-  const funcCode = await readFile(pluginPath, 'utf8');
-  const plugin = new Plugin(funcCode, pluginPath);
-  const _pluginIndex = plugins.findIndex(p => p.hash === plugin.hash);
-  if (_pluginIndex !== -1) {
-    throw new Error('插件已安装');
-  }
-  if (plugin.hash !== '') {
-    const fn = nanoid();
-    const _pluginPath = `${pathConst.pluginPath}${fn}.js`;
-    await copyFile(pluginPath, _pluginPath);
-    plugin.path = _pluginPath;
-    plugins = plugins.concat(plugin);
-    pluginStateMapper.notify();
-    return;
-  }
-  throw new Error('插件无法解析');
-  // }
-  // throw new Error('插件不存在');
+interface IInstallPluginConfig {
+  notCheckVersion?: boolean;
 }
 
-async function installPluginFromUrl(url: string) {
+// 安装插件
+async function installPlugin(pluginPath: string, config?: IInstallPluginConfig) {
+  // if (pluginPath.endsWith('.js')) {
+  const funcCode = await readFile(pluginPath, 'utf8');
+
+  if (funcCode) {
+    const plugin = new Plugin(funcCode, pluginPath);
+    const _pluginIndex = plugins.findIndex(p => p.hash === plugin.hash);
+    if (_pluginIndex !== -1) {
+      // 静默忽略
+      return plugin;
+    }
+    const oldVersionPlugin = plugins.find(p => p.name === plugin.name);
+    if (oldVersionPlugin && !config?.notCheckVersion) {
+      if (compare(oldVersionPlugin.instance.version ?? '', plugin.instance.version ?? '', '>')) {
+        throw new Error('已安装更新版本的插件');
+      }
+    }
+
+    if (plugin.hash !== '') {
+      const fn = nanoid();
+      if (oldVersionPlugin) {
+        plugins = plugins.filter(_ => _.hash !== oldVersionPlugin.hash);
+        try {
+          await unlink(oldVersionPlugin.path);
+        } catch {}
+      }
+      const _pluginPath = `${pathConst.pluginPath}${fn}.js`;
+      await copyFile(pluginPath, _pluginPath);
+      plugin.path = _pluginPath;
+      plugins = plugins.concat(plugin);
+      pluginStateMapper.notify();
+      return plugin;
+    }
+    throw new Error('插件无法解析!');
+  }
+  throw new Error('插件无法识别!');
+}
+
+async function installPluginFromUrl(url: string, config?: IInstallPluginConfig) {
   try {
     const funcCode = (await axios.get(url)).data;
     if (funcCode) {
@@ -758,7 +812,7 @@ async function installPluginFromUrl(url: string) {
         return;
       }
       const oldVersionPlugin = plugins.find(p => p.name === plugin.name);
-      if (oldVersionPlugin) {
+      if (oldVersionPlugin && !config?.notCheckVersion) {
         if (compare(oldVersionPlugin.instance.version ?? '', plugin.instance.version ?? '', '>')) {
           throw new Error('已安装更新版本的插件');
         }
@@ -919,6 +973,16 @@ function useSortedPlugins() {
   return sortedPlugins;
 }
 
+async function setPluginEnabled(plugin: Plugin, enabled?: boolean) {
+  const target = plugins.find(it => it.hash === plugin.hash);
+  if (target) {
+    target.state = enabled ? 'enabled' : 'disabled';
+    plugins = [...plugins];
+    pluginStateMapper.notify();
+    PluginMeta.setPluginMetaProp(plugin, 'enabled', enabled);
+  }
+}
+
 const PluginManager = {
   setup,
   installPlugin,
@@ -937,6 +1001,7 @@ const PluginManager = {
   usePlugins: pluginStateMapper.useMappedState,
   useSortedPlugins,
   uninstallAllPlugins,
+  setPluginEnabled,
 };
 
 export default PluginManager;

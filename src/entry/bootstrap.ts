@@ -13,8 +13,12 @@ import PluginManager from '@/core/pluginManager';
 import Network from '@/core/network';
 import { ImgAsset } from '@/constants/assetsConst';
 import LocalMusicSheet from '@/core/localMusicSheet';
-import { StatusBar } from 'react-native';
+import { Linking } from 'react-native';
 import Theme from '@/core/theme';
+import LyricManager from '@/core/lyricManager';
+import { getStorage, setStorage } from '@/utils/storage';
+import Toast from '@/utils/toast';
+import { localPluginHash, supportLocalMediaType } from '@/constants/commonConst';
 
 /** app加载前执行
  * 1. 检查权限
@@ -68,13 +72,9 @@ async function _bootstrap() {
   trace('本地音乐初始化完成');
   Theme.setup();
   trace('主题初始化完成');
+  await LyricManager.setup();
 
-  StatusBar.setBackgroundColor('transparent');
-  StatusBar.setTranslucent(true);
-  // Linking.addEventListener('url', (data) => {
-  //     console.log(data);
-  // })
-
+  extraMakeup();
   ErrorUtils.setGlobalHandler(error => {
     errorLog('未捕获的错误', error);
   });
@@ -99,9 +99,69 @@ export default async function () {
     await _bootstrap();
   } catch (e) {
     errorLog('初始化出错', e);
-    console.log(e);
   }
   // 隐藏开屏动画
   console.log('HIDE');
   // RNBootSplash.hide({ fade: true });
+}
+
+/** 不需要阻塞的 */
+async function extraMakeup() {
+  // 自动更新
+  try {
+    if (Config.get('setting.basic.autoUpdatePlugin')) {
+      const lastUpdated = (await getStorage('pluginLastupdatedTime')) || 0;
+      const now = Date.now();
+      if (Math.abs(now - lastUpdated) > 86400000) {
+        setStorage('pluginLastupdatedTime', now);
+        const plugins = PluginManager.getValidPlugins();
+        for (let i = 0; i < plugins.length; ++i) {
+          const srcUrl = plugins[i].instance.srcUrl;
+          if (srcUrl) {
+            await PluginManager.installPluginFromUrl(srcUrl);
+          }
+        }
+      }
+    }
+  } catch {}
+
+  async function handleLinkingUrl(url: string) {
+    // 插件
+    try {
+      if (url.endsWith('.js')) {
+        PluginManager.installPlugin(url, {
+          notCheckVersion: Config.get('setting.basic.notCheckPluginVersion'),
+        })
+          .then(res => {
+            Toast.success(`插件「${res.name}」安装成功~`);
+          })
+          .catch(e => {
+            console.log(e);
+            Toast.warn(e?.message ?? '无法识别此插件');
+          });
+      } else if (supportLocalMediaType.some(it => url.endsWith(it))) {
+        // 本地播放
+        const musicItem = await PluginManager.getByHash(localPluginHash)?.instance?.importMusicItem?.(url);
+        console.log(musicItem);
+        if (musicItem) {
+          MusicQueue.play(musicItem);
+        }
+      }
+    } catch {}
+  }
+
+  // 开启监听
+  Linking.addEventListener('url', data => {
+    if (data.url) {
+      handleLinkingUrl(data.url);
+    }
+  });
+  const initUrl = await Linking.getInitialURL();
+  if (initUrl) {
+    handleLinkingUrl(initUrl);
+  }
+
+  if (Config.get('setting.basic.autoPlayWhenAppStart')) {
+    MusicQueue.play();
+  }
 }

@@ -306,7 +306,7 @@ async function downloadNext() {
           throw new Error();
         }
       } catch {
-        Toast.success('部分下载失败，如果重复出现此现象请打开“侧边栏-记录错误日志”辅助排查');
+        Toast.success('部分歌曲下载失败，如果无法下载请检查系统设置中是否授予完整存储权限');
       }
     } else {
       Toast.success('下载完成');

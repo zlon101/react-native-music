@@ -11,7 +11,7 @@ import TrackPlayer, {
 import shuffle from 'lodash.shuffle';
 import musicIsPaused from '@/utils/musicIsPaused';
 import Config from './config';
-import { internalFakeSoundKey, internalSymbolKey } from '@/constants/commonConst';
+import { EDeviceEvents, internalFakeSoundKey, internalSymbolKey } from '@/constants/commonConst';
 import StateMapper from '@/utils/stateMapper';
 import delay from '@/utils/delay';
 import { errorLog, trace } from '../utils/log';
@@ -24,6 +24,8 @@ import { SoundAsset } from '@/constants/assetsConst';
 import { getQualityOrder } from '@/utils/qualities';
 import musicHistory from './musicHistory';
 import getUrlExt from '@/utils/getUrlExt';
+import { DeviceEventEmitter } from 'react-native';
+import LyricManager from './lyricManager';
 
 enum MusicRepeatMode {
   /** 随机播放 */
@@ -430,19 +432,26 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
 
       await replaceTrack(track as Track);
       currentMusicStateMapper.notify();
+      let info: Partial<IMusic.IMusicItem> | null = null;
+      try {
+        info = (await plugin?.methods?.getMusicInfo?.(_musicItem)) ?? null;
+      } catch {}
 
-      const info = await plugin?.methods?.getMusicInfo?.(_musicItem);
       if (info && isSameMediaItem(_musicItem, musicQueue[currentIndex])) {
         await TrackPlayer.updateMetadataForTrack(0, mergeProps(track, info) as TrackMetadataBase);
         musicQueue = produce(musicQueue, draft => {
-          draft[currentIndex] = mergeProps(track as IMusic.IMusicItem, info) as IMusic.IMusicItem;
+          draft[currentIndex] = mergeProps(track as IMusic.IMusicItem, info!) as IMusic.IMusicItem;
           draft[currentIndex].url = _musicItem.url; // todo 这里写的不好
         });
         currentMusicStateMapper.notify();
       }
+
+      if (!isSameMediaItem(LyricManager.getLyricState()?.lyricParser?.getCurrentMusicItem?.(), musicItem)) {
+        DeviceEventEmitter.emit(EDeviceEvents.REFRESH_LYRIC, true);
+      }
     } catch (e) {
       // 播放失败
-      console.log(e);
+      console.log('播放失败', e);
       if (isSameMediaItem(_musicItem, musicQueue[currentIndex])) {
         await _playFail();
       }

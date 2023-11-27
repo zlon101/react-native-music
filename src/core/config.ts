@@ -8,6 +8,7 @@ type ExceptionType = IMusic.IMusicItem | IMusic.IMusicItem[] | IMusic.IQuality;
 interface IConfig {
   setting: {
     basic: {
+      autoPlayWhenAppStart: boolean;
       /** 使用移动网络播放 */
       useCelluarNetworkPlay: boolean;
       /** 使用移动网络下载 */
@@ -47,7 +48,25 @@ interface IConfig {
         traceLog: boolean;
         devLog: boolean;
       };
+      /** 最大历史记录条目 */
       maxHistoryLen: number;
+      /** 启动时自动更新插件 */
+      autoUpdatePlugin: boolean;
+      // 不检查插件版本号
+      notCheckPluginVersion: boolean;
+      /** 关联歌词方式 */
+      associateLyricType: 'input' | 'search';
+    };
+    /** 歌词 */
+    lyric: {
+      showStatusBarLyric: boolean;
+      topPercent: number;
+      leftPercent: number;
+      align: number;
+      color: string;
+      backgroundColor: string;
+      widthPercent: number;
+      fontSize: number;
     };
 
     /** 主题 */

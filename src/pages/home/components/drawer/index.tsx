@@ -7,7 +7,7 @@ import { ROUTE_PATH, useNavigate } from '@/entry/router';
 import ThemeText from '@/components/base/themeText';
 import PageBackground from '@/components/base/pageBackground';
 import DeviceInfo from 'react-native-device-info';
-import NativeUtils from '@/native/utils';
+// import NativeUtils from '@/native/utils';
 import MusicQueue from '@/core/musicQueue';
 import { useTimingClose } from '@/utils/timingClose';
 
@@ -34,7 +34,7 @@ function HomeDrawer(props: any) {
     },
     {
       icon: 'language-javascript',
-      title: '插件设置',
+      title: '插件管理',
       onPress: () => {
         navigateToSetting('plugin');
       },
@@ -117,7 +117,7 @@ function HomeDrawer(props: any) {
           withHorizonalPadding
           onPress={async () => {
             await MusicQueue.reset();
-            NativeUtils.exitApp();
+            // NativeUtils.exitApp();
           }}>
           <ListItem.ListItemIcon icon={'power'} width={rpx(48)} />
           <ListItem.Content title={'退出应用'} />

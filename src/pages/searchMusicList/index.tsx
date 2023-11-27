@@ -22,7 +22,7 @@ function filterMusic(query: string, musicList: IMusic.IMusicItem[]) {
 }
 
 export default function SearchMusicList() {
-  const { musicList } = useParams<'search-music-list'>();
+  const { musicList, musicSheet } = useParams<'search-music-list'>();
   const [result, setResult] = useState<IMusic.IMusicItem[]>(musicList ?? []);
   const [query, setQuery] = useState('');
 
@@ -49,7 +49,7 @@ export default function SearchMusicList() {
           onChangeText={onChangeSearch}
         />
       </AppBar>
-      <SearchResult result={result} />
+      <SearchResult result={result} musicSheet={musicSheet} />
       <MusicBar />
     </VerticalSafeAreaView>
   );

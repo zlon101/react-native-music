@@ -1,6 +1,20 @@
 # fork
 
-https://github.com/maotoumao/MusicFree  commit: 8eb7504dc648f883639b6394c78f95c7497f6075
+https://github.com/maotoumao/MusicFree
+
+commit: 7ce5c26cae0a905505d7ab140a0ba59b5551f1d8
+commit: 8eb7504dc648f883639b6394c78f95c7497f6075
+
+## 修改
+
+@/native 删除
+
+immer 引用： `import produce from 'immer'` 改为 `import { produce } from 'immer';`
+
+批量格式化代码
+
+src 复制粘贴，保留新增，android 目录用 merge
+
 
 # 调试
 

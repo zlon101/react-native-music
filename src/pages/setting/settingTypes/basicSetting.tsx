@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { SectionList, StyleSheet, View } from 'react-native';
+import { SectionList, StyleSheet, View, Text } from 'react-native';
 import rpx from '@/utils/rpx';
 import Config, { IConfigPaths } from '@/core/config';
 import ListItem from '@/components/base/listItem';
@@ -17,10 +17,16 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { showDialog } from '@/components/dialogs/useDialog';
 import { showPanel } from '@/components/panels/usePanel';
 import Paragraph from '@/components/base/paragraph';
+// import LyricUtil, { NativeTextAlignment } from '@/native/lyricUtil';
+import Slider from '@react-native-community/slider';
+import useColors from '@/hooks/useColors';
+import ColorBlock from '@/components/base/colorBlock';
+import LyricManager from '@/core/lyricManager';
 
-function createSwitch(title: string, changeKey: IConfigPaths, value: boolean) {
+function createSwitch(title: string, changeKey: IConfigPaths, value: boolean, callback?: (newValue: boolean) => void) {
   const onPress = () => {
     Config.set(changeKey, !value);
+    callback?.(!value);
   };
   return {
     title,
@@ -28,6 +34,36 @@ function createSwitch(title: string, changeKey: IConfigPaths, value: boolean) {
     right: <ThemeSwitch value={value} onValueChange={onPress} />,
   };
 }
+
+const createRadio = function (
+  title: string,
+  changeKey: IConfigPaths,
+  candidates: Array<string | number>,
+  value: string | number,
+  valueMap?: Record<string | number, string | number>,
+  onChange?: (value: string | number) => void,
+) {
+  const onPress = () => {
+    showDialog('RadioDialog', {
+      title,
+      content: valueMap
+        ? candidates.map(_ => ({
+            key: valueMap[_],
+            value: _,
+          }))
+        : candidates,
+      onOk(val) {
+        Config.set(changeKey, val);
+        onChange?.(val);
+      },
+    });
+  };
+  return {
+    title,
+    right: <ThemeText style={style.centerText}>{valueMap ? valueMap[value] : value}</ThemeText>,
+    onPress,
+  };
+};
 
 function useCacheSize() {
   const [cacheSize, setCacheSize] = useState({
@@ -59,51 +95,14 @@ export default function BasicSetting() {
 
   const [cacheSize, refreshCacheSize] = useCacheSize();
 
-  const createRadio = useCallback(function (
-    title: string,
-    changeKey: IConfigPaths,
-    candidates: Array<string | number>,
-    value: string | number,
-    valueMap?: Record<string | number, string | number>,
-  ) {
-    const onPress = () => {
-      showDialog('RadioDialog', {
-        title,
-        content: valueMap
-          ? candidates.map(_ => ({
-              key: valueMap[_],
-              value: _,
-            }))
-          : candidates,
-        onOk(val) {
-          Config.set(changeKey, val);
-        },
-      });
-    };
-    return {
-      title,
-      right: <ThemeText style={style.centerText}>{valueMap ? valueMap[value] : value}</ThemeText>,
-      onPress,
-    };
-  },
-  []);
-
   useEffect(() => {
     refreshCacheSize();
   }, []);
 
   const basicOptions = [
     {
-      title: '播放',
+      title: '常规',
       data: [
-        createSwitch('允许与其他应用同时播放', 'setting.basic.notInterrupt', basicSetting?.notInterrupt ?? false),
-        createRadio(
-          '播放被暂时打断时',
-          'setting.basic.tempRemoteDuck',
-          ['暂停', '降低音量'],
-          basicSetting?.tempRemoteDuck ?? '暂停',
-        ),
-        createSwitch('播放失败时自动暂停', 'setting.basic.autoStopWhenError', basicSetting?.autoStopWhenError ?? false),
         createRadio(
           '点击搜索结果内单曲时',
           'setting.basic.clickMusicInSearch',
@@ -115,23 +114,6 @@ export default function BasicSetting() {
           'setting.basic.clickMusicInAlbum',
           ['播放单曲', '播放专辑'],
           basicSetting?.clickMusicInAlbum ?? '播放专辑',
-        ),
-        createRadio(
-          '默认播放音质',
-          'setting.basic.defaultPlayQuality',
-          qualityKeys,
-          basicSetting?.defaultPlayQuality ?? 'standard',
-          qualityText,
-        ),
-        createRadio(
-          '默认播放音质缺失时',
-          'setting.basic.playQualityOrder',
-          ['asc', 'desc'],
-          basicSetting?.playQualityOrder ?? 'asc',
-          {
-            asc: '播放更高音质',
-            desc: '播放更低音质',
-          },
         ),
         createRadio(
           '历史记录最多保存条数',
@@ -150,6 +132,66 @@ export default function BasicSetting() {
           },
         ),
         createSwitch('处于歌曲详情页时常亮', 'setting.basic.musicDetailAwake', basicSetting?.musicDetailAwake ?? false),
+        createRadio(
+          '关联歌词方式',
+          'setting.basic.associateLyricType',
+          ['input', 'search'],
+          basicSetting?.associateLyricType ?? 'search',
+          {
+            input: '输入歌曲ID',
+            search: '搜索歌词',
+          },
+        ),
+      ],
+    },
+    {
+      title: '插件',
+      data: [
+        createSwitch(
+          '软件启动时自动更新插件',
+          'setting.basic.autoUpdatePlugin',
+          basicSetting?.autoUpdatePlugin ?? false,
+        ),
+        createSwitch(
+          '安装插件时不校验版本',
+          'setting.basic.notCheckPluginVersion',
+          basicSetting?.notCheckPluginVersion ?? false,
+        ),
+      ],
+    },
+    {
+      title: '播放',
+      data: [
+        createSwitch('允许与其他应用同时播放', 'setting.basic.notInterrupt', basicSetting?.notInterrupt ?? false),
+        createSwitch(
+          '软件启动时自动播放歌曲',
+          'setting.basic.autoPlayWhenAppStart',
+          basicSetting?.autoPlayWhenAppStart ?? false,
+        ),
+        createSwitch('播放失败时自动暂停', 'setting.basic.autoStopWhenError', basicSetting?.autoStopWhenError ?? false),
+        createRadio(
+          '播放被暂时打断时',
+          'setting.basic.tempRemoteDuck',
+          ['暂停', '降低音量'],
+          basicSetting?.tempRemoteDuck ?? '暂停',
+        ),
+        createRadio(
+          '默认播放音质',
+          'setting.basic.defaultPlayQuality',
+          qualityKeys,
+          basicSetting?.defaultPlayQuality ?? 'standard',
+          qualityText,
+        ),
+        createRadio(
+          '默认播放音质缺失时',
+          'setting.basic.playQualityOrder',
+          ['asc', 'desc'],
+          basicSetting?.playQualityOrder ?? 'asc',
+          {
+            asc: '播放更高音质',
+            desc: '播放更低音质',
+          },
+        ),
       ],
     },
     {
@@ -215,6 +257,11 @@ export default function BasicSetting() {
           basicSetting?.useCelluarNetworkDownload ?? false,
         ),
       ],
+    },
+    {
+      title: '桌面歌词',
+      data: [],
+      footer: <LyricSetting />,
     },
     {
       title: '缓存',
@@ -340,13 +387,16 @@ export default function BasicSetting() {
             </ThemeText>
           </View>
         )}
+        renderSectionFooter={({ section }) => {
+          return section.footer ?? null;
+        }}
         renderItem={({ item }) => {
           const Right = item.right;
 
           return (
             <ListItem withHorizonalPadding heightType="small" onPress={item.onPress}>
               <ListItem.Content title={item.title} />
-              {Right}
+              <Text>{Right}</Text>
             </ListItem>
           );
         }}
@@ -371,5 +421,202 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: rpx(20),
+  },
+});
+
+function LyricSetting() {
+  const lyricSetting = Config.useConfig('setting.lyric');
+
+  const colors = useColors();
+
+  const openStatusBarLyric = createSwitch(
+    '开启桌面歌词',
+    'setting.lyric.showStatusBarLyric',
+    lyricSetting?.showStatusBarLyric ?? false,
+    newValue => {
+      if (newValue) {
+        // LyricUtil.showStatusBarLyric(LyricManager.getCurrentLyric()?.lrc ?? 'MusicFree', lyricSetting ?? {});
+        // setTimeout(() => {
+        //     // LyricUtil.setStatusBarLyricText(
+        //     //     `xxxxx${Date.now()}`,
+        //     // );
+        //     LyricUtil.setStatusBarLyricTop(-0.1)
+        // }, 2000);
+      } else {
+        // LyricUtil.hideStatusBarLyric();
+      }
+    },
+  );
+
+  // const alignStatusBarLyric = createRadio(
+  //   '对齐方式',
+  //   'setting.lyric.align',
+  //   [NativeTextAlignment.LEFT, NativeTextAlignment.CENTER, NativeTextAlignment.RIGHT],
+  //   lyricSetting?.align ?? NativeTextAlignment.CENTER,
+  //   {
+  //     [NativeTextAlignment.LEFT]: '左对齐',
+  //     [NativeTextAlignment.CENTER]: '居中对齐',
+  //     [NativeTextAlignment.RIGHT]: '右对齐',
+  //   },
+  //   newVal => {
+  //     if (lyricSetting?.showStatusBarLyric) {
+  //       // LyricUtil.setStatusBarLyricAlign(newVal as any);
+  //     }
+  //   },
+  // );
+
+  const alignStatusBarLyric = {
+    onPress: () => {},
+    title: 'alignStatusBarLyric',
+    right: 'right',
+  };
+
+  return (
+    <View>
+      <ListItem withHorizonalPadding heightType="small" onPress={openStatusBarLyric.onPress}>
+        <ListItem.Content title={openStatusBarLyric.title} />
+        <Text>{openStatusBarLyric.right}</Text>
+      </ListItem>
+      <View style={lyricStyles.sliderContainer}>
+        <ThemeText>左右距离</ThemeText>
+        <Slider
+          style={lyricStyles.slider}
+          minimumTrackTintColor={colors.primary}
+          maximumTrackTintColor={colors.text ?? '#999999'}
+          thumbTintColor={colors.primary}
+          minimumValue={0}
+          step={0.01}
+          value={lyricSetting?.leftPercent ?? 0.5}
+          maximumValue={1}
+          onValueChange={val => {
+            if (lyricSetting?.showStatusBarLyric) {
+              // LyricUtil.setStatusBarLyricLeft(val);
+            }
+          }}
+          onSlidingComplete={val => {
+            Config.set('setting.lyric.leftPercent', val);
+          }}
+        />
+      </View>
+      <View style={lyricStyles.sliderContainer}>
+        <ThemeText>上下距离</ThemeText>
+        <Slider
+          style={lyricStyles.slider}
+          minimumTrackTintColor={colors.primary}
+          maximumTrackTintColor={colors.text ?? '#999999'}
+          thumbTintColor={colors.primary}
+          minimumValue={0}
+          value={lyricSetting?.topPercent ?? 0}
+          step={0.01}
+          maximumValue={1}
+          onValueChange={val => {
+            if (lyricSetting?.showStatusBarLyric) {
+              // LyricUtil.setStatusBarLyricTop(val);
+            }
+          }}
+          onSlidingComplete={val => {
+            Config.set('setting.lyric.topPercent', val);
+          }}
+        />
+      </View>
+      <View style={lyricStyles.sliderContainer}>
+        <ThemeText>歌词宽度</ThemeText>
+        <Slider
+          style={lyricStyles.slider}
+          minimumTrackTintColor={colors.primary}
+          maximumTrackTintColor={colors.text ?? '#999999'}
+          thumbTintColor={colors.primary}
+          minimumValue={0}
+          step={0.01}
+          value={lyricSetting?.widthPercent ?? 0.5}
+          maximumValue={1}
+          onValueChange={val => {
+            if (lyricSetting?.showStatusBarLyric) {
+              // LyricUtil.setStatusBarLyricWidth(val);
+            }
+          }}
+          onSlidingComplete={val => {
+            Config.set('setting.lyric.widthPercent', val);
+          }}
+        />
+      </View>
+      <View style={lyricStyles.sliderContainer}>
+        <ThemeText>字体大小</ThemeText>
+        <Slider
+          style={lyricStyles.slider}
+          minimumTrackTintColor={colors.primary}
+          maximumTrackTintColor={colors.text ?? '#999999'}
+          thumbTintColor={colors.primary}
+          minimumValue={8}
+          step={0.5}
+          maximumValue={24}
+          value={lyricSetting?.fontSize ?? 14}
+          onValueChange={val => {
+            if (lyricSetting?.showStatusBarLyric) {
+              // LyricUtil.setStatusBarLyricFontSize(val);
+            }
+          }}
+          onSlidingComplete={val => {
+            Config.set('setting.lyric.fontSize', val);
+          }}
+        />
+      </View>
+      <ListItem withHorizonalPadding heightType="small" onPress={alignStatusBarLyric.onPress}>
+        <ListItem.Content title={alignStatusBarLyric.title} />
+        <Text>{alignStatusBarLyric.right}</Text>
+      </ListItem>
+      <ListItem
+        withHorizonalPadding
+        heightType="small"
+        onPress={() => {
+          showPanel('ColorPicker', {
+            closePanelWhenSelected: true,
+            defaultColor: lyricSetting?.color ?? 'transparent',
+            onSelected(color) {
+              if (lyricSetting?.showStatusBarLyric) {
+                const colorStr = color.hexa();
+                // LyricUtil.setStatusBarColors(colorStr, null);
+                Config.set('setting.lyric.color', colorStr);
+              }
+            },
+          });
+        }}>
+        <ListItem.Content title="文本颜色" />
+        <ColorBlock color={lyricSetting?.color ?? '#FFE9D2FF'} />
+      </ListItem>
+      <ListItem
+        withHorizonalPadding
+        heightType="small"
+        onPress={() => {
+          showPanel('ColorPicker', {
+            closePanelWhenSelected: true,
+            defaultColor: lyricSetting?.backgroundColor ?? 'transparent',
+            onSelected(color) {
+              if (lyricSetting?.showStatusBarLyric) {
+                const colorStr = color.hexa();
+                // LyricUtil.setStatusBarColors(null, colorStr);
+                Config.set('setting.lyric.backgroundColor', colorStr);
+              }
+            },
+          });
+        }}>
+        <ListItem.Content title="文本背景色" />
+        <ColorBlock color={lyricSetting?.backgroundColor ?? '#84888153'} />
+      </ListItem>
+    </View>
+  );
+}
+
+const lyricStyles = StyleSheet.create({
+  slider: {
+    flex: 1,
+    marginLeft: rpx(24),
+  },
+  sliderContainer: {
+    height: rpx(96),
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: rpx(24),
   },
 });

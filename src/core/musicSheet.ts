@@ -8,7 +8,6 @@ import { nanoid } from 'nanoid';
 import { getStorage, setStorage } from '@/utils/storage';
 import { isSameMediaItem } from '@/utils/mediaItem';
 import shuffle from 'lodash.shuffle';
-import { log } from '@/utils/tool';
 
 const defaultSheet: IMusic.IMusicSheetItemBase = {
   id: 'favorite',
@@ -31,7 +30,6 @@ const getSheets = () => ({
 });
 
 async function setup() {
-log('musicSheet setup 函数');
   try {
     const _musicSheets: IMusic.IMusicSheetItemBase[] = await getStorage('music-sheets');
     if (!Array.isArray(_musicSheets)) {
@@ -66,7 +64,6 @@ async function updateAndSaveSheet(
     musicList?: IMusic.IMusicItem[];
   },
 ) {
-log('musicSheet updateAndSaveSheet 函数');
   const targetSheetIndex = musicSheets.findIndex(_ => _.id === id);
   if (targetSheetIndex === -1) {
     return;

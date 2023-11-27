@@ -26,6 +26,7 @@ import { showDialog } from '@/components/dialogs/useDialog';
 import { hidePanel, showPanel } from '../usePanel';
 import Divider from '@/components/base/divider';
 import { iconSizeConst } from '@/constants/uiConst';
+import Config from '@/core/config';
 
 interface IMusicItemOptionsProps {
   /** 歌曲信息 */
@@ -155,12 +156,15 @@ export default function MusicItemOptions(props: IMusicItemOptionsProps) {
       icon: 'link-variant',
       title: associatedLrc ? `已关联歌词 ${associatedLrc.platform}@${associatedLrc.id}` : '关联歌词',
       onPress: async () => {
-        // showPanel('AssociateLrc', {
-        //     musicItem,
-        // });
-        showPanel('SearchLrc', {
-          musicItem: MusicQueue.getCurrentMusicItem(),
-        });
+        if (Config.get('setting.basic.associateLyricType') === 'input') {
+          showPanel('AssociateLrc', {
+            musicItem,
+          });
+        } else {
+          showPanel('SearchLrc', {
+            musicItem: MusicQueue.getCurrentMusicItem(),
+          });
+        }
       },
     },
     {

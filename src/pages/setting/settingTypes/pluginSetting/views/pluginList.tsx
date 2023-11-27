@@ -61,7 +61,7 @@ export default function PluginList() {
   async function onInstallFromLocalClick() {
     try {
       // const result = await DocumentPicker.pickMultiple();
-const result = await DocumentPicker.pick();
+      const result = await DocumentPicker.pick();
       setLoading(true);
       // 初步过滤
       const validResult = result?.filter(_ => _.uri.endsWith('.js') || _.name?.endsWith('.js'));
@@ -163,7 +163,7 @@ const result = await DocumentPicker.pick();
 
   return (
     <>
-      <AppBar menu={menuOptions}>插件设置</AppBar>
+      <AppBar menu={menuOptions}>插件管理</AppBar>
       <HorizonalSafeAreaView style={style.wrapper}>
         <>
           {loading ? (
@@ -252,8 +252,9 @@ async function installPluginFromUrl(text: string): Promise<IInstallResult> {
     const failedPlugins: Array<string> = [];
     await Promise.all(
       urls.map(url =>
-        PluginManager.installPluginFromUrl(url).catch(e => {
-console.log(e);
+        PluginManager.installPluginFromUrl(url, {
+          notCheckVersion: Config.get('setting.basic.notCheckPluginVersion'),
+        }).catch(e => {
           failedPlugins.push(e?.message ?? '');
         }),
       ),

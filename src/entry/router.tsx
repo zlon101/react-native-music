@@ -1,17 +1,18 @@
-import { useCallback } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import ArtistDetail from '@/pages/artistDetail';
 import Downloading from '@/pages/downloading';
 import FileSelector from '@/pages/fileSelector';
 import LocalMusic from '@/pages/localMusic';
 import MusicListEditor from '@/pages/musicListEditor';
 import SearchMusicList from '@/pages/searchMusicList';
-import AlbumDetail from '@/pages/albumDetail';
-import Home from '@/pages/home';
-import MusicDetail from '@/pages/musicDetail';
-import SearchPage from '@/pages/searchPage';
-import Setting from '@/pages/setting';
-import SheetDetail from '@/pages/sheetDetail';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useCallback } from 'react';
+import AlbumDetail from '../pages/albumDetail';
+import Home from '../pages/home';
+import MusicDetail from '../pages/musicDetail';
+import SearchPage from '../pages/searchPage';
+import Setting from '../pages/setting';
+import SheetDetail from '../pages/sheetDetail';
+import { LogBox } from 'react-native';
 import TopList from '@/pages/topList';
 import TopListDetail from '@/pages/topListDetail';
 import RecommendSheets from '@/pages/recommendSheets';
@@ -19,6 +20,7 @@ import PluginSheetDetail from '@/pages/pluginSheetDetail';
 import History from '@/pages/history';
 import SetCustomTheme from '@/pages/setCustomTheme';
 
+LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
 
 /** 路由key */
 export const ROUTE_PATH = {
@@ -166,6 +168,7 @@ interface RouterParams extends RouterParamsBase {
   downloading: undefined;
   'search-music-list': {
     musicList: IMusic.IMusicItem[] | null;
+    musicSheet?: IMusic.IMusicSheetItem;
   };
   'music-list-editor': {
     musicSheet?: Partial<IMusic.IMusicSheetItem>;

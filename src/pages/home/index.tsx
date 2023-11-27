@@ -13,11 +13,12 @@ import useOrientation from '@/hooks/useOrientation';
 import HorizonalSafeAreaView from '@/components/base/horizonalSafeAreaView';
 import globalStyle from '@/constants/globalStyle';
 import Divider from '@/components/base/divider';
+import Theme from '@/core/theme';
 
 function Home() {
   return (
     <SafeAreaView edges={['top', 'bottom']} style={styles.appWrapper}>
-      <StatusBar backgroundColor="transparent" />
+      <HomeStatusBar />
       <HorizonalSafeAreaView style={globalStyle.flex1}>
         <>
           <NavBar />
@@ -28,6 +29,12 @@ function Home() {
       <MusicBar />
     </SafeAreaView>
   );
+}
+
+function HomeStatusBar() {
+  const theme = Theme.useTheme();
+
+  return <StatusBar backgroundColor="transparent" barStyle={theme.dark ? undefined : 'dark-content'} />;
 }
 
 function Body() {

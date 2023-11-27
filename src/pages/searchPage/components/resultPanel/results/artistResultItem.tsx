@@ -25,7 +25,13 @@ export default function ArtistResultItem(props: IArtistResultsProps) {
       <ListItem.ListItemImage uri={artistItem.avatar} fallbackImg={ImgAsset.albumDefault} />
       <ListItem.Content
         description={
-          artistItem.desc ? artistItem.desc : `${artistItem.worksNum}个作品    ${artistItem.description ?? ''}`
+          artistItem.desc
+            ? artistItem.desc
+            : `${
+                artistItem.worksNum
+                  ? artistItem.worksNum + '个作品' // TODO 用字符串模板函数更好
+                  : ''
+              }    ${artistItem.description ?? ''}`
         }
         title={<TitleAndTag title={artistItem.name} tag={artistItem.platform} />}
       />

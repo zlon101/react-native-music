@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { FlatList, StyleSheet, ListRenderItem, Text, View } from 'react-native';
+import { FlatList, StyleSheet, ListRenderItem } from 'react-native';
 import MusicSheet from '@/core/musicSheet';
 import { ROUTE_PATH, useNavigate } from '@/entry/router';
 import ListItem from '@/components/base/listItem';
@@ -11,9 +11,14 @@ import useOrientation from '@/hooks/useOrientation';
 import { showDialog } from '@/components/dialogs/useDialog';
 import useColors from '@/hooks/useColors';
 
-const renderMySheetItem: ListRenderItem<IMusic.IMusicSheetItem> = function ({ item: sheet }) {
+function MySheets() {
+  const orientation = useOrientation();
+  const musicSheets = MusicSheet.useUserSheets();
   const navigate = useNavigate();
-      return (
+  const colors = useColors();
+
+  const renderMySheetItem: ListRenderItem<IMusic.IMusicSheetItem> = function ({ item: sheet }) {
+    return (
       <ListItem
         key={`${sheet.id}`}
         withHorizonalPadding
@@ -41,12 +46,6 @@ const renderMySheetItem: ListRenderItem<IMusic.IMusicSheetItem> = function ({ it
       </ListItem>
     );
   };
-
-function MySheets() {
-  const orientation = useOrientation();
-  const musicSheets = MusicSheet.useUserSheets();
-
-  const colors = useColors();
 
   return (
     <FlatList
