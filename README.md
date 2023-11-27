@@ -1,6 +1,6 @@
 # fork
 
-https://github.com/maotoumao/MusicFree
+https://github.com/maotoumao/MusicFree  commit: 8eb7504dc648f883639b6394c78f95c7497f6075
 
 # 调试
 
