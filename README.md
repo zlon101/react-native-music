@@ -1,3 +1,11 @@
+# setup
+
+创建项目
+
+```shell
+npx react-native init demo --template react-native-template-typescript --skip-install CocoaPods
+```
+
 # fork
 
 https://github.com/maotoumao/MusicFree
