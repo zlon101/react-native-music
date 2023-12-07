@@ -34,6 +34,17 @@ export default function MusicItem(props: IMusicItemProps) {
     containerStyle,
   } = props;
 
+  const desJsx = musicItem.artist && (
+    <View style={styles.descContainer}>
+      {LocalMusicSheet.isLocalMusic(musicItem) && (
+        <Icon style={styles.icon} color="#11659a" name="check-circle" size={rpx(22)} />
+      )}
+      <ThemeText numberOfLines={1} fontSize="description" fontColor="textSecondary">
+        {musicItem.artist}
+        {musicItem.album ? ` - ${musicItem.album}` : ''}
+      </ThemeText>
+    </View>
+  );
   return (
     <ListItem
       heightType="big"
@@ -57,17 +68,7 @@ export default function MusicItem(props: IMusicItemProps) {
       ) : null}
       <ListItem.Content
         title={<TitleAndTag title={musicItem.title} tag={musicItem.platform} />}
-        description={
-          <View style={styles.descContainer}>
-            {LocalMusicSheet.isLocalMusic(musicItem) && (
-              <Icon style={styles.icon} color="#11659a" name="check-circle" size={rpx(22)} />
-            )}
-            <ThemeText numberOfLines={1} fontSize="description" fontColor="textSecondary">
-              {musicItem.artist}
-              {musicItem.album ? ` - ${musicItem.album}` : ''}
-            </ThemeText>
-          </View>
-        }
+        description={desJsx}
       />
       {showMoreIcon ? (
         <ListItem.ListItemIcon

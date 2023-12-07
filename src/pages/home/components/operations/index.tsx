@@ -45,11 +45,18 @@ export default function Operations(props: IOperationsProps) {
         navigate(ROUTE_PATH.TOP_LIST);
       },
     },
+    // {
+    //   iconName: 'history',
+    //   title: '播放记录',
+    //   action() {
+    //     navigate(ROUTE_PATH.HISTORY);
+    //   },
+    // },
     {
       iconName: 'history',
-      title: '播放记录',
+      title: 'Gitlab',
       action() {
-        navigate(ROUTE_PATH.HISTORY);
+        navigate(ROUTE_PATH.Gitlab_List);
       },
     },
   ];

@@ -26,6 +26,7 @@ import musicHistory from './musicHistory';
 import getUrlExt from '@/utils/getUrlExt';
 import { DeviceEventEmitter } from 'react-native';
 import LyricManager from './lyricManager';
+import {Log} from '@/utils/tool';
 
 enum MusicRepeatMode {
   /** 随机播放 */
@@ -65,50 +66,53 @@ const setup = async () => {
 
   musicQueue.length = 0;
   /** 状态恢复 */
-  try {
-    const config = Config.get('status.music');
-    if (config?.rate) {
-      await TrackPlayer.setRate(+config.rate / 100);
-    }
-    if (config?.repeatMode) {
-      repeatMode = config.repeatMode as MusicRepeatMode;
-    }
-    if (config?.musicQueue && Array.isArray(config?.musicQueue)) {
-      addAll(config.musicQueue, undefined, true, repeatMode === MusicRepeatMode.SHUFFLE);
-    }
-    currentQuality = Config.get('setting.basic.defaultPlayQuality') ?? 'standard';
-    if (config?.track) {
-      currentIndex = findMusicIndex(config.track);
-
-      // todo： 想想是在这里还是加在下边的play
-      if (currentIndex !== -1) {
-        // todo: 这样写不好，简介引入了setup里面musicQueue和pluginManager的初始化时序关系 并且阻塞启动时间，因此这里如果失败不重试
-        const newSource = await PluginManager.getByMedia(config.track)?.methods.getMediaSource(
-          config.track,
-          currentQuality,
-          0,
-        );
-        // 重新初始化 获取最新的链接
-        musicQueue = produce(musicQueue, draft => {
-          const musicItem = {
-            ...config.track,
-            ...(newSource ?? {}),
-          } as IMusic.IMusicItem;
-          draft[currentIndex] = musicItem;
-          config.track = musicItem;
-        });
+  const isDebug = true;
+  if (!isDebug) {
+    try {
+      const config = Config.get('status.music');
+      if (config?.rate) {
+        await TrackPlayer.setRate(+config.rate / 100);
       }
-      // todo： 判空，理论上不会发生
-      await TrackPlayer.add([config.track as Track, getFakeNextTrack()]);
-    }
+      if (config?.repeatMode) {
+        repeatMode = config.repeatMode as MusicRepeatMode;
+      }
+      if (config?.musicQueue && Array.isArray(config?.musicQueue)) {
+        addAll(config.musicQueue, undefined, true, repeatMode === MusicRepeatMode.SHUFFLE);
+      }
+      currentQuality = Config.get('setting.basic.defaultPlayQuality') ?? 'standard';
+      if (config?.track) {
+        currentIndex = findMusicIndex(config.track);
 
-    if (config?.progress) {
-      await TrackPlayer.seekTo(config.progress);
-    }
+        // todo： 想想是在这里还是加在下边的play
+        if (currentIndex !== -1) {
+          // todo: 这样写不好，简介引入了setup里面musicQueue和pluginManager的初始化时序关系 并且阻塞启动时间，因此这里如果失败不重试
+          const newSource = await PluginManager.getByMedia(config.track)?.methods.getMediaSource(
+            config.track,
+            currentQuality,
+            0,
+          );
+          // 重新初始化 获取最新的链接
+          musicQueue = produce(musicQueue, draft => {
+            const musicItem = {
+              ...config.track,
+              ...(newSource ?? {}),
+            } as IMusic.IMusicItem;
+            draft[currentIndex] = musicItem;
+            config.track = musicItem;
+          });
+        }
+        // todo： 判空，理论上不会发生
+        await TrackPlayer.add([config.track as Track, getFakeNextTrack()]);
+      }
 
-    trace('状态恢复', config);
-  } catch (e) {
-    errorLog('状态恢复失败', e);
+      if (config?.progress) {
+        await TrackPlayer.seekTo(config.progress);
+      }
+
+      trace('状态恢复', config);
+    } catch (e) {
+      errorLog('状态恢复失败', e);
+    }
   }
 
   // 不要依赖playbackchanged，不稳定,
@@ -125,7 +129,7 @@ const setup = async () => {
   /** 播放下一个 */
   TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async evt => {
     // 是track里的，不是playlist里的
-    trace('PlaybackTrackChanged', {
+    trace('PlaybackTrackChanged 播放下一个', {
       evt,
     });
 

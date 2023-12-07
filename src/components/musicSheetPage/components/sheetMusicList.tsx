@@ -8,15 +8,18 @@ import Config from '@/core/config';
 import MusicQueue from '@/core/musicQueue';
 import globalStyle from '@/constants/globalStyle';
 import HorizonalSafeAreaView from '@/components/base/horizonalSafeAreaView';
+import {Log} from '@/utils/tool';
 
 interface IMusicListProps {
   sheetInfo: IMusic.IMusicSheetItem | null;
   musicList?: IMusic.IMusicItem[] | null;
   onEndReached?: () => void;
   loadMore?: 'loading' | 'done' | 'idle';
+  showHeader?: boolean;
 }
 export default function SheetMusicList(props: IMusicListProps) {
   const { sheetInfo: topListDetail, musicList, onEndReached, loadMore } = props;
+  const showHeader = props.showHeader || false;
 
   return (
     <View style={globalStyle.fwflex1}>
@@ -27,7 +30,7 @@ export default function SheetMusicList(props: IMusicListProps) {
           <MusicList
             showIndex
             loadMore={loadMore}
-            Header={<Header topListDetail={topListDetail} musicList={musicList} />}
+            Header={showHeader ? (<Header topListDetail={topListDetail} musicList={musicList} />) : null}
             musicList={musicList}
             onItemPress={(musicItem, musicList) => {
               if (Config.get('setting.basic.clickMusicInAlbum') === '播放单曲') {

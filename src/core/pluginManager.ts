@@ -32,6 +32,7 @@ import { FileSystem } from 'react-native-file-access';
 import { PluginMeta } from './pluginMeta';
 import { useEffect, useState } from 'react';
 import { getFileName } from '@/utils/fileUtils';
+import { GitlabPlugin } from '@/plugins/gitlab';
 
 axios.defaults.timeout = 2000;
 
@@ -906,6 +907,9 @@ function getByHash(hash: string) {
 }
 
 function getByName(name: string) {
+  if (name === 'gitlab') {
+    return GitlabPlugin;
+  }
   return name === localPluginPlatform ? localFilePlugin : plugins.find(_ => _.name === name);
 }
 

@@ -11,7 +11,7 @@ import ListReachEnd from '../base/listReachEnd';
 
 interface IMusicListProps {
   /** 顶部 */
-  Header?: FlatListProps<IMusic.IMusicItem>['ListHeaderComponent'];
+  Header?: FlatListProps<IMusic.IMusicItem>['ListHeaderComponent'] | null;
   /** 音乐列表 */
   musicList?: IMusic.IMusicItem[];
   /** 所在歌单 */

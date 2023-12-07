@@ -1,3 +1,24 @@
+# TODO
+
+- 循环引用
+
+WARN  `new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.
+WARN  `new NativeEventEmitter()` was called with a non-null argument without the required `removeListeners` method.
+WARN  Require cycle: src/core/pluginManager.ts -> src/core/mediaMeta.ts -> src/core/pluginManager.ts
+
+Require cycles are allowed, but can result in uninitialized values. Consider refactoring to remove the need for a cycle.
+WARN  Require cycle: src/core/pluginManager.ts -> src/core/cache.ts -> src/core/pluginManager.ts
+
+Require cycles are allowed, but can result in uninitialized values. Consider refactoring to remove the need for a cycle.
+WARN  Require cycle: src/core/musicQueue.ts -> src/core/lyricManager.ts -> src/core/musicQueue.ts
+
+Require cycles are allowed, but can result in uninitialized values. Consider refactoring to remove the need for a cycle.
+
+
+# 源码记录
+
+歌曲列表 <MusicSheetPage>
+
 # setup
 
 创建项目

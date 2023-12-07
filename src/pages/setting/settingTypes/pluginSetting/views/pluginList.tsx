@@ -163,12 +163,12 @@ export default function PluginList() {
 
   return (
     <>
-      <AppBar menu={menuOptions}>插件管理</AppBar>
       <HorizonalSafeAreaView style={style.wrapper}>
         <>
           {loading ? (
             <Loading />
           ) : (
+
             <FlatList
               ListEmptyComponent={Empty}
               ListFooterComponent={<View style={style.blank} />}
@@ -177,7 +177,7 @@ export default function PluginList() {
               renderItem={({ item: plugin }) => <PluginItem key={plugin.hash} plugin={plugin} />}
             />
           )}
-
+          <AppBar menu={menuOptions}>插件管理</AppBar>
           <Fab
             icon="plus"
             onPress={() => {
