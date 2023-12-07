@@ -165,6 +165,7 @@ export default function PluginList() {
     <>
       <HorizonalSafeAreaView style={style.wrapper}>
         <>
+          <AppBar menu={menuOptions}>插件管理</AppBar>
           {loading ? (
             <Loading />
           ) : (
@@ -177,7 +178,6 @@ export default function PluginList() {
               renderItem={({ item: plugin }) => <PluginItem key={plugin.hash} plugin={plugin} />}
             />
           )}
-          <AppBar menu={menuOptions}>插件管理</AppBar>
           <Fab
             icon="plus"
             onPress={() => {

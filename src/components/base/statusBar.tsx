@@ -5,6 +5,7 @@ import useColors from '@/hooks/useColors';
 interface IStatusBarProps extends StatusBarProps {}
 
 export default function (props: IStatusBarProps) {
+  /*******
   const colors = useColors();
   const { backgroundColor, barStyle } = props;
 
@@ -16,6 +17,7 @@ export default function (props: IStatusBarProps) {
           zIndex: 10000,
           position: 'absolute',
           top: 0,
+          // backgroundColor: 'red',
           backgroundColor: backgroundColor ?? colors.appBar ?? colors.primary,
           width: '100%',
           height: StatusBar.currentHeight,
@@ -23,4 +25,5 @@ export default function (props: IStatusBarProps) {
       />
     </>
   );
+   **/
 }

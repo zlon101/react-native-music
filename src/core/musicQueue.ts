@@ -445,6 +445,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
       currentMusicStateMapper.notify();
       let info: Partial<IMusic.IMusicItem> | null = null;
       try {
+        // @ts-ignore
         info = (await plugin?.methods?.getMusicInfo?.(_musicItem)) ?? null;
       } catch {}
 

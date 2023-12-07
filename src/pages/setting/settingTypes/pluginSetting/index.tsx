@@ -1,5 +1,4 @@
 import React from 'react';
-
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import PluginList from './views/pluginList';
 import PluginSort from './views/pluginSort';
