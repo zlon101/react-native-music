@@ -39,8 +39,7 @@ export default function Lyric() {
 
     if (
       lyric.length === 0 ||
-      draggingIndex !== undefined ||
-      (draggingIndex === undefined && musicIsPaused(musicState)) ||
+      draggingIndex !== undefined || musicIsPaused(musicState) ||
       lyric[lyric.length - 1].time < 1
     ) {
       return;

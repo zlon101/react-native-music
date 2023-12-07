@@ -41,19 +41,25 @@ TrackPlayer.addEventListener(Event.PlaybackError, e => {
   Log('PlaybackError:\n', JSON.stringify(e, null, 2));
 });
 
-export default function GitlabList() {
+function GitlabList() {
   // const { pluginHash, topList } = useParams<'top-list-detail'>();
   // const topListDetail = useTopListDetail(topList, pluginHash);
   const [sheetInfo, updateSheet] = useImmer(topListDetailDemo);
   const progress = useProgress();
 
   useEffect(() => {
+    console.clear();
+
     readFile().then(list => {
       Log('本地文件列表 \n', list);
+
+      // TrackPlayer.add(list as any);
+
       updateSheet(draft => {
         draft.musicList = list;
       });
     });
+
     /*********
     getAllMusic().then(list => {
       if (list.length) {
@@ -88,10 +94,13 @@ export default function GitlabList() {
     // const duration = await TrackPlayer.getDuration();
     // Log(`duration: ${duration}  position: ${position}`);
 
-    Log(`
+    Log(
+      `
       state: ${JSON.stringify(state, null, 2)}
       queue: %o,
-    `, queue);
+    `,
+      queue,
+    );
   };
 
   const onPlay = async () => {
@@ -110,36 +119,39 @@ export default function GitlabList() {
 
   const onDownload = async () => {
     const { promise } = RNFS.downloadFile({
-      fromUrl: GitlabPlugin.methods.getMediaSource('夜曲.mp3').url,
-      toFile: CustomPath.downloadMusicPath + '夜曲.mp3',
-      begin: (arg) => {
+      fromUrl: GitlabPlugin.methods.getMediaSource('faded.mp3').url,
+      toFile: CustomPath.downloadMusicPath + 'faded.mp3',
+      begin: arg => {
         // Log('begin\n', arg);
       },
-      progress: (arg) => {
+      progress: arg => {
         // Log('progress\n', arg);
       },
     });
-    promise.then(res => {
-      Log('下载成功\n', res);
-    }).catch(err => {
-      Log('下载失败\n', err);
-    });
+    promise
+      .then(res => {
+        Log('下载成功\n', res);
+      })
+      .catch(err => {
+        Log('下载失败\n', err);
+      });
   };
 
-  /******
   return (
-    <View>
-      <Button title="获取状态" onPress={onGetStatus} />
-      <Button title="播放/暂停" onPress={onPlay} />
-      <Button title="下一首" onPress={onSkipToNext} />
-      <Button title="上一首" onPress={onSkipToPrevious} />
-      <Button title="onDownload" onPress={onDownload} />
-      <Text style={{ color: 'red' }}>{JSON.stringify(progress, null, 2)}</Text>
-    </View>
+    <MusicSheetPage navTitle="自建源" sheetInfo={sheetInfo}>
+      <View>
+        <Button title="获取状态" onPress={onGetStatus} />
+        <Button title="播放/暂停" onPress={onPlay} />
+        <Button title="下一首" onPress={onSkipToNext} />
+        <Button title="上一首" onPress={onSkipToPrevious} />
+        <Button title="onDownload" onPress={onDownload} />
+        <Text style={{ color: 'red' }}>{JSON.stringify(progress, null, 2)}</Text>
+      </View>
+    </MusicSheetPage>
   );
-   ***/
-  return (<MusicSheetPage navTitle="自建源" sheetInfo={sheetInfo} />);
 }
+
+export default GitlabList;
 
 export async function readFile() {
   // get a list of files and directories in the main bundle
@@ -153,9 +165,12 @@ export async function readFile() {
           id: item.name,
           artwork: 'https://p2.music.126.net/lYjEBXsQOaxwbGNpOfHF3Q==/109951168374734405.jpg',
           title: item.name,
-          url: item.path,
+          $: {
+            localPath: item.path,
+          },
           size: item.size,
-          platform: 'gitlab',
+          platform: '本地',
+          // platform: 'gitlab',
         });
       }
     });

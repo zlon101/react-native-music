@@ -17,7 +17,9 @@ Require cycles are allowed, but can result in uninitialized values. Consider ref
 
 # 源码记录
 
-歌曲列表 <MusicSheetPage>
+- 歌曲列表 <MusicSheetPage>
+- 歌曲的 `artwork` 不能传空字符，可以不传该属性
+
 
 # setup
 

@@ -67,6 +67,7 @@ const setup = async () => {
   musicQueue.length = 0;
   /** 状态恢复 */
   const isDebug = true;
+  // TODO 调试
   if (!isDebug) {
     try {
       const config = Config.get('status.music');
@@ -345,6 +346,7 @@ const getFakeNextTrack = () => {
  * musicItem为空，且forcePlay为true：强制从头开始播放
  */
 const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
+  deleteArtwork(musicItem);
   try {
     trace('播放', musicItem);
     //#region 移动网络时 根据设置重置player
@@ -393,6 +395,8 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
         Config.get('setting.basic.playQualityOrder') ?? 'asc',
       );
       let source: IPlugin.IMediaSourceResult | null = null;
+
+      Log('1111111111111111');
       for (let quality of qualityOrder) {
         if (isSameMediaItem(musicQueue[currentIndex], _musicItem)) {
           source = (await plugin?.methods?.getMediaSource(_musicItem, quality)) ?? null;
@@ -406,6 +410,8 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
           return;
         }
       }
+
+      Log('22222222222', source);
       if (!source) {
         if (!_musicItem.url) {
           throw new Error('播放失败');
@@ -434,6 +440,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
 
       musicHistory.addMusic(_musicItem);
 
+      Log('33333333333', track);
       await replaceTrack(track as Track);
       currentMusicStateMapper.notify();
       let info: Partial<IMusic.IMusicItem> | null = null;
@@ -508,6 +515,7 @@ const playWithReplaceQueue = async (musicItem: IMusic.IMusicItem, newQueue: IMus
       newQueue,
       newQueue.findIndex(_ => isSameMediaItem(_, musicItem)),
     );
+    deleteArtwork(newQueue);
     musicQueue = [];
     addAll(newQueue, undefined, undefined, repeatMode === MusicRepeatMode.SHUFFLE);
     await play(musicItem, true);
@@ -596,6 +604,24 @@ const MusicQueue = {
   currentIndex,
   changeQuality,
   useCurrentQuality: currentQualityStateMapper.useMappedState,
+};
+
+// 当 artwork 为空时删除属性
+const deleteArtwork = (musics: any) => {
+  if (!musics) return;
+
+  if (Array.isArray(musics)) {
+    musics.forEach(item => {
+      if (item && item.artwork === '') {
+        item.artwork = undefined;
+      }
+    })
+    return;
+  }
+
+  if (musics.artwork === '') {
+    musics.artwork = undefined;
+  }
 };
 
 export default MusicQueue;

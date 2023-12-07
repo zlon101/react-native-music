@@ -22,7 +22,7 @@ function CircularPlayBtn() {
   const musicState = MusicQueue.usePlaybackState();
   const colors = useColors();
 
-  const isPaused = musicIsPaused(musicState);
+  const isPaused = musicIsPaused(musicState.state);
 
   return (
     <CircularProgressBase

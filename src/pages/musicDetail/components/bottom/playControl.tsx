@@ -9,11 +9,12 @@ import musicIsPaused from '@/utils/musicIsPaused';
 import useOrientation from '@/hooks/useOrientation';
 import { showPanel } from '@/components/panels/usePanel';
 
-export default function () {
+export default function() {
   const repeatMode = MusicQueue.useRepeatMode();
   const musicState = MusicQueue.usePlaybackState();
-
   const orientation = useOrientation();
+
+  const _isPaused = musicIsPaused(musicState);
 
   return (
     <>
@@ -44,10 +45,10 @@ export default function () {
         />
         <Icon
           color={'white'}
-          name={musicIsPaused(musicState) ? 'play-circle-outline' : 'pause-circle-outline'}
+          name={_isPaused ? 'play-circle-outline' : 'pause-circle-outline'}
           size={rpx(96)}
           onPress={() => {
-            if (musicIsPaused(musicState)) {
+            if (_isPaused) {
               MusicQueue.play();
             } else {
               MusicQueue.pause();

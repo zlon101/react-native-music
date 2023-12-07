@@ -62,7 +62,7 @@ const _require = (packageName: string) => {
   return pkg;
 };
 
-const _consoleBind = function (method: 'log' | 'error' | 'info' | 'warn', ...args: any) {
+const _consoleBind = function(method: 'log' | 'error' | 'info' | 'warn', ...args: any) {
   const fn = console[method];
   if (fn) {
     fn(...args);
@@ -232,6 +232,9 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
     const localPath =
       getInternalData<string>(musicItem, InternalDataType.LOCALPATH) ??
       getInternalData<string>(LocalMusicSheet.isLocalMusic(musicItem), InternalDataType.LOCALPATH);
+
+    console.log('\n\nlocalPath:', localPath);
+
     if (localPath && (localPath.startsWith('content://') || (await FileSystem.exists(localPath)))) {
       trace('本地播放', localPath);
       return {
@@ -653,7 +656,7 @@ const pluginStateMapper = new StateMapper(() => plugins);
 
 //#region 本地音乐插件
 /** 本地插件 */
-const localFilePlugin = new Plugin(function () {
+const localFilePlugin = new Plugin(function() {
   return {
     platform: localPluginPlatform,
     _path: '',

@@ -1,3 +1,9 @@
-import { State } from 'react-native-track-player';
+import { State, usePlaybackState } from 'react-native-track-player';
+import {getType} from '@/utils/tool';
 
-export default (state: State) => state !== State.Playing;
+export default (state: undefined | State | ReturnType<typeof usePlaybackState>) => {
+  if (getType(state, 'object')) {
+    return state!.state !== State.Playing;
+  }
+  return state !== State.Playing;
+};
