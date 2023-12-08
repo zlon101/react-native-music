@@ -36,6 +36,12 @@ https://github.com/maotoumao/MusicFree
 commit: 7ce5c26cae0a905505d7ab140a0ba59b5551f1d8
 commit: 8eb7504dc648f883639b6394c78f95c7497f6075
 
+## 插件
+
+介绍: https://musicfree.upup.fun/plugin/introduction.html
+
+原理: https://mp.weixin.qq.com/s/pjyOjTDrV85ImRQ6EWbgAg
+
 ## 修改
 
 @/native 删除
@@ -104,6 +110,10 @@ navigation: navigate push goBack popToTop
 [nanoid](https://github.com/ai/nanoid#react-native) 
 
 react-native-get-random-values 必须在全局入口处导入
+
+9. 二进制文件
+
+react-native-fetch-blob 不再维护，改为 rn-fetch-blob、react-native-fs
 
 # 更新记录
 

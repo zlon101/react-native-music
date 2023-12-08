@@ -2,6 +2,7 @@
  * 使用 Gitlab api 查询仓库信息
  * API 参考: https://docs.gitlab.com/ee/api/repositories.html
  * 获取参考文件目录: https://gitlab.com/api/v4/projects/{projectId}/repository/tree?recursive=true&ref=分支名
+ * gitlab api url 中的 query 必须与文档上的一致，不能随意使用 encodeURIComponent
  * *******/
 
 const baseURL = 'https://gitlab.com/api/v4';
@@ -25,9 +26,7 @@ export async function getAllMusic() {
     // 分页配置
     per_page: 2,
   };
-  let url = `${baseURL}/projects/${ProjectId}/repository/tree/?${formatQuery(param)}`;
-  // gitlab api url 中的 query 必须与文档上的一致
-  url = decodeURIComponent(url);
+  const url = `${baseURL}/projects/${ProjectId}/repository/tree/?${formatQuery(param)}`;
   try {
     const response = await fetch(url, cfg);
     const resJson = await response.json();

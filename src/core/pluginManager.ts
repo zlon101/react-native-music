@@ -33,6 +33,7 @@ import { PluginMeta } from './pluginMeta';
 import { useEffect, useState } from 'react';
 import { getFileName } from '@/utils/fileUtils';
 import { GitlabPlugin } from '@/plugins/gitlab';
+import {Log} from '@/utils/tool';
 
 axios.defaults.timeout = 2000;
 
@@ -129,7 +130,11 @@ export class Plugin {
       }
       this.checkValid(_instance);
     } catch (e: any) {
-      console.log(e);
+      Log(`插件实例化失败
+        路径：${pluginPath}
+        error: %o
+      `, e);
+
       this.state = 'error';
       this.stateCode = PluginStateCode.CannotParse;
       if (e?.stateCode) {
@@ -374,6 +379,7 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
       try {
         let lrcSource;
         if (from) {
+          // @ts-ignore
           lrcSource = await PluginManager.getByMedia(musicItem)?.instance?.getLyric?.(
             resetMediaItem(musicItem, undefined, true),
           );
