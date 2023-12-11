@@ -4,7 +4,7 @@ import LocalMusicSheet from '@/core/localMusicSheet';
 import { localMusicSheetId } from '@/constants/commonConst';
 import HorizonalSafeAreaView from '@/components/base/horizonalSafeAreaView';
 import globalStyle from '@/constants/globalStyle';
-import {Log} from '@/utils/tool';
+import { Log } from '@/utils/tool';
 
 export default function LocalMusicList() {
   const musicList = LocalMusicSheet.useMusicList();

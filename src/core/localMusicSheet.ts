@@ -147,11 +147,11 @@ async function importLocal(_folderPaths: string[]) {
   }
   // 分组请求，不然序列化可能出问题
   // let metas: IBasicMeta[] = [];
-let metas: any[] = [];
+  let metas: any[] = [];
   const groups = Math.ceil(musicList.length / groupNum);
   for (let i = 0; i < groups; ++i) {
     // metas = metas.concat(
-      //   await mp3Util.getMediaMeta(musicList.slice(i * groupNum, (i + 1) * groupNum).map(_ => _.path)),
+    //   await mp3Util.getMediaMeta(musicList.slice(i * groupNum, (i + 1) * groupNum).map(_ => _.path)),
     // );
   }
   if (token !== importToken) {

@@ -28,13 +28,15 @@ function _PlayListItem(props: IPlayListProps) {
   const { item, index, currentIndex } = props;
 
   // console.log('rerender', index, currentIndex, item);
+  const title = item.title.replace(/\.mp3$/i, '');
+  const _isActive = currentIndex === index;
   return (
     <Pressable
       onPress={() => {
         MusicQueue.play(item);
       }}
       style={style.musicItem}>
-      {currentIndex === index && (
+      {_isActive && (
         <Icon
           name="music"
           color={colors.textHighlight ?? colors.primary}
@@ -46,13 +48,13 @@ function _PlayListItem(props: IPlayListProps) {
         style={[
           style.musicItemTitle,
           {
-            color: index === currentIndex ? colors.textHighlight ?? colors.primary : colors.text,
+            color: _isActive ? colors.textHighlight ?? colors.primary : colors.text,
           },
         ]}
         ellipsizeMode="tail"
         numberOfLines={1}>
-        {item.title}
-        <Text style={{ fontSize: fontSizeConst.description }}> - {item.artist}</Text>
+        {title}
+        {item.artist && <Text style={{ fontSize: fontSizeConst.description }}> - {item.artist}</Text>}
       </ThemeText>
       <Tag tagName={item.platform} />
       <IconButton
@@ -87,14 +89,14 @@ export default function Body(props: IBodyProps) {
   const listRef = useRef<FlatList<IMusic.IMusicItem> | null>();
   const safeAreaInsets = useSafeAreaInsets();
 
-  const initIndex = useMemo(() => {
-    const id = musicQueue.findIndex(_ => isSameMediaItem(currentMusicItem, _));
-
-    if (id !== -1) {
-      return id;
-    }
-    return undefined;
-  }, []);
+  // const initIndex = useMemo(() => {
+  //   const id = musicQueue.findIndex(_ => isSameMediaItem(currentMusicItem, _));
+  //
+  //   if (id !== -1) {
+  //     return id;
+  //   }
+  //   return undefined;
+  // }, []);
 
   useEffect(() => {
     setCurrentIndex(musicQueue.findIndex(_ => isSameMediaItem(currentMusicItem, _)));
@@ -137,7 +139,7 @@ export default function Body(props: IBodyProps) {
           index,
         })}
         data={musicQueue}
-        initialScrollIndex={initIndex}
+        // initialScrollIndex={initIndex}
         renderItem={renderItem}
       />
     </View>

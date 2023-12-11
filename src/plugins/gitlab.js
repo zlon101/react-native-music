@@ -5,79 +5,150 @@
  * gitlab api url 中的 query 必须与文档上的一致，不能随意使用 encodeURIComponent
  * *******/
 
+import { readDir, downloadFile } from 'react-native-fs';
+import CustomPath from '@/constants/pathConst';
+import { Log } from '@/utils/tool';
+
 const baseURL = 'https://gitlab.com/api/v4';
 const PRIVATE_TOKEN = 'glpat-4jvu2R5etMDtVXJsDx33';
-const Branch = 'master';
-const ProjectId = 48952022;
 
-const cfg = {
-  method: 'GET',
-  // headers: {
-  //   'PRIVATE-TOKEN': PRIVATE_TOKEN,
-  // },
+const ProjectCfg = {
+  projectId: 52878930,
+  branch: 'main',
+  rootDir: 'all',
 };
 
-export async function getAllMusic() {
+const ReqHeader = {
+  'PRIVATE-TOKEN': PRIVATE_TOKEN,
+  'Access-Control-Allow-Credentials': 'true',
+};
+
+const RequestCfg = {
+  method: 'GET',
+};
+
+const ReqParam = {
+  private_token: PRIVATE_TOKEN,
+  ref: ProjectCfg.branch,
+};
+
+/** 接口响应
+"id": "bd5f98e9cde2eed45b255c3cd42da4f57f0a88d1",
+"name": "faded.mp3",
+"type": "blob",
+"path": "all/faded.mp3",
+"mode": "100644"
+ **/
+
+const MusicFileReg = /\.(mp3|m3u8)$/;
+
+export async function getMusicList() {
   const param = {
-    private_token: PRIVATE_TOKEN,
+    ...ReqParam,
     recursive: false,
-    ref: 'master',
-    path: 'mp3',
+    path: ProjectCfg.rootDir,
     // 分页配置
-    per_page: 2,
+    per_page: 15,
   };
-  const url = `${baseURL}/projects/${ProjectId}/repository/tree/?${formatQuery(param)}`;
+  const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/tree/?${formatQuery(param)}`;
   try {
-    const response = await fetch(url, cfg);
+    const response = await fetch(url, RequestCfg);
     const resJson = await response.json();
-    // mp3/xxx  /mp3\//.test(item.path)
-    return resJson.filter(item => item.type === 'blob').map(item => ({ ...item, key: item.name }));
+    return resJson.filter(item => /\.(mp3|m3u8)$/.test(item.name));
   } catch (err) {
     console.error('getAllMusic 错误', err);
   }
 }
 
-// 下载单个 raw 文件
-export async function downFile(fileName) {
-  const FilePath = encodeURIComponent(fileName);
-  const url = `${baseURL}/projects/${ProjectId}/repository/files/${FilePath}/raw?ref=${Branch}`;
-  try {
-    return await fetch(url, cfg);
-  } catch (err) {
-    console.error('downFile 错误', err);
+// 获取远程url
+export function getRemoteUrl(musicName) {
+  const musicPath = encodeURIComponent(`${ProjectCfg.rootDir}/${musicName}`);
+  return `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${musicPath}/raw?${formatQuery(ReqParam)}`;
+}
+
+/**
+ * ******************************
+ * 对接插件管理
+ * ***************************/
+
+/****
+interface IBuffFile {
+  name: string; // 带有文件后缀
+  path: string; // /storage/xxx/xxx.mp3
+  size: number;
+  isFile: () => boolean;
+  isDirectory: () => boolean;
+}**/
+
+const BuffDir = CustomPath.downloadMusicPath;
+
+class GitlabBuffClass {
+  constructor() {
+    // 缓存目录中存在的文件名（含后缀）
+    this.buffNames = new Set();
+  }
+
+  has(name) {
+    return this.buffNames.has(name);
+  }
+  // get a list of files and directories in the main bundle
+  // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+  async read() {
+    const musicFiles = [];
+    try {
+      const list = await readDir(BuffDir);
+      list.forEach(item => {
+        if (item.isFile()) {
+          musicFiles.push({
+            name: item.name,
+            localPath: item.path,
+          });
+          this.buffNames.add(item.name);
+        }
+      });
+      // Log('读取缓存 musicFiles:\n', musicFiles);
+      return musicFiles;
+    } catch (e) {
+      Log(`读取 ${BuffDir} 失败：`, e);
+      throw e;
+    }
+  }
+  // fileName: xxx.mp3
+  async write(fileName) {
+    if (this.has(fileName)) return;
+
+    const { promise } = downloadFile({
+      fromUrl: getRemoteUrl(fileName),
+      toFile: BuffDir + fileName,
+      begin: arg => {},
+      progress: arg => {},
+    });
+    try {
+      await promise;
+      // Log(`GitlabBuff.write(${fileName}) then`);
+      this.buffNames.add(fileName);
+    } catch (e) {
+      Log(`下载 ${fileName} 失败，error:\n`, e);
+    }
   }
 }
 
-// 获取单个 raw 文件
-// 'mp3/少年.mp3'
-export function getRawFileSource(fileName) {
-  const FilePath = encodeURIComponent(fileName);
-  return {
-    headers: {
-      'PRIVATE-TOKEN': PRIVATE_TOKEN,
-      'Access-Control-Allow-Credentials': 'true',
-    },
-    uri: `${baseURL}/projects/${ProjectId}/repository/files/${FilePath}/raw?ref=${Branch}`,
-  };
-}
+export const GitlabBuff = new GitlabBuffClass();
 
-// 对接插件管理
 export const GitlabPlugin = {
   methods: {
     getMediaSource(musicIten, quality) {
       const name = typeof musicIten === 'string' ? musicIten : musicIten.name;
-      const FilePath = encodeURIComponent(`mp3/${name}`);
-      const param = {
-        private_token: PRIVATE_TOKEN,
-        ref: Branch,
-      };
+      const FilePath = encodeURIComponent(`${ProjectCfg.rootDir}/${name}`);
       return {
-        url: `${baseURL}/projects/${ProjectId}/repository/files/${FilePath}/raw?${formatQuery(param)}`,
+        // url: `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`,
+        url: BuffDir + name,
       };
     },
   },
 };
 
+// ========== 工具函数 =============
 function formatQuery(val) {
   if (typeof val === 'string') {
     val = decodeURIComponent(val);
@@ -94,4 +165,25 @@ function formatQuery(val) {
       .join('&');
   }
   return val;
+}
+
+// 下载单个 raw 文件
+export async function downFile(fileName) {
+  const FilePath = encodeURIComponent(fileName);
+  const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`;
+  try {
+    return await fetch(url, RequestCfg);
+  } catch (err) {
+    console.error('downFile 错误', err);
+  }
+}
+
+// 获取单个 raw 文件
+// 'mp3/少年.mp3'
+export function getRawFileSource(fileName) {
+  const FilePath = encodeURIComponent(fileName);
+  return {
+    headers: ReqHeader,
+    uri: `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`,
+  };
 }

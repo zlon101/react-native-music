@@ -5,7 +5,7 @@ import SheetMusicList from './components/sheetMusicList';
 import StatusBar from '@/components/base/statusBar';
 import globalStyle from '@/constants/globalStyle';
 import VerticalSafeAreaView from '../base/verticalSafeAreaView';
-import {Log} from '@/utils/tool';
+import { Log } from '@/utils/tool';
 
 interface IMusicSheetPageProps {
   navTitle: string;
@@ -14,6 +14,7 @@ interface IMusicSheetPageProps {
   onEndReached?: () => void;
   loadMore?: 'loading' | 'done' | 'idle';
   children?: any;
+  onItemPress?: (item: IMusic.IMusicItem, list: IMusic.IMusicItem[], index?: number) => void;
 }
 
 export default function MusicSheetPage(props: IMusicSheetPageProps) {
@@ -31,6 +32,7 @@ export default function MusicSheetPage(props: IMusicSheetPageProps) {
           onEndReached?.();
         }}
         loadMore={loadMore}
+        onItemPress={props.onItemPress}
       />
       <MusicBar />
     </VerticalSafeAreaView>

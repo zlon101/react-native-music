@@ -19,7 +19,7 @@ interface IMusicListProps {
   /** 是否展示序号 */
   showIndex?: boolean;
   /** 点击 */
-  onItemPress?: (musicItem: IMusic.IMusicItem, musicList?: IMusic.IMusicItem[]) => void;
+  onItemPress?: (musicItem: IMusic.IMusicItem, musicList?: IMusic.IMusicItem[], index?: number) => void;
   loadMore?: 'loading' | 'done' | 'idle';
   onEndReached?: () => void;
 }
@@ -28,6 +28,9 @@ const ITEM_HEIGHT = rpx(120);
 /** 音乐列表 */
 export default function MusicList(props: IMusicListProps) {
   const { Header, musicList, musicSheet, showIndex, onItemPress, onEndReached, loadMore = 'idle' } = props;
+  const currentMusic = MusicQueue.useCurrentMusicItem();
+
+  const isActive = _item => currentMusic && currentMusic.id === _item.id;
 
   return (
     <FlashList
@@ -42,14 +45,15 @@ export default function MusicList(props: IMusicListProps) {
           <MusicItem
             musicItem={musicItem}
             index={showIndex ? index + 1 : undefined}
+            isActive={isActive(musicItem)}
+            musicSheet={musicSheet}
             onItemPress={() => {
               if (onItemPress) {
-                onItemPress(musicItem, musicList);
+                onItemPress(musicItem, musicList, index);
               } else {
                 MusicQueue.playWithReplaceQueue(musicItem, musicList ?? []);
               }
             }}
-            musicSheet={musicSheet}
           />
         );
       }}

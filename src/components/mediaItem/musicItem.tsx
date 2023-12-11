@@ -9,6 +9,7 @@ import LocalMusicSheet from '@/core/localMusicSheet';
 import { showPanel } from '../panels/usePanel';
 import TitleAndTag from './titleAndTag';
 import ThemeText from '../base/themeText';
+import useColors from '@/hooks/useColors';
 
 interface IMusicItemProps {
   index?: string | number;
@@ -18,8 +19,9 @@ interface IMusicItemProps {
   onItemPress?: (musicItem: IMusic.IMusicItem) => void;
   onItemLongPress?: () => void;
   itemPaddingRight?: number;
-  left?: () => ReactNode;
+  left?: React.FC;
   containerStyle?: StyleProp<ViewStyle>;
+  isActive?: boolean;
 }
 export default function MusicItem(props: IMusicItemProps) {
   const {
@@ -32,7 +34,10 @@ export default function MusicItem(props: IMusicItemProps) {
     showMoreIcon = true,
     left: Left,
     containerStyle,
+    isActive,
   } = props;
+
+  const colors = useColors();
 
   const desJsx = musicItem.artist && (
     <View style={styles.descContainer}>
@@ -45,6 +50,9 @@ export default function MusicItem(props: IMusicItemProps) {
       </ThemeText>
     </View>
   );
+
+  const txtColor = isActive ? colors.textHighlight ?? colors.primary : colors.text;
+
   return (
     <ListItem
       heightType="big"
@@ -62,12 +70,17 @@ export default function MusicItem(props: IMusicItemProps) {
       }}>
       {Left ? <Left /> : null}
       {index !== undefined ? (
-        <ListItem.ListItemText width={rpx(82)} position="none" fixedWidth contentStyle={styles.indexText}>
+        <ListItem.ListItemText
+          width={rpx(82)}
+          position="none"
+          fixedWidth
+          contentStyle={[styles.indexText, { color: txtColor }]}>
           {index}
         </ListItem.ListItemText>
       ) : null}
       <ListItem.Content
-        title={<TitleAndTag title={musicItem.title} tag={musicItem.platform} />}
+        color={txtColor}
+        title={<TitleAndTag title={musicItem.title} tag={musicItem.platform} color={txtColor} />}
         description={desJsx}
       />
       {showMoreIcon ? (

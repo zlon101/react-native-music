@@ -33,7 +33,7 @@ import { PluginMeta } from './pluginMeta';
 import { useEffect, useState } from 'react';
 import { getFileName } from '@/utils/fileUtils';
 import { GitlabPlugin } from '@/plugins/gitlab';
-import {Log} from '@/utils/tool';
+import { Log } from '@/utils/tool';
 
 axios.defaults.timeout = 2000;
 
@@ -63,7 +63,7 @@ const _require = (packageName: string) => {
   return pkg;
 };
 
-const _consoleBind = function(method: 'log' | 'error' | 'info' | 'warn', ...args: any) {
+const _consoleBind = function (method: 'log' | 'error' | 'info' | 'warn', ...args: any) {
   const fn = console[method];
   if (fn) {
     fn(...args);
@@ -130,10 +130,13 @@ export class Plugin {
       }
       this.checkValid(_instance);
     } catch (e: any) {
-      Log(`插件实例化失败
+      Log(
+        `插件实例化失败
         路径：${pluginPath}
         error: %o
-      `, e);
+      `,
+        e,
+      );
 
       this.state = 'error';
       this.stateCode = PluginStateCode.CannotParse;
@@ -238,7 +241,7 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
       getInternalData<string>(musicItem, InternalDataType.LOCALPATH) ??
       getInternalData<string>(LocalMusicSheet.isLocalMusic(musicItem), InternalDataType.LOCALPATH);
 
-    console.log('\n\nlocalPath:', localPath);
+    // console.log('\n\nlocalPath:', localPath);
 
     if (localPath && (localPath.startsWith('content://') || (await FileSystem.exists(localPath)))) {
       trace('本地播放', localPath);
@@ -662,17 +665,17 @@ const pluginStateMapper = new StateMapper(() => plugins);
 
 //#region 本地音乐插件
 /** 本地插件 */
-const localFilePlugin = new Plugin(function() {
+const localFilePlugin = new Plugin(function () {
   return {
     platform: localPluginPlatform,
     _path: '',
     async getMusicInfo(musicBase) {
       // const localPath = getInternalData<string>(musicBase, InternalDataType.LOCALPATH);
       // if (localPath) {
-        //   const coverImg = await Mp3Util.getMediaCoverImg(localPath);
-        //   return {
-          //     artwork: coverImg,
-        //   };
+      //   const coverImg = await Mp3Util.getMediaCoverImg(localPath);
+      //   return {
+      //     artwork: coverImg,
+      //   };
       // }
       return null;
     },

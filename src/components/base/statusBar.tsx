@@ -5,7 +5,7 @@ import useColors from '@/hooks/useColors';
 interface IStatusBarProps extends StatusBarProps {}
 
 export default function (props: IStatusBarProps) {
-  return (<></>);
+  return <></>;
   /*******
   const colors = useColors();
   const { backgroundColor, barStyle } = props;

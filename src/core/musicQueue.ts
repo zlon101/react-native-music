@@ -26,7 +26,8 @@ import musicHistory from './musicHistory';
 import getUrlExt from '@/utils/getUrlExt';
 import { DeviceEventEmitter } from 'react-native';
 import LyricManager from './lyricManager';
-import {Log} from '@/utils/tool';
+import { Log } from '@/utils/tool';
+import { GitlabBuff } from '@/plugins/gitlab';
 
 enum MusicRepeatMode {
   /** 随机播放 */
@@ -127,14 +128,15 @@ const setup = async () => {
     }
   });
 
-  /** 播放下一个 */
-  TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async evt => {
+  /** 播放下一个 PlaybackTrackChanged */
+  TrackPlayer.addEventListener(Event.PlaybackActiveTrackChanged, async evt => {
     // 是track里的，不是playlist里的
     trace('PlaybackTrackChanged 播放下一个', {
       evt,
     });
+    const nextIndex = evt.index;
 
-    if (evt.nextTrack === 1 && (await TrackPlayer.getTrack(evt.nextTrack))?.$ === internalFakeSoundKey) {
+    if (nextIndex === 1 && (await TrackPlayer.getTrack(nextIndex))?.$ === internalFakeSoundKey) {
       if (MusicQueue.getRepeatMode() === 'SINGLE') {
         await MusicQueue.play(undefined, true);
       } else {
@@ -319,15 +321,25 @@ const clear = async () => {
   currentMusicStateMapper.notify();
 };
 
+function getNextPlayIndex(nowIdx: number, N: number, isLast = false): number {
+  const inc = isLast ? -1 : 1;
+  if (nowIdx > -1) {
+    return (nowIdx + inc) % N;
+  }
+  return (nowIdx - 1 + N) % N;
+}
+
 /**
  * 获取自动播放的下一个track
  */
 const getFakeNextTrack = () => {
   let track: Track | undefined;
+  const N = musicQueue.length;
   if (repeatMode === MusicRepeatMode.SINGLE) {
     track = musicQueue[currentIndex] as Track;
   } else {
-    track = musicQueue.length !== 0 ? (musicQueue[(currentIndex + 1) % musicQueue.length] as Track) : undefined;
+    track = N !== 0 ? (musicQueue[getNextPlayIndex(currentIndex, N)] as Track) : undefined;
+    // TODO 针对 gitlab 处理，提前下载到缓存目录中
   }
 
   if (track) {
@@ -347,6 +359,7 @@ const getFakeNextTrack = () => {
  */
 const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
   deleteArtwork(musicItem);
+
   try {
     trace('播放', musicItem);
     //#region 移动网络时 根据设置重置player
@@ -386,6 +399,13 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
     }
     const _musicItem = musicQueue[currentIndex];
     let track: IMusic.IMusicItem;
+
+    //#region 针对 gitlab 平台特殊处理
+    if (_musicItem.sourcePlatform === 'gitlab') {
+      await GitlabBuff.write(_musicItem.name);
+    }
+    //#endregion
+
     try {
       // 通过插件获取音乐
       const plugin = PluginManager.getByName(_musicItem.platform);
@@ -396,7 +416,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
       );
       let source: IPlugin.IMediaSourceResult | null = null;
 
-      Log('1111111111111111');
+      // Log('1111111111111111');
       for (let quality of qualityOrder) {
         if (isSameMediaItem(musicQueue[currentIndex], _musicItem)) {
           source = (await plugin?.methods?.getMediaSource(_musicItem, quality)) ?? null;
@@ -411,7 +431,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
         }
       }
 
-      Log('22222222222', source);
+      // Log('22222222222', source);
       if (!source) {
         if (!_musicItem.url) {
           throw new Error('播放失败');
@@ -440,7 +460,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
 
       musicHistory.addMusic(_musicItem);
 
-      Log('33333333333', track);
+      // Log('33333333333', track);
       await replaceTrack(track as Track);
       currentMusicStateMapper.notify();
       let info: Partial<IMusic.IMusicItem> | null = null;
@@ -534,7 +554,7 @@ const skipToNext = async () => {
     return;
   }
 
-  await play(musicQueue[(currentIndex + 1) % musicQueue.length], true);
+  await play(musicQueue[getNextPlayIndex(currentIndex, musicQueue.length)], true);
 };
 
 const skipToPrevious = async () => {
@@ -545,7 +565,7 @@ const skipToPrevious = async () => {
   if (currentIndex === -1) {
     currentIndex = 0;
   }
-  await play(musicQueue[(currentIndex - 1 + musicQueue.length) % musicQueue.length], true);
+  await play(musicQueue[getNextPlayIndex(currentIndex, musicQueue.length, true)], true);
 };
 
 /** 修改当前播放的音质 */
@@ -605,6 +625,7 @@ const MusicQueue = {
   currentIndex,
   changeQuality,
   useCurrentQuality: currentQualityStateMapper.useMappedState,
+  getNextPlayIndex,
 };
 
 // 当 artwork 为空时删除属性
@@ -616,7 +637,7 @@ const deleteArtwork = (musics: any) => {
       if (item && item.artwork === '') {
         item.artwork = undefined;
       }
-    })
+    });
     return;
   }
 

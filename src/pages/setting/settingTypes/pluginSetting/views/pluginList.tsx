@@ -169,7 +169,6 @@ export default function PluginList() {
           {loading ? (
             <Loading />
           ) : (
-
             <FlatList
               ListEmptyComponent={Empty}
               ListFooterComponent={<View style={style.blank} />}

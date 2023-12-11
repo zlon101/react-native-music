@@ -6,12 +6,13 @@ import Tag from '../base/tag';
 interface ITitleAndTagProps {
   title: string;
   tag?: string;
+  color?: string;
 }
 export default function TitleAndTag(props: ITitleAndTagProps) {
-  const { title, tag } = props;
+  const { title, tag, color } = props;
   return (
     <View style={styles.container}>
-      <ThemeText numberOfLines={1} style={styles.title}>
+      <ThemeText numberOfLines={1} style={[styles.title, { color }]}>
         {title}
       </ThemeText>
       {tag ? <Tag tagName={tag} /> : null}

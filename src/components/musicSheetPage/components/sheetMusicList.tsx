@@ -8,7 +8,7 @@ import Config from '@/core/config';
 import MusicQueue from '@/core/musicQueue';
 import globalStyle from '@/constants/globalStyle';
 import HorizonalSafeAreaView from '@/components/base/horizonalSafeAreaView';
-import {Log} from '@/utils/tool';
+import { Log } from '@/utils/tool';
 
 interface IMusicListProps {
   sheetInfo: IMusic.IMusicSheetItem | null;
@@ -16,9 +16,11 @@ interface IMusicListProps {
   onEndReached?: () => void;
   loadMore?: 'loading' | 'done' | 'idle';
   showHeader?: boolean;
+  onItemPress?: (item: IMusic.IMusicItem, list: IMusic.IMusicItem[], index?: number) => void;
 }
+
 export default function SheetMusicList(props: IMusicListProps) {
-  const { sheetInfo: topListDetail, musicList, onEndReached, loadMore } = props;
+  const { sheetInfo: topListDetail, musicList, onEndReached, loadMore, onItemPress } = props;
   const showHeader = props.showHeader || false;
 
   return (
@@ -30,9 +32,13 @@ export default function SheetMusicList(props: IMusicListProps) {
           <MusicList
             showIndex
             loadMore={loadMore}
-            Header={showHeader ? (<Header topListDetail={topListDetail} musicList={musicList} />) : null}
+            Header={showHeader ? <Header topListDetail={topListDetail} musicList={musicList} /> : null}
             musicList={musicList}
-            onItemPress={(musicItem, musicList) => {
+            onItemPress={(musicItem, musicList, index) => {
+              if (onItemPress) {
+                onItemPress(musicItem, musicList as IMusic.IMusicItem[], index);
+                return;
+              }
               if (Config.get('setting.basic.clickMusicInAlbum') === '播放单曲') {
                 MusicQueue.play(musicItem);
               } else {

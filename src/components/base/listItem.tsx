@@ -190,10 +190,11 @@ interface IContentProps {
   children?: ReactNode;
   description?: ReactNode;
   containerStyle?: StyleProp<ViewStyle>;
+  color?: string;
 }
 
 function Content(props: IContentProps) {
-  const { children, title = children, description = null, containerStyle } = props;
+  const { children, title = children, description = null, containerStyle, color } = props;
 
   let realTitle;
   let realDescription;
@@ -206,7 +207,11 @@ function Content(props: IContentProps) {
 
   if (typeof description === 'string' || typeof description === 'number') {
     realDescription = (
-      <ThemeText numberOfLines={1} fontSize="description" fontColor="textSecondary" style={styles.contentDesc}>
+      <ThemeText
+        numberOfLines={1}
+        fontSize="description"
+        fontColor="textSecondary"
+        style={[styles.contentDesc, { color }]}>
         {description}
       </ThemeText>
     );

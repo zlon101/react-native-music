@@ -9,7 +9,7 @@ import musicIsPaused from '@/utils/musicIsPaused';
 import useOrientation from '@/hooks/useOrientation';
 import { showPanel } from '@/components/panels/usePanel';
 
-export default function() {
+export default function () {
   const repeatMode = MusicQueue.useRepeatMode();
   const musicState = MusicQueue.usePlaybackState();
   const orientation = useOrientation();

@@ -27,7 +27,9 @@ module.exports = async function () {
       }
     } else {
       if (paused) {
-        resumeState = await TrackPlayer.getState();
+        // resumeState = await TrackPlayer.getState();
+        const PlaybackState = await TrackPlayer.getPlaybackState();
+        resumeState = PlaybackState.state;
         return MusicQueue.pause();
       } else {
         if (resumeState && !musicIsPaused(resumeState)) {
@@ -39,12 +41,12 @@ module.exports = async function () {
     }
   });
 
-  TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => {
-    const currentMusicItem = MusicQueue.getCurrentMusicItem();
-    if (currentMusicItem) {
-      // LyricUtil.setStatusBarLyricText(`${currentMusicItem.title} - ${currentMusicItem.artist}`);
-    }
-  });
+  // TrackPlayer.addEventListener(Event.PlaybackTrackChanged, () => {
+  //   const currentMusicItem = MusicQueue.getCurrentMusicItem();
+  //   if (currentMusicItem) {
+  //     LyricUtil.setStatusBarLyricText(`${currentMusicItem.title} - ${currentMusicItem.artist}`);
+  //   }
+  // });
 
   TrackPlayer.addEventListener(Event.PlaybackProgressUpdated, evt => {
     Config.set('status.music.progress', evt.position, false);
