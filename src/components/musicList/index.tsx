@@ -2,7 +2,6 @@ import React from 'react';
 import { FlatListProps } from 'react-native';
 import rpx from '@/utils/rpx';
 import MusicQueue from '@/core/musicQueue';
-
 import MusicItem from '../mediaItem/musicItem';
 import Empty from '../base/empty';
 import { FlashList } from '@shopify/flash-list';
@@ -38,7 +37,7 @@ export default function MusicList(props: IMusicListProps) {
       ListEmptyComponent={loadMore !== 'loading' ? Empty : null}
       ListFooterComponent={loadMore === 'done' ? ListReachEnd : loadMore === 'loading' ? ListLoading : null}
       data={musicList ?? []}
-      keyExtractor={musicItem => `ml-${musicItem.id}${musicItem.platform}`}
+      keyExtractor={musicItem => `ml-${musicItem.id}${musicItem.platform}-${musicItem.title}`}
       estimatedItemSize={ITEM_HEIGHT}
       renderItem={({ index, item: musicItem }) => {
         return (

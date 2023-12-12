@@ -115,6 +115,10 @@ react-native-get-random-values 必须在全局入口处导入
 
 react-native-fetch-blob 不再维护，改为 rn-fetch-blob、react-native-fs
 
+10. 滚动加载列表
+
+[@shopify/flash-list](https://shopify.github.io/flash-list/docs/usage) 
+
 # 更新记录
 
 package.json

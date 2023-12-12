@@ -89,14 +89,16 @@ export default function Body(props: IBodyProps) {
   const listRef = useRef<FlatList<IMusic.IMusicItem> | null>();
   const safeAreaInsets = useSafeAreaInsets();
 
-  // const initIndex = useMemo(() => {
-  //   const id = musicQueue.findIndex(_ => isSameMediaItem(currentMusicItem, _));
-  //
-  //   if (id !== -1) {
-  //     return id;
-  //   }
-  //   return undefined;
-  // }, []);
+  const initIndex = useMemo(() => {
+    if (!musicQueue || musicQueue.length < 20) {
+      return undefined;
+    }
+    const _index = musicQueue.findIndex(_ => isSameMediaItem(currentMusicItem, _));
+    if (_index !== -1) {
+      return _index;
+    }
+    return undefined;
+  }, []);
 
   useEffect(() => {
     setCurrentIndex(musicQueue.findIndex(_ => isSameMediaItem(currentMusicItem, _)));
@@ -139,7 +141,7 @@ export default function Body(props: IBodyProps) {
           index,
         })}
         data={musicQueue}
-        // initialScrollIndex={initIndex}
+        initialScrollIndex={initIndex}
         renderItem={renderItem}
       />
     </View>

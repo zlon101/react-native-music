@@ -46,18 +46,23 @@ const ReqParam = {
 const regStr = supportLocalMediaType.map(it => it.slice(1)).join('|');
 export const MusicFileReg = new RegExp(`\\.(${regStr})$`); // /\.(mp3|m3u8)$/
 
-export async function getMusicList() {
+/**
+ * 手机屏幕一屏显示15个
+ * **/
+export async function getMusicList(page = 1) {
   const param = {
     ...ReqParam,
     recursive: false,
     path: ProjectCfg.rootDir,
     // 分页配置
-    per_page: 15,
+    page,
+    per_page: 30,
   };
   const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/tree/?${formatQuery(param)}`;
   try {
     const response = await fetch(url, RequestCfg);
     const resJson = await response.json();
+    console.log('\ngitlab api 响应\n', resJson);
     return resJson.filter(item => {
       MusicFileReg.lastIndex = 0;
       return MusicFileReg.test(item.name);
