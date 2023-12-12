@@ -3,13 +3,9 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import rpx from '@/utils/rpx';
 import DocumentPicker from 'react-native-document-picker';
 import Loading from '@/components/base/loading';
-
-import PluginManager from '@/core/pluginManager';
+import PluginManager from "@/core/pluginManager";
 import { trace } from '@/utils/log';
-
 import Toast from '@/utils/toast';
-import axios from 'axios';
-import { addRandomHash } from '@/utils/fileUtils';
 import { useNavigation } from '@react-navigation/native';
 import Config from '@/core/config';
 import Empty from '@/components/base/empty';
@@ -19,6 +15,8 @@ import { showPanel } from '@/components/panels/usePanel';
 import AppBar from '@/components/base/appBar';
 import Fab from '@/components/base/fab';
 import PluginItem from '../components/pluginItem';
+
+const installPluginFromUrl = PluginManager.installPluginFromUrl2;
 
 export default function PluginList() {
   const plugins = PluginManager.useSortedPlugins();
@@ -226,48 +224,5 @@ const style = StyleSheet.create({
   },
 });
 
-interface IInstallResult {
-  code: 'success' | 'fail';
-  message?: string;
-}
-async function installPluginFromUrl(text: string): Promise<IInstallResult> {
-  try {
-    let urls: string[] = [];
-    const iptUrl = addRandomHash(text.trim());
-    if (text.endsWith('.json')) {
-      const jsonFile = (await axios.get(iptUrl)).data;
-      /**
-       * {
-       *     plugins: [{
-       *          version: xxx,
-       *          url: xxx
-       *      }]
-       * }
-       */
-      urls = (jsonFile?.plugins ?? []).map((_: any) => addRandomHash(_.url));
-    } else {
-      urls = [iptUrl];
-    }
-    const failedPlugins: Array<string> = [];
-    await Promise.all(
-      urls.map(url =>
-        PluginManager.installPluginFromUrl(url, {
-          notCheckVersion: Config.get('setting.basic.notCheckPluginVersion'),
-        }).catch(e => {
-          failedPlugins.push(e?.message ?? '');
-        }),
-      ),
-    );
-    if (failedPlugins.length) {
-      throw new Error(failedPlugins.join('\n'));
-    }
-    return {
-      code: 'success',
-    };
-  } catch (e: any) {
-    return {
-      code: 'fail',
-      message: e?.message,
-    };
-  }
-}
+
+

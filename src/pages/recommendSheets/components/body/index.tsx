@@ -8,17 +8,12 @@ import SheetBody from './sheetBody';
 import useColors from '@/hooks/useColors';
 import NoPlugin from '@/components/base/noPlugin';
 
-export default function Body() {
-  const [index, setIndex] = useState(0);
+const renderTabBar = (props2: any) => {
   const colors = useColors();
-  const routes = PluginManager.getSortedRecommendSheetablePlugins().map(_ => ({
-    key: _.hash,
-    title: _.name,
-  }));
 
-  const renderTabBar = (_: any) => (
+  return (
     <TabBar
-      {..._}
+      {...props2}
       scrollEnabled
       style={{
         backgroundColor: 'transparent',
@@ -28,7 +23,7 @@ export default function Body() {
       tabStyle={{
         width: 'auto',
       }}
-      pressColor="transparent"
+      // pressColor="transparent"
       inactiveColor={colors.text}
       activeColor={colors.primary}
       renderLabel={({ route, focused, color }) => (
@@ -49,6 +44,15 @@ export default function Body() {
       }}
     />
   );
+};
+
+export default function Body() {
+  const [index, setIndex] = useState(0);
+
+  const routes = PluginManager.getSortedRecommendSheetablePlugins().map(_ => ({
+    key: _.hash,
+    title: _.name,
+  }));
 
   if (!routes?.length) {
     return <NoPlugin notSupportType="推荐歌单" />;
@@ -66,7 +70,7 @@ export default function Body() {
       }}
       onIndexChange={setIndex}
       initialLayout={{ width: vw(100) }}
-      swipeEnabled={false}
+      swipeEnabled={true}
     />
   );
 }

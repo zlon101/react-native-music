@@ -28,12 +28,13 @@ import he from 'he';
 import Network from './network';
 import LocalMusicSheet from './localMusicSheet';
 import { FileSystem } from 'react-native-file-access';
-// import Mp3Util from '@/native/mp3Util';
-import { PluginMeta } from './pluginMeta';
 import { useEffect, useState } from 'react';
-import { getFileName } from '@/utils/fileUtils';
-import { GitlabPlugin } from '@/plugins/gitlab';
+import { addRandomHash, getFileName } from '@/utils/fileUtils';
+import { GitlabPlugin, getFileUrl } from "@/plugins/gitlab";
 import { Log } from '@/utils/tool';
+import { PluginMeta } from './pluginMeta';
+import Config from '@/core/config';
+// import Mp3Util from '@/native/mp3Util';
 
 axios.defaults.timeout = 2000;
 
@@ -733,11 +734,24 @@ localFilePlugin.hash = localPluginHash;
 
 //#endregion
 
+const AutoInstallPlugins = [];
 async function setup() {
   const _plugins: Array<Plugin> = [];
   try {
     // 加载插件
     const pluginsPaths = await readDir(pathConst.pluginPath);
+    // 当没有安装插件时自动安装
+    if (!pluginsPaths.length) {
+      installPluginFromUrl2(getFileUrl('plugins.json', 52975221, 'master'))
+        .catch(err1 => {
+          Log('自动安装插件失败\n', err1);
+        })
+        .finally(() => {
+          setup();
+        });
+      return;
+    }
+
     for (let i = 0; i < pluginsPaths.length; ++i) {
       const _pluginUrl = pluginsPaths[i];
       trace('初始化插件');
@@ -852,6 +866,53 @@ async function installPluginFromUrl(url: string, config?: IInstallPluginConfig) 
     devLog('error', 'URL安装插件失败', e, e?.message);
     errorLog('URL安装插件失败', e);
     throw new Error(e?.message ?? '');
+  }
+}
+
+interface IInstallResult {
+  code: 'success' | 'fail';
+  message?: string;
+}
+
+export async function installPluginFromUrl2(text: string): Promise<IInstallResult> {
+  try {
+    let urls: string[] = [];
+    const iptUrl = addRandomHash(text.trim());
+    if (text.endsWith('.json') || text.includes('.json/raw')) {
+      const jsonFile = (await axios.get(iptUrl)).data;
+      /**
+       * {
+       *     plugins: [{
+       *          version: xxx,
+       *          url: xxx
+       *      }]
+       * }
+       */
+      urls = (jsonFile?.plugins ?? []).map((_: any) => addRandomHash(_.url));
+    } else {
+      urls = [iptUrl];
+    }
+    const failedPlugins: Array<string> = [];
+    await Promise.all(
+      urls.map(url =>
+        installPluginFromUrl(url, {
+          notCheckVersion: Config.get('setting.basic.notCheckPluginVersion'),
+        }).catch(e => {
+          failedPlugins.push(e?.message ?? '');
+        }),
+      ),
+    );
+    if (failedPlugins.length) {
+      throw new Error(failedPlugins.join('\n'));
+    }
+    return {
+      code: 'success',
+    };
+  } catch (e: any) {
+    return {
+      code: 'fail',
+      message: e?.message,
+    };
   }
 }
 
@@ -1003,6 +1064,7 @@ const PluginManager = {
   setup,
   installPlugin,
   installPluginFromUrl,
+  installPluginFromUrl2,
   updatePlugin,
   uninstallPlugin,
   getByMedia,

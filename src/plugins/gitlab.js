@@ -72,12 +72,6 @@ export async function getMusicList(page = 1) {
   }
 }
 
-// 获取远程url
-export function getRemoteUrl(musicName) {
-  const musicPath = encodeURIComponent(`${ProjectCfg.rootDir}/${musicName}`);
-  return `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${musicPath}/raw?${formatQuery(ReqParam)}`;
-}
-
 /**
  * ******************************
  * 对接插件管理
@@ -166,9 +160,11 @@ class GitlabBuffClass {
       throw new Error(errMsg);
     }
 
+    const musicPath = encodeURIComponent(`${ProjectCfg.rootDir}/${fileName}`);
+    const fromUrl = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${musicPath}/raw?${formatQuery(ReqParam)}`;
     await this.createDir();
     const { jobId, promise } = downloadFile({
-      fromUrl: getRemoteUrl(fileName),
+      fromUrl,
       toFile: BuffDir + fileName,
       begin: arg => {},
       progress: arg => {},
@@ -244,7 +240,9 @@ function formatQuery(val) {
   return val;
 }
 
-// 下载单个 raw 文件
+/**
+ * 下载单个 raw 文件
+ * **/
 export async function downFile(fileName) {
   const FilePath = encodeURIComponent(fileName);
   const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`;
@@ -255,12 +253,11 @@ export async function downFile(fileName) {
   }
 }
 
-// 获取单个 raw 文件
-// 'mp3/少年.mp3'
-export function getRawFileSource(fileName) {
+/**
+ * 获取单个 raw 文件
+ * @fileName: mp3/少年.mp3
+ * **/
+export function getFileUrl(fileName, projectId = ProjectCfg.projectId, ref = ReqParam.ref) {
   const FilePath = encodeURIComponent(fileName);
-  return {
-    headers: ReqHeader,
-    uri: `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`,
-  };
+  return `${baseURL}/projects/${projectId}/repository/files/${FilePath}/raw?${formatQuery({...ReqParam, ref})}`;
 }
