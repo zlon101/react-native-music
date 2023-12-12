@@ -169,10 +169,9 @@ async function downloadNext() {
       for (let quality of qualityOrder) {
         try {
           data = await plugin.methods.getMediaSource(musicItem, quality, 1, true);
-          if (!data?.url) {
-            continue;
+          if (data?.url) {
+            break;
           }
-          break;
         } catch {}
       }
       url = data?.url ?? url;

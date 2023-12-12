@@ -1,21 +1,13 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Button, Text, View } from 'react-native';
-import { readDir, downloadFile } from 'react-native-fs';
-import TrackPlayer, { Event, State, useProgress } from 'react-native-track-player';
+// import { Button, Text, View } from 'react-native';
+// import { readDir, downloadFile } from 'react-native-fs';
+import TrackPlayer from 'react-native-track-player';
 import { useImmer } from 'use-immer';
 import { getMusicList, GitlabBuff, GitlabPlugin } from '@/plugins/gitlab';
 import { Log } from '@/utils/tool';
 import { GitlabMusicSheetId } from '@/constants/commonConst';
 import MusicQueue from '@/core/musicQueue';
 import MusicSheetPage from '@/components/musicSheetPage';
-// import useTopListDetail from './hooks/useTopListDetail';
-// import { useParams } from '@/entry/router';
-// import VerticalSafeAreaView from '@/components/base/verticalSafeAreaView';
-// import AppBar from '@/components/base/appBar';
-// import MusicBar from '@/components/musicBar';
-// import HorizonalSafeAreaView from '@/components/base/horizonalSafeAreaView';
-// import globalStyle from '@/constants/globalStyle';
-// import MusicList from '@/components/musicList';
 
 /**
  * url: 'https://music.163.com/song/media/outer/url?id=2024600749.mp3'

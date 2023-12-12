@@ -5,9 +5,12 @@
  * gitlab api url 中的 query 必须与文档上的一致，不能随意使用 encodeURIComponent
  * *******/
 
-import { readDir, downloadFile } from 'react-native-fs';
+import { readDir, downloadFile, unlink, exists, mkdir, stopDownload } from 'react-native-fs';
+import { PERMISSIONS, check } from 'react-native-permissions';
 import CustomPath from '@/constants/pathConst';
+import {supportLocalMediaType} from '@/constants/commonConst';
 import { Log } from '@/utils/tool';
+import Toast from "@/utils/toast";
 
 const baseURL = 'https://gitlab.com/api/v4';
 const PRIVATE_TOKEN = 'glpat-4jvu2R5etMDtVXJsDx33';
@@ -40,7 +43,8 @@ const ReqParam = {
 "mode": "100644"
  **/
 
-const MusicFileReg = /\.(mp3|m3u8)$/;
+const regStr = supportLocalMediaType.map(it => it.slice(1)).join('|');
+export const MusicFileReg = new RegExp(`\\.(${regStr})$`); // /\.(mp3|m3u8)$/
 
 export async function getMusicList() {
   const param = {
@@ -54,7 +58,10 @@ export async function getMusicList() {
   try {
     const response = await fetch(url, RequestCfg);
     const resJson = await response.json();
-    return resJson.filter(item => /\.(mp3|m3u8)$/.test(item.name));
+    return resJson.filter(item => {
+      MusicFileReg.lastIndex = 0;
+      return MusicFileReg.test(item.name);
+    });
   } catch (err) {
     console.error('getAllMusic 错误', err);
   }
@@ -80,20 +87,36 @@ interface IBuffFile {
   isDirectory: () => boolean;
 }**/
 
-const BuffDir = CustomPath.downloadMusicPath;
+const BuffDir = CustomPath.localTmpBuff;
 
 class GitlabBuffClass {
   constructor() {
+    // 缓存目录是否存在
+    this.buffDirExist = false;
     // 缓存目录中存在的文件名（含后缀）
     this.buffNames = new Set();
+    // 正在下载的队列 Object<name, jobId>
+    this.downloadQueue = [];
+    // 是否有写文件权限
+    this.writePermission = null;
   }
-
   has(name) {
     return this.buffNames.has(name);
   }
-  // get a list of files and directories in the main bundle
-  // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+  async checkPermission() {
+    if (this.writePermission !== null) {
+      return this.writePermission;
+    }
+    const perm = await check(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+    this.writePermission = perm === 'granted';
+    return this.writePermission;
+  }
+  /**
+   * get a list of files and directories in the main bundle
+   * On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
+   * **/
   async read() {
+    await this.createDir();
     const musicFiles = [];
     try {
       const list = await readDir(BuffDir);
@@ -113,22 +136,71 @@ class GitlabBuffClass {
       throw e;
     }
   }
-  // fileName: xxx.mp3
+  /**
+   * @fileName: xxx.mp3
+   * ***/
   async write(fileName) {
-    if (this.has(fileName)) return;
+    if (this.has(fileName) || this.downloadQueue.some(_it => _it.name === fileName)) {
+      return;
+    }
+    let errMsg = '';
+    const N = this.downloadQueue.length;
+    if (N > 3) {
+      errMsg = '下载队列超过3个，稍后重试！';
+      for (let i = 0; i < N - 1; i++) {
+        stopDownload(this.downloadQueue[i].jobId);
+      }
+      // Toast.warn(errMsg);
+      // throw new Error(errMsg);
+    }
 
-    const { promise } = downloadFile({
+    // 检查权限
+    if (!await this.checkPermission()) {
+      errMsg = '权限不足，请检查是否授予写入文件的权限';
+      Toast.warn(errMsg);
+      throw new Error(errMsg);
+    }
+
+    await this.createDir();
+    const { jobId, promise } = downloadFile({
       fromUrl: getRemoteUrl(fileName),
       toFile: BuffDir + fileName,
       begin: arg => {},
       progress: arg => {},
     });
+    this.downloadQueue.push({name: fileName, jobId});
     try {
       await promise;
-      // Log(`GitlabBuff.write(${fileName}) then`);
       this.buffNames.add(fileName);
     } catch (e) {
       Log(`下载 ${fileName} 失败，error:\n`, e);
+    }
+    this.downloadQueue = this.downloadQueue.filter(t => t.name !== fileName);
+  }
+  // 创建缓存目录
+  async createDir() {
+    if (this.buffDirExist) {
+      return;
+    }
+    this.buffDirExist = await exists(BuffDir);
+    if (!this.buffDirExist) {
+      await mkdir(BuffDir)
+    }
+  }
+  /**
+   * 清空缓存目录中的文件
+   * ***/
+  async clear() {
+    if (!await this.checkPermission()) {
+      Toast.warn('权限不足，请检查是否授予写入文件的权限');
+      return;
+    }
+    try {
+      await unlink(BuffDir);
+      this.buffDirExist = false;
+      await this.createDir();
+    } catch (e) {
+      Log(`删除 ${BuffDir} 失败, e:\n`, e);
     }
   }
 }

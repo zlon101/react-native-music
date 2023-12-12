@@ -14,4 +14,6 @@ export default {
   lrcCachePath: `${basePath}/cache/lrc/`,
   downloadPath: `${basePath}/download/`,
   downloadMusicPath: `${basePath}/download/music/`,
+  // 本地临时缓存目录
+  localTmpBuff: `${basePath}/download/tmp/`,
 };

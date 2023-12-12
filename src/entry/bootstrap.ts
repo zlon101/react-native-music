@@ -3,7 +3,6 @@ import MusicSheet from '@/core/musicSheet';
 import { check, PERMISSIONS, request } from 'react-native-permissions';
 import TrackPlayer, { Capability } from 'react-native-track-player';
 import Config from '@/core/config';
-// import RNBootSplash from 'react-native-bootsplash';
 import pathConst from '@/constants/pathConst';
 import { checkAndCreateDir } from '@/utils/fileUtils';
 import { errorLog, trace } from '@/utils/log';
@@ -19,6 +18,8 @@ import LyricManager from '@/core/lyricManager';
 import { getStorage, setStorage } from '@/utils/storage';
 import Toast from '@/utils/toast';
 import { localPluginHash, supportLocalMediaType } from '@/constants/commonConst';
+import {GitlabBuff} from '@/plugins/gitlab';
+// import RNBootSplash from 'react-native-bootsplash';
 
 /** app加载前执行
  * 1. 检查权限
@@ -92,6 +93,7 @@ async function setupFolder() {
       checkAndCreateDir(pathConst.downloadMusicPath);
     }),
   ]);
+  GitlabBuff.clear();
 }
 
 export default async function () {
