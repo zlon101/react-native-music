@@ -30,7 +30,7 @@ import LocalMusicSheet from './localMusicSheet';
 import { FileSystem } from 'react-native-file-access';
 import { useEffect, useState } from 'react';
 import { addRandomHash, getFileName } from '@/utils/fileUtils';
-import { GitlabPlugin, getFileUrl } from "@/plugins/gitlab";
+import { GitlabPlugin, getFileUrl } from '@/plugins/gitlab';
 import { Log } from '@/utils/tool';
 import { PluginMeta } from './pluginMeta';
 import Config from '@/core/config';

@@ -3,7 +3,7 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import rpx from '@/utils/rpx';
 import DocumentPicker from 'react-native-document-picker';
 import Loading from '@/components/base/loading';
-import PluginManager from "@/core/pluginManager";
+import PluginManager from '@/core/pluginManager';
 import { trace } from '@/utils/log';
 import Toast from '@/utils/toast';
 import { useNavigation } from '@react-navigation/native';
@@ -223,6 +223,3 @@ const style = StyleSheet.create({
     height: rpx(200),
   },
 });
-
-
-

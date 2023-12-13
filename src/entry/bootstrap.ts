@@ -18,7 +18,7 @@ import LyricManager from '@/core/lyricManager';
 import { getStorage, setStorage } from '@/utils/storage';
 import Toast from '@/utils/toast';
 import { localPluginHash, supportLocalMediaType } from '@/constants/commonConst';
-import {GitlabBuff} from '@/plugins/gitlab';
+import { GitlabBuff } from '@/plugins/gitlab';
 // import RNBootSplash from 'react-native-bootsplash';
 
 /** app加载前执行

@@ -12,6 +12,7 @@ import IconButton from '@/components/base/iconButton';
 import Loading from '@/components/base/loading';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import useColors from '@/hooks/useColors';
+import { MusicFileReg } from '@/plugins/gitlab';
 
 const ITEM_HEIGHT = rpx(108);
 const ITEM_WIDTH = rpx(750);
@@ -27,8 +28,7 @@ function _PlayListItem(props: IPlayListProps) {
   const colors = useColors();
   const { item, index, currentIndex } = props;
 
-  // console.log('rerender', index, currentIndex, item);
-  const title = item.title.replace(/\.mp3$/i, '');
+  const title = item.title.replace(MusicFileReg, '');
   const _isActive = currentIndex === index;
   return (
     <Pressable

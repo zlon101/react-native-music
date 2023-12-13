@@ -8,9 +8,9 @@
 import { readDir, downloadFile, unlink, exists, mkdir, stopDownload } from 'react-native-fs';
 import { PERMISSIONS, check } from 'react-native-permissions';
 import CustomPath from '@/constants/pathConst';
-import {supportLocalMediaType} from '@/constants/commonConst';
+import { supportLocalMediaType } from '@/constants/commonConst';
 import { Log } from '@/utils/tool';
-import Toast from "@/utils/toast";
+import Toast from '@/utils/toast';
 
 const baseURL = 'https://gitlab.com/api/v4';
 const PRIVATE_TOKEN = 'glpat-4jvu2R5etMDtVXJsDx33';
@@ -44,7 +44,7 @@ const ReqParam = {
  **/
 
 const regStr = supportLocalMediaType.map(it => it.slice(1)).join('|');
-export const MusicFileReg = new RegExp(`\\.(${regStr})$`); // /\.(mp3|m3u8)$/
+export const MusicFileReg = new RegExp(`\\.(${regStr})$`, 'i'); // /\.(mp3|m3u8)$/
 
 /**
  * 手机屏幕一屏显示15个
@@ -62,11 +62,7 @@ export async function getMusicList(page = 1) {
   try {
     const response = await fetch(url, RequestCfg);
     const resJson = await response.json();
-    console.log('\ngitlab api 响应\n', resJson);
-    return resJson.filter(item => {
-      MusicFileReg.lastIndex = 0;
-      return MusicFileReg.test(item.name);
-    });
+    return resJson.filter(item => MusicFileReg.test(item.name));
   } catch (err) {
     console.error('getAllMusic 错误', err);
   }
@@ -154,14 +150,16 @@ class GitlabBuffClass {
     }
 
     // 检查权限
-    if (!await this.checkPermission()) {
+    if (!(await this.checkPermission())) {
       errMsg = '权限不足，请检查是否授予写入文件的权限';
       Toast.warn(errMsg);
       throw new Error(errMsg);
     }
 
     const musicPath = encodeURIComponent(`${ProjectCfg.rootDir}/${fileName}`);
-    const fromUrl = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${musicPath}/raw?${formatQuery(ReqParam)}`;
+    const fromUrl = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${musicPath}/raw?${formatQuery(
+      ReqParam,
+    )}`;
     await this.createDir();
     const { jobId, promise } = downloadFile({
       fromUrl,
@@ -169,7 +167,7 @@ class GitlabBuffClass {
       begin: arg => {},
       progress: arg => {},
     });
-    this.downloadQueue.push({name: fileName, jobId});
+    this.downloadQueue.push({ name: fileName, jobId });
     try {
       await promise;
       this.buffNames.add(fileName);
@@ -185,14 +183,14 @@ class GitlabBuffClass {
     }
     this.buffDirExist = await exists(BuffDir);
     if (!this.buffDirExist) {
-      await mkdir(BuffDir)
+      await mkdir(BuffDir);
     }
   }
   /**
    * 清空缓存目录中的文件
    * ***/
   async clear() {
-    if (!await this.checkPermission()) {
+    if (!(await this.checkPermission())) {
       Toast.warn('权限不足，请检查是否授予写入文件的权限');
       return;
     }
@@ -259,5 +257,5 @@ export async function downFile(fileName) {
  * **/
 export function getFileUrl(fileName, projectId = ProjectCfg.projectId, ref = ReqParam.ref) {
   const FilePath = encodeURIComponent(fileName);
-  return `${baseURL}/projects/${projectId}/repository/files/${FilePath}/raw?${formatQuery({...ReqParam, ref})}`;
+  return `${baseURL}/projects/${projectId}/repository/files/${FilePath}/raw?${formatQuery({ ...ReqParam, ref })}`;
 }

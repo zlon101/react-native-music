@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import { useImmer } from 'use-immer';
 import { getMusicList, GitlabBuff, GitlabPlugin } from '@/plugins/gitlab';
@@ -7,8 +7,8 @@ import { Log } from '@/utils/tool';
 import { GitlabMusicSheetId } from '@/constants/commonConst';
 import MusicQueue from '@/core/musicQueue';
 import MusicSheetPage from '@/components/musicSheetPage';
-import ListLoading from "@/components/base/listLoading";
-import { next } from "cheerio/lib/api/traversing";
+import ListLoading from '@/components/base/listLoading';
+import { next } from 'cheerio/lib/api/traversing';
 
 /**
  * url: 'https://music.163.com/song/media/outer/url?id=2024600749.mp3'
@@ -39,34 +39,39 @@ export default function GitlabList() {
   const [loadMore, setLoadMore] = useState<'loading' | 'done' | 'idle'>('idle');
 
   // 从 gitlab api 获取文件列表
-  const fetchPage = useCallback((page: number) => {
-    getMusicList(page).then((list: IGitlabResponseItem[]) => {
-      if (!list || !list.length) {
-        setLoadMore('done');
-        return;
-      }
-      setLoadMore('idle');
-      const _list = list.map(item => {
-        const playUrl = GitlabPlugin.methods.getMediaSource(item).url;
-        return {
-          ...item,
-          type: 'default',
-          title: item.name.replace(/\.\w+$/, ''),
-          platform: '本地',
-          sourcePlatform: 'gitlab',
-          url: playUrl,
-          $: {
-            localPath: playUrl,
-          },
-        };
-      });
-      updateSheetInfo(draft => {
-        draft.musicList = [...sheetInfo.musicList, ..._list] as any;
-      });
-    }).finally(() => {
-      setLoading(false);
-    });
-  }, [sheetInfo]);
+  const fetchPage = useCallback(
+    (page: number) => {
+      getMusicList(page)
+        .then((list: IGitlabResponseItem[]) => {
+          if (!list || !list.length) {
+            setLoadMore('done');
+            return;
+          }
+          setLoadMore('idle');
+          const _list = list.map(item => {
+            const playUrl = GitlabPlugin.methods.getMediaSource(item).url;
+            return {
+              ...item,
+              type: 'default',
+              title: item.name.replace(/\.\w+$/, ''),
+              platform: '本地',
+              sourcePlatform: 'gitlab',
+              url: playUrl,
+              $: {
+                localPath: playUrl,
+              },
+            };
+          });
+          updateSheetInfo(draft => {
+            draft.musicList = [...sheetInfo.musicList, ..._list] as any;
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    },
+    [sheetInfo],
+  );
 
   useEffect(() => {
     console.clear();
@@ -137,8 +142,7 @@ export default function GitlabList() {
       sheetInfo={sheetInfo}
       onItemPress={onItemPress}
       loadMore={loadMore}
-      onEndReached={handleEndReached}
-    >
+      onEndReached={handleEndReached}>
       {/*
       <View>
         <Button title="获取状态" onPress={onGetStatus} />
