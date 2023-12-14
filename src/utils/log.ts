@@ -3,6 +3,7 @@ import RNFS, { readDir, readFile } from 'react-native-fs';
 import pathConst from '@/constants/pathConst';
 import Config from '../core/config';
 import { addLog } from '@/lib/react-native-vdebug/src/log';
+import { getType } from '@/utils/tool';
 
 const config = {
   transport: fileAsyncTransport,
@@ -85,6 +86,9 @@ export async function getErrorLogContent() {
 }
 
 export function errorLog(desc: string, message: any) {
+  if (message && getType(message, 'object')) {
+    message = JSON.stringify(message, null, 2);
+  }
   if (Config.get('setting.basic.debug.errorLog')) {
     log.error({
       desc,

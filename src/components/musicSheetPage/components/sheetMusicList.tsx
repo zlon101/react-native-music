@@ -1,6 +1,5 @@
 import React from 'react';
 import { View } from 'react-native';
-
 import Loading from '@/components/base/loading';
 import Header from './header';
 import MusicList from '@/components/musicList';

@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { StyleSheet, View } from 'react-native';
-import TrackPlayer from 'react-native-track-player';
+import React, { useEffect, useState, useCallback } from 'react';
+// import { StyleSheet, View, Text } from 'react-native';
+// import TrackPlayer from 'react-native-track-player';
 import { useImmer } from 'use-immer';
 import { getMusicList, GitlabBuff, GitlabPlugin } from '@/plugins/gitlab';
-import { Log } from '@/utils/tool';
 import { GitlabMusicSheetId } from '@/constants/commonConst';
 import MusicQueue from '@/core/musicQueue';
 import MusicSheetPage from '@/components/musicSheetPage';
-import ListLoading from '@/components/base/listLoading';
-import { next } from 'cheerio/lib/api/traversing';
+// import { Log } from '@/utils/tool';
 
 /**
  * url: 'https://music.163.com/song/media/outer/url?id=2024600749.mp3'
@@ -33,7 +31,6 @@ const SheetInfoInit = {
 
 export default function GitlabList() {
   const [sheetInfo, updateSheetInfo] = useImmer(SheetInfoInit);
-  const [loading, setLoading] = useState(true);
   const playQueue = MusicQueue.useMusicQueue();
   const [page, setPage] = useState(1);
   const [loadMore, setLoadMore] = useState<'loading' | 'done' | 'idle'>('idle');
@@ -66,15 +63,11 @@ export default function GitlabList() {
             draft.musicList = [...sheetInfo.musicList, ..._list] as any;
           });
         })
-        .finally(() => {
-          setLoading(false);
-        });
     },
     [sheetInfo],
   );
 
   useEffect(() => {
-    console.clear();
     GitlabBuff.read();
     fetchPage(1);
   }, []);
@@ -94,27 +87,27 @@ export default function GitlabList() {
     [sheetInfo.musicList, playQueue?.length],
   );
 
-  const onGetStatus = async () => {
-    const state = await TrackPlayer.getPlaybackState();
-    const queue = await TrackPlayer.getQueue();
-    const volume = await TrackPlayer.getVolume();
-
-    // let trackIndex = await TrackPlayer.getCurrentTrack();
-    // let trackObject = await TrackPlayer.getTrack(trackIndex);
-    // Log(`trackObject: ${trackObject.title}`);
-    //
-    // const position = await TrackPlayer.getPosition();
-    // const duration = await TrackPlayer.getDuration();
-    // Log(`duration: ${duration}  position: ${position}`);
-
-    Log(
-      `
-      state: ${JSON.stringify(state, null, 2)}
-      queue: %o,
-    `,
-      queue,
-    );
-  };
+  // const onGetStatus = async () => {
+  //   const state = await TrackPlayer.getPlaybackState();
+  //   const queue = await TrackPlayer.getQueue();
+  //   const volume = await TrackPlayer.getVolume();
+  //
+  //   // let trackIndex = await TrackPlayer.getCurrentTrack();
+  //   // let trackObject = await TrackPlayer.getTrack(trackIndex);
+  //   // Log(`trackObject: ${trackObject.title}`);
+  //   //
+  //   // const position = await TrackPlayer.getPosition();
+  //   // const duration = await TrackPlayer.getDuration();
+  //   // Log(`duration: ${duration}  position: ${position}`);
+  //
+  //   Log(
+  //     `
+  //     state: ${JSON.stringify(state, null, 2)}
+  //     queue: %o,
+  //   `,
+  //     queue,
+  //   );
+  // };
 
   // 下拉加载更多
   const handleEndReached = useCallback(() => {
@@ -129,13 +122,6 @@ export default function GitlabList() {
     setPage(nextPage);
   }, [page, fetchPage, loadMore]);
 
-  if (loading) {
-    return (
-      <View style={style.loadingWrap}>
-        <ListLoading />
-      </View>
-    );
-  }
   return (
     <MusicSheetPage
       navTitle="Gitlab"
@@ -143,27 +129,10 @@ export default function GitlabList() {
       onItemPress={onItemPress}
       loadMore={loadMore}
       onEndReached={handleEndReached}>
-      {/*
-      <View>
-        <Button title="获取状态" onPress={onGetStatus} />
-        <Button title="播放/暂停" onPress={onPlay} />
-        <Button title="下一首" onPress={onSkipToNext} />
-        <Button title="上一首" onPress={onSkipToPrevious} />
-        <Button title="onDownload" onPress={onDownload} />
-        <Text style={{ color: 'red' }}>{JSON.stringify(progress, null, 2)}</Text>
-      </View>
-      */}
+      {/*<Button title="获取状态" onPress={onGetStatus} />*/}
     </MusicSheetPage>
   );
 }
-
-const style = StyleSheet.create({
-  loadingWrap: {
-    display: 'flex',
-    justifyContent: 'center',
-    flex: 1,
-  },
-});
 
 //#region 工具函数
 

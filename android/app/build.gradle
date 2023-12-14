@@ -84,9 +84,21 @@ android {
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storePassword 'musicrn'
+            keyAlias 'debug'
+            keyPassword 'musicrn'
+        }
+        // 从命令行获取配置，避免信息泄露
+        release {
+            storeFile file('release.keystore')
+            storePassword 'musicrn'
+            keyAlias 'release'
+            keyPassword 'musicrn'
+
+            // storeFile file('release.keystore')
+            // storePassword System.console().readLine("\nKeystore password:")
+            // keyAlias System.console().readLine("\nAlias: ")
+            // keyPassword System.console().readLine("\nAlias password: ")
         }
     }
     buildTypes {
@@ -96,7 +108,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

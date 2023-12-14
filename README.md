@@ -20,16 +20,17 @@ Require cycles are allowed, but can result in uninitialized values. Consider ref
 - 歌曲列表 <MusicSheetPage>
 - 歌曲的 `artwork` 不能传空字符，可以不传该属性
 
+## 修改
 
-# setup
+@/native 删除
 
-创建项目
+immer 引用： `import produce from 'immer'` 改为 `import { produce } from 'immer';`
 
-```shell
-npx react-native init demo --template react-native-template-typescript --skip-install CocoaPods
-```
+批量格式化代码
 
-# fork
+src 复制粘贴，保留新增，android 目录用 merge
+
+## fork
 
 https://github.com/maotoumao/MusicFree
 
@@ -42,15 +43,18 @@ commit: 8eb7504dc648f883639b6394c78f95c7497f6075
 
 原理: https://mp.weixin.qq.com/s/pjyOjTDrV85ImRQ6EWbgAg
 
-## 修改
 
-@/native 删除
+# 项目配置
 
-immer 引用： `import produce from 'immer'` 改为 `import { produce } from 'immer';`
+1. 创建项目
 
-批量格式化代码
+```shell
+npx react-native init demo --template react-native-template-typescript --skip-install CocoaPods
+```
 
-src 复制粘贴，保留新增，android 目录用 merge
+2. 应用配置
+
+[React Native 中设置 APP 名称、图标和启动页](https://www.jianshu.com/p/727c6057fc0a) 
 
 
 # 调试
@@ -58,6 +62,12 @@ src 复制粘贴，保留新增，android 目录用 merge
 [真机调试](https://reactnative.dev/docs/running-on-device) 
 
 http://localhost:8081/index.bundle?platform=android&dev=true&minify=false&modulesOnly=false&runModule=true
+
+
+# 编译apk
+
+https://reactnative.dev/docs/signed-apk-android
+
 
 # 依赖
 
