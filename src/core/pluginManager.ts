@@ -742,7 +742,7 @@ async function setup() {
     const pluginsPaths = await readDir(pathConst.pluginPath);
     // 当没有安装插件时自动安装
     if (!pluginsPaths.length) {
-      installPluginFromUrl2(getFileUrl('plugins.json', 52975221, 'master'))
+      installPluginFromUrl2(getFileUrl(52975221, 'master', 'plugins.json'))
         .catch(err1 => {
           Log('自动安装插件失败\n', err1);
         })

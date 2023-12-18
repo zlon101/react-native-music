@@ -18,7 +18,7 @@ const PRIVATE_TOKEN = 'glpat-4jvu2R5etMDtVXJsDx33';
 const ProjectCfg = {
   projectId: 52878930,
   branch: 'main',
-  rootDir: 'all',
+  rootDir: 'music-lin',
 };
 
 const ReqHeader = {
@@ -35,19 +35,18 @@ const ReqParam = {
   ref: ProjectCfg.branch,
 };
 
-/** 接口响应
-"id": "bd5f98e9cde2eed45b255c3cd42da4f57f0a88d1",
-"name": "faded.mp3",
-"type": "blob",
-"path": "all/faded.mp3",
-"mode": "100644"
- **/
-
 const regStr = supportLocalMediaType.map(it => it.slice(1)).join('|');
 export const MusicFileReg = new RegExp(`\\.(${regStr})$`, 'i'); // /\.(mp3|m3u8)$/
 
 /**
+ * 获取音乐列表
  * 手机屏幕一屏显示15个
+ * 接口响应
+ *   "id": "bd5f98e9cde2eed45b255c3cd42da4f57f0a88d1",
+ *   "name": "faded.mp3",
+ *   "type": "blob",
+ *   "path": "all/faded.mp3",
+ *   "mode": "100644"
  * **/
 export async function getMusicList(page = 1) {
   const param = {
@@ -69,19 +68,67 @@ export async function getMusicList(page = 1) {
 }
 
 /**
+ * 获取图像列表
+ * **/
+export async function getImageList(page = 1) {
+  const param = {
+    ...ReqParam,
+    recursive: false,
+    path: 'images',
+    page,
+    per_page: 300,
+  };
+  const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/tree/?${formatQuery(param)}`;
+  try {
+    const response = await fetch(url, RequestCfg);
+    const resJson = await response.json();
+    return resJson.filter(item => /\.(jpg|png|jpeg)$/i.test(item.name));
+  } catch (err) {
+    console.error('getImageList 错误', err);
+  }
+}
+
+/**
+ * 下载单个 raw 文件
+ * **/
+export async function downFile(fileName) {
+  const FilePath = encodeURIComponent(fileName);
+  const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`;
+  try {
+    return await fetch(url, RequestCfg);
+  } catch (err) {
+    console.error('downFile 错误', err);
+  }
+}
+
+/**
+ * 获取单个 raw 文件
+ * @fileName: mp3/少年.mp3
+ * https://gitlab.com/api/v4/projects/52878930/repository/files/images%2FWechatIMG29.jpg/raw?private_token=glpat-4jvu2R5etMDtVXJsDx33&ref=main
+ * **/
+export function getFileUrl(projectId, ref, filePath) {
+  filePath = encodeURIComponent(filePath);
+  return `${baseURL}/projects/${projectId}/repository/files/${filePath}/raw?${formatQuery({ ...ReqParam, ref })}`;
+}
+
+
+/**
  * ******************************
  * 对接插件管理
  * ***************************/
 
 /****
-interface IBuffFile {
-  name: string; // 带有文件后缀
-  path: string; // /storage/xxx/xxx.mp3
-  size: number;
-  isFile: () => boolean;
-  isDirectory: () => boolean;
-}**/
+ interface IBuffFile {
+ name: string; // 带有文件后缀
+ path: string; // /storage/xxx/xxx.mp3
+ size: number;
+ isFile: () => boolean;
+ isDirectory: () => boolean;
+ }**/
 
+/**
+ * 文件缓存管理
+ * ****************/
 const BuffDir = CustomPath.localTmpBuff;
 
 class GitlabBuffClass {
@@ -210,7 +257,7 @@ export const GitlabPlugin = {
   methods: {
     getMediaSource(musicIten, quality) {
       const name = typeof musicIten === 'string' ? musicIten : musicIten.name;
-      const FilePath = encodeURIComponent(`${ProjectCfg.rootDir}/${name}`);
+      // const FilePath = encodeURIComponent(`${ProjectCfg.rootDir}/${name}`);
       return {
         // url: `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`,
         url: BuffDir + name,
@@ -236,26 +283,4 @@ function formatQuery(val) {
       .join('&');
   }
   return val;
-}
-
-/**
- * 下载单个 raw 文件
- * **/
-export async function downFile(fileName) {
-  const FilePath = encodeURIComponent(fileName);
-  const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`;
-  try {
-    return await fetch(url, RequestCfg);
-  } catch (err) {
-    console.error('downFile 错误', err);
-  }
-}
-
-/**
- * 获取单个 raw 文件
- * @fileName: mp3/少年.mp3
- * **/
-export function getFileUrl(fileName, projectId = ProjectCfg.projectId, ref = ReqParam.ref) {
-  const FilePath = encodeURIComponent(fileName);
-  return `${baseURL}/projects/${projectId}/repository/files/${FilePath}/raw?${formatQuery({ ...ReqParam, ref })}`;
 }

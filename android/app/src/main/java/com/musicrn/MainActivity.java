@@ -6,6 +6,8 @@ import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 // react-native-screens 额外配置
 import android.os.Bundle;
+// react-native-bootsplash 额外配置
+import com.zoontek.rnbootsplash.RNBootSplash;
 
 public class MainActivity extends ReactActivity {
 
@@ -35,6 +37,7 @@ public class MainActivity extends ReactActivity {
   // react-native-screens 额外配置
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    RNBootSplash.init(this, R.style.BootTheme); // ⬅️ initialize the splash screen
     super.onCreate(null);
   }
 }

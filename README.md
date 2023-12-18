@@ -68,6 +68,8 @@ http://localhost:8081/index.bundle?platform=android&dev=true&minify=false&module
 
 https://reactnative.dev/docs/signed-apk-android
 
+编译 apk 时，代码中不能使用 `console.clear`，否则会报错导致白屏
+
 
 # 依赖
 

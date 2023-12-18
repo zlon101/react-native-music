@@ -19,7 +19,7 @@ import { getStorage, setStorage } from '@/utils/storage';
 import Toast from '@/utils/toast';
 import { localPluginHash, supportLocalMediaType } from '@/constants/commonConst';
 import { GitlabBuff } from '@/plugins/gitlab';
-// import RNBootSplash from 'react-native-bootsplash';
+import RNBootSplash from 'react-native-bootsplash';
 
 /** app加载前执行
  * 1. 检查权限
@@ -103,8 +103,7 @@ export default async function () {
     errorLog('初始化出错', e);
   }
   // 隐藏开屏动画
-  console.log('HIDE');
-  // RNBootSplash.hide({ fade: true });
+  RNBootSplash.hide({ fade: true });
 }
 
 /** 不需要阻塞的 */
