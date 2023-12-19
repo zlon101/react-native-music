@@ -28,7 +28,7 @@ declare namespace IMusic {
     /** 专辑名 */
     album: string;
     /** 专辑封面图 */
-    artwork: string;
+    artwork: string | undefined;
     /** 默认音源 */
     url?: string;
     /** 歌词URL */

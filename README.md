@@ -63,6 +63,8 @@ npx react-native init demo --template react-native-template-typescript --skip-in
 
 http://localhost:8081/index.bundle?platform=android&dev=true&minify=false&modulesOnly=false&runModule=true
 
+开启【debug】模式时 TabView 无法使用点击切换 tab
+
 
 # 编译apk
 

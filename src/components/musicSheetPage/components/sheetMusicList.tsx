@@ -19,8 +19,9 @@ interface IMusicListProps {
 }
 
 export default function SheetMusicList(props: IMusicListProps) {
-  const { sheetInfo: topListDetail, musicList, onEndReached, loadMore, onItemPress } = props;
+  const { sheetInfo: topListDetail, onEndReached, loadMore, onItemPress } = props;
   const showHeader = props.showHeader || false;
+  const musicList = props.musicList || topListDetail?.musicList;
 
   return (
     <View style={globalStyle.fwflex1}>

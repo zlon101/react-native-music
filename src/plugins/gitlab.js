@@ -38,6 +38,21 @@ const ReqParam = {
 const regStr = supportLocalMediaType.map(it => it.slice(1)).join('|');
 export const MusicFileReg = new RegExp(`\\.(${regStr})$`, 'i'); // /\.(mp3|m3u8)$/
 
+// 获取仓库目录结构
+export const getRepositoryTree = async () => {
+  const param = {
+    ...ReqParam,
+    recursive: false,
+  };
+  const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/tree/?${formatQuery(param)}`;
+  try {
+    const response = await fetch(url, RequestCfg);
+    return await response.json();
+  } catch (err) {
+    console.error('getRepositoryTree 错误', err);
+  }
+};
+
 /**
  * 获取音乐列表
  * 手机屏幕一屏显示15个
@@ -48,11 +63,12 @@ export const MusicFileReg = new RegExp(`\\.(${regStr})$`, 'i'); // /\.(mp3|m3u8)
  *   "path": "all/faded.mp3",
  *   "mode": "100644"
  * **/
-export async function getMusicList(page = 1) {
+export async function getMusicList(page = 1, path) {
   const param = {
     ...ReqParam,
+    // 是否递归查询
     recursive: false,
-    path: ProjectCfg.rootDir,
+    path: path || ProjectCfg.rootDir,
     // 分页配置
     page,
     per_page: 30,
@@ -106,7 +122,8 @@ export async function downFile(fileName) {
  * @fileName: mp3/少年.mp3
  * https://gitlab.com/api/v4/projects/52878930/repository/files/images%2FWechatIMG29.jpg/raw?private_token=glpat-4jvu2R5etMDtVXJsDx33&ref=main
  * **/
-export function getFileUrl(projectId, ref, filePath) {
+export function getFileUrl(filePath, projectId = ProjectCfg.projectId, ref = ProjectCfg.branch) {
+  if (!filePath) return undefined;
   filePath = encodeURIComponent(filePath);
   return `${baseURL}/projects/${projectId}/repository/files/${filePath}/raw?${formatQuery({ ...ReqParam, ref })}`;
 }
@@ -181,7 +198,8 @@ class GitlabBuffClass {
   /**
    * @fileName: xxx.mp3
    * ***/
-  async write(fileName) {
+  async write(filePath) {
+    const fileName = filePath.split('/')[1];
     if (this.has(fileName) || this.downloadQueue.some(_it => _it.name === fileName)) {
       return;
     }
@@ -203,7 +221,7 @@ class GitlabBuffClass {
       throw new Error(errMsg);
     }
 
-    const musicPath = encodeURIComponent(`${ProjectCfg.rootDir}/${fileName}`);
+    const musicPath = encodeURIComponent(filePath);
     const fromUrl = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${musicPath}/raw?${formatQuery(
       ReqParam,
     )}`;

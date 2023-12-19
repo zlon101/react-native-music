@@ -10,7 +10,7 @@
     "build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle",
     "generate:release": "cd android && ./gradlew assembleRelease",
     "generate:debug": "cd android && ./gradlew assembleDebug",
-    "generate:bootsplash_logo": "npx react-native generate-bootsplash assets/bg.png --platforms=android --background=F5FCFF --logo-width=300 --assets-output=assets --flavor=main --html=index.html",
+    "generate:bootsplash_logo": "npx react-native generate-bootsplash assets/bootsplash_icon.png --platforms=android --background=F5FCFF --logo-width=100 --assets-output=assets --flavor=main --html=index.html",
     "clean": "react-native clean --include cocoapods,android,metro,watchman",
     "clean:gradlew": "cd android && ./gradlew clean",
     "clean:all": "npm run clean && npm run clean:gradlew",

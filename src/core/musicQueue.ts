@@ -402,7 +402,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
 
     //#region 针对 gitlab 平台特殊处理
     if (_musicItem.sourcePlatform === 'gitlab') {
-      await GitlabBuff.write(_musicItem.name);
+      await GitlabBuff.write(_musicItem.path);
     }
     //#endregion
 
