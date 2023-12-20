@@ -56,13 +56,13 @@ function HomeDrawer(props: any) {
         navigateToSetting('backup');
       },
     },
-    {
-      icon: 'information-outline',
-      title: '关于',
-      onPress: () => {
-        navigateToSetting('about');
-      },
-    },
+    // {
+    //   icon: 'information-outline',
+    //   title: '关于',
+    //   onPress: () => {
+    //     navigateToSetting('about');
+    //   },
+    // },
   ] as const;
 
   return (
@@ -103,6 +103,7 @@ function HomeDrawer(props: any) {
           ))}
         </View>
 
+        {/*
         <Divider />
         <ListItem
           withHorizonalPadding
@@ -122,6 +123,7 @@ function HomeDrawer(props: any) {
           <ListItem.ListItemIcon icon={'power'} width={rpx(48)} />
           <ListItem.Content title={'退出应用'} />
         </ListItem>
+        */}
       </DrawerContentScrollView>
     </>
   );

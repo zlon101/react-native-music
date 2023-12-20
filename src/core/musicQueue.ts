@@ -67,54 +67,51 @@ const setup = async () => {
 
   musicQueue.length = 0;
   /** 状态恢复 */
-  const isDebug = true;
-  // TODO 调试
-  if (!isDebug) {
-    try {
-      const config = Config.get('status.music');
-      if (config?.rate) {
-        await TrackPlayer.setRate(+config.rate / 100);
-      }
-      if (config?.repeatMode) {
-        repeatMode = config.repeatMode as MusicRepeatMode;
-      }
-      if (config?.musicQueue && Array.isArray(config?.musicQueue)) {
-        addAll(config.musicQueue, undefined, true, repeatMode === MusicRepeatMode.SHUFFLE);
-      }
-      currentQuality = Config.get('setting.basic.defaultPlayQuality') ?? 'standard';
-      if (config?.track) {
-        currentIndex = findMusicIndex(config.track);
-
-        // todo： 想想是在这里还是加在下边的play
-        if (currentIndex !== -1) {
-          // todo: 这样写不好，简介引入了setup里面musicQueue和pluginManager的初始化时序关系 并且阻塞启动时间，因此这里如果失败不重试
-          const newSource = await PluginManager.getByMedia(config.track)?.methods.getMediaSource(
-            config.track,
-            currentQuality,
-            0,
-          );
-          // 重新初始化 获取最新的链接
-          musicQueue = produce(musicQueue, draft => {
-            const musicItem = {
-              ...config.track,
-              ...(newSource ?? {}),
-            } as IMusic.IMusicItem;
-            draft[currentIndex] = musicItem;
-            config.track = musicItem;
-          });
-        }
-        // todo： 判空，理论上不会发生
-        await TrackPlayer.add([config.track as Track, getFakeNextTrack()]);
-      }
-
-      if (config?.progress) {
-        await TrackPlayer.seekTo(config.progress);
-      }
-
-      trace('状态恢复', config);
-    } catch (e) {
-      errorLog('状态恢复失败', e);
+  const isDebug = false;
+  try {
+    const config = Config.get('status.music');
+    if (config?.rate) {
+      await TrackPlayer.setRate(+config.rate / 100);
     }
+    if (config?.repeatMode) {
+      repeatMode = config.repeatMode as MusicRepeatMode;
+    }
+    if (config?.musicQueue && Array.isArray(config?.musicQueue)) {
+      addAll(config.musicQueue, undefined, true, repeatMode === MusicRepeatMode.SHUFFLE);
+    }
+    currentQuality = Config.get('setting.basic.defaultPlayQuality') ?? 'standard';
+    if (config?.track) {
+      currentIndex = findMusicIndex(config.track);
+
+      // todo： 想想是在这里还是加在下边的play
+      if (currentIndex !== -1) {
+        // todo: 这样写不好，简介引入了setup里面musicQueue和pluginManager的初始化时序关系 并且阻塞启动时间，因此这里如果失败不重试
+        const newSource = await PluginManager.getByMedia(config.track)?.methods.getMediaSource(
+          config.track,
+          currentQuality,
+          0,
+        );
+        // 重新初始化 获取最新的链接
+        musicQueue = produce(musicQueue, draft => {
+          const musicItem = {
+            ...config.track,
+            ...(newSource ?? {}),
+          } as IMusic.IMusicItem;
+          draft[currentIndex] = musicItem;
+          config.track = musicItem;
+        });
+      }
+      // todo： 判空，理论上不会发生
+      await TrackPlayer.add([config.track as Track, getFakeNextTrack()]);
+    }
+
+    if (config?.progress) {
+      await TrackPlayer.seekTo(config.progress);
+    }
+
+    trace('状态恢复', config);
+  } catch (e) {
+    errorLog('状态恢复失败', e);
   }
 
   // 不要依赖playbackchanged，不稳定,
@@ -131,9 +128,9 @@ const setup = async () => {
   /** 播放下一个 PlaybackTrackChanged */
   TrackPlayer.addEventListener(Event.PlaybackActiveTrackChanged, async evt => {
     // 是track里的，不是playlist里的
-    trace('PlaybackTrackChanged 播放下一个', {
-      evt,
-    });
+    // trace('PlaybackTrackChanged 播放下一个', {
+    //   evt,
+    // });
     const nextIndex = evt.index;
 
     if (nextIndex === 1 && (await TrackPlayer.getTrack(nextIndex))?.$ === internalFakeSoundKey) {
@@ -159,7 +156,7 @@ const setup = async () => {
 
   TrackPlayer.addEventListener(Event.PlaybackError, async e => {
     errorLog('Player播放失败', e);
-    await _playFail();
+    await _playFail('setup');
   });
 
   currentMusicStateMapper.notify();
@@ -340,6 +337,9 @@ const getFakeNextTrack = () => {
   } else {
     track = N !== 0 ? (musicQueue[getNextPlayIndex(currentIndex, N)] as Track) : undefined;
     // TODO 针对 gitlab 处理，提前下载到缓存目录中
+    if (track) {
+      GitlabBuff.write(track.path)
+    }
   }
 
   if (track) {
@@ -485,7 +485,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
       // 播放失败
       console.log('播放失败', e);
       if (isSameMediaItem(_musicItem, musicQueue[currentIndex])) {
-        await _playFail();
+        await _playFail('play函数');
       }
       return;
     }
@@ -512,8 +512,8 @@ const replaceTrack = async (track: Track, autoPlay = true) => {
   Config.set('status.music.progress', 0, false);
 };
 
-const _playFail = async () => {
-  errorLog('播放失败，自动跳过', {
+const _playFail = async (msg = '') => {
+  errorLog(`${msg} 播放失败，自动跳过`, {
     currentIndex,
   });
   await TrackPlayer.reset();
