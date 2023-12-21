@@ -1,7 +1,9 @@
 export function Log(...args: any[]) {
-  console.log('\n\n🔥 ==========================================================');
-  console.log(...args);
-  console.log('\n\n');
+  if (__DEV__) {
+    console.log('\n\n🔥 ==========================================================');
+    console.log(...args);
+    console.log('\n\n');
+  }
 }
 
 export function getType(val: any, expectType?: string): string | boolean {

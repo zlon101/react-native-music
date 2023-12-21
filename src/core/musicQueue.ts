@@ -28,6 +28,7 @@ import { DeviceEventEmitter } from 'react-native';
 import LyricManager from './lyricManager';
 import { Log } from '@/utils/tool';
 import { GitlabBuff } from '@/plugins/gitlab';
+import {createEventBus} from '@/utils/subscribe';
 
 enum MusicRepeatMode {
   /** 随机播放 */
@@ -37,6 +38,9 @@ enum MusicRepeatMode {
   /** 单曲循环 */
   SINGLE = 'SINGLE',
 }
+
+const EventBusPlayer = createEventBus();
+export const PlayListEndEvent = 'end_of_list';
 
 /** 核心的状态 */
 let currentIndex: number = -1;
@@ -67,7 +71,6 @@ const setup = async () => {
 
   musicQueue.length = 0;
   /** 状态恢复 */
-  const isDebug = false;
   try {
     const config = Config.get('status.music');
     if (config?.rate) {
@@ -114,7 +117,7 @@ const setup = async () => {
     errorLog('状态恢复失败', e);
   }
 
-  // 不要依赖playbackchanged，不稳定,
+  // 不要依赖 playbackchanged ，不稳定,
   // 一首歌结束了
   TrackPlayer.addEventListener(Event.PlaybackQueueEnded, async () => {
     trace('PlaybackQueueEnded');
@@ -155,6 +158,7 @@ const setup = async () => {
   });
 
   TrackPlayer.addEventListener(Event.PlaybackError, async e => {
+    Log('PlaybackError:\n', e);
     errorLog('Player播放失败', e);
     await _playFail('setup');
   });
@@ -548,12 +552,16 @@ const pause = async () => {
 };
 
 const skipToNext = async () => {
-  console.log('SKIP');
-  if (musicQueue.length === 0) {
+  const N = musicQueue.length;
+  if (N === 0) {
     currentIndex = -1;
     return;
   }
 
+  // 列表最后一个播放完成，尝试获取下一页数据
+  if (currentIndex >= N - 2) {
+    EventBusPlayer.emit(PlayListEndEvent);
+  }
   await play(musicQueue[getNextPlayIndex(currentIndex, musicQueue.length)], true);
 };
 
@@ -596,6 +604,24 @@ const changeQuality = async (newQuality: IMusic.IQualityKey) => {
   }
 };
 
+// 当 artwork 为空时删除属性
+const deleteArtwork = (musics: any) => {
+  if (!musics) return;
+
+  if (Array.isArray(musics)) {
+    musics.forEach(item => {
+      if (item && item.artwork === '') {
+        item.artwork = undefined;
+      }
+    });
+    return;
+  }
+
+  if (musics.artwork === '') {
+    musics.artwork = undefined;
+  }
+};
+
 const MusicQueue = {
   setup,
   useMusicQueue: musicQueueStateMapper.useMappedState,
@@ -626,24 +652,7 @@ const MusicQueue = {
   changeQuality,
   useCurrentQuality: currentQualityStateMapper.useMappedState,
   getNextPlayIndex,
-};
-
-// 当 artwork 为空时删除属性
-const deleteArtwork = (musics: any) => {
-  if (!musics) return;
-
-  if (Array.isArray(musics)) {
-    musics.forEach(item => {
-      if (item && item.artwork === '') {
-        item.artwork = undefined;
-      }
-    });
-    return;
-  }
-
-  if (musics.artwork === '') {
-    musics.artwork = undefined;
-  }
+  EventBusPlayer,
 };
 
 export default MusicQueue;
