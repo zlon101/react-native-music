@@ -3,14 +3,20 @@ import React from 'react';
 import { ROUTE_PATH, useNavigate } from '@/entry/router';
 import AppBar from '@/components/base/appBar';
 
+interface IMenu {
+  title: string;
+  icon: string;
+  onPress: (...args: any[]) => void;
+}
 interface INavBarProps {
   navTitle: string;
   musicList: IMusic.IMusicItem[] | null;
+  moreMenu?: IMenu[];
 }
 
 export default function (props: INavBarProps) {
   const navigate = useNavigate();
-  const { navTitle, musicList = [] } = props;
+  const { navTitle, musicList = [], moreMenu = [] } = props;
 
   return (
     <AppBar
@@ -37,6 +43,7 @@ export default function (props: INavBarProps) {
             });
           },
         },
+        ...moreMenu,
       ]}>
       {navTitle}
     </AppBar>

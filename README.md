@@ -110,6 +110,8 @@ navigation: navigate push goBack popToTop
 
 [react-native-vector-icons](https://github.com/oblador/react-native-vector-icons) 
 
+[图标查询](https://oblador.github.io/react-native-vector-icons/) 
+
 6. 音频播放
 
 [react-native-track-player](https://rntp.dev/docs/basics/installation) 

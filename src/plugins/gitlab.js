@@ -23,7 +23,7 @@ const ProjectCfg = {
 
 const ReqHeader = {
   'PRIVATE-TOKEN': PRIVATE_TOKEN,
-  'Access-Control-Allow-Credentials': 'true',
+  // 'Access-Control-Allow-Credentials': 'true',
 };
 
 const RequestCfg = {
@@ -107,9 +107,9 @@ export async function getImageList(page = 1) {
 /**
  * 下载单个 raw 文件
  * **/
-export async function downFile(fileName) {
-  const FilePath = encodeURIComponent(fileName);
-  const url = `${baseURL}/projects/${ProjectCfg.projectId}/repository/files/${FilePath}/raw?${formatQuery(ReqParam)}`;
+export async function downFile(filePath, pId = ProjectCfg.projectId, ref = ReqParam.ref) {
+  filePath = encodeURIComponent(filePath);
+  const url = `${baseURL}/projects/${pId}/repository/files/${filePath}/raw?${formatQuery({...ReqParam, ref})}`;
   try {
     return await fetch(url, RequestCfg);
   } catch (err) {
@@ -128,6 +128,39 @@ export function getFileUrl(filePath, projectId = ProjectCfg.projectId, ref = Pro
   return `${baseURL}/projects/${projectId}/repository/files/${filePath}/raw?${formatQuery({ ...ReqParam, ref })}`;
 }
 
+// 更新文件
+export async function updateFile(filePath, content, pId = ProjectCfg.projectId, ref = ProjectCfg.branch) {
+  filePath = encodeURIComponent(filePath);
+  const param = {
+    ...ReqParam,
+    ref,
+  };
+  const url = `${baseURL}/projects/${pId}/repository/files/${filePath}?${formatQuery(param)}`;
+  if (!content) {
+    content = '';
+  } else if (typeof content === 'object') {
+    content = JSON.stringify(content, null, 2);
+  }
+  const body = JSON.stringify({
+    branch: param.ref,
+    commit_message: 'update todo-add.json',
+    content,
+    file_path: filePath,
+    id: pId,
+  });
+  try {
+    return await fetch(url, {
+      method: 'PUT',
+      headers: {
+        ...ReqHeader,
+        'Content-Type': 'application/json'
+      },
+      body,
+    });
+  } catch (err) {
+    console.error('updateFile 错误:\n', err);
+  }
+}
 
 /**
  * ******************************

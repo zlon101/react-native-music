@@ -19,7 +19,7 @@ import RecommendSheets from '@/pages/recommendSheets';
 import PluginSheetDetail from '@/pages/pluginSheetDetail';
 import History from '@/pages/history';
 import SetCustomTheme from '@/pages/setCustomTheme';
-import GitlabList from '@/pages/gitlab-song';
+import {GitlabMusicList, GitlabTodoAdd} from '@/pages/gitlab-song';
 
 LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
 
@@ -63,6 +63,7 @@ export const ROUTE_PATH = {
   SET_CUSTOM_THEME: 'set-custom-theme',
   /** Gitlab自建源 */
   Gitlab_List: 'gitlab-list',
+  Add_Gitlab_Music: 'gitlab-add',
 } as const;
 
 type Valueof<T> = T[keyof T];
@@ -148,7 +149,11 @@ export const routes: Array<IRoutes> = [
   },
   {
     path: ROUTE_PATH.Gitlab_List,
-    component: GitlabList,
+    component: GitlabMusicList,
+  },
+  {
+    path: ROUTE_PATH.Add_Gitlab_Music,
+    component: GitlabTodoAdd,
   },
 ];
 

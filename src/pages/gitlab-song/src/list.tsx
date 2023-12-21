@@ -8,11 +8,12 @@ import globalStyle from '@/constants/globalStyle';
 import NavBar from '@/components/musicSheetPage/components/navBar';
 import { vw } from '@/utils/rpx';
 import MusicBar from '@/components/musicBar';
-import Loading from "@/components/base/loading";
-import {Log} from '@/utils/tool';
-import TabHeader from './src/tab-header';
-import TabBody, {IGitlabResponseItem} from './src/tab-body';
-import { confused } from "@/utils/array";
+import Loading from '@/components/base/loading';
+import { confused } from '@/utils/array';
+import { ROUTE_PATH, useNavigate } from '@/entry/router';
+import { Log } from '@/utils/tool';
+import TabHeader from './tab-header';
+import TabBody, { IGitlabResponseItem } from './tab-body';
 
 export default function GitlabPage() {
   const [index, setIndex] = useState(0);
@@ -58,14 +59,16 @@ export default function GitlabPage() {
       setMusicDirs(dirs);
       setPageState('normal');
     });
-    getImageList().then(_imgs => {
-      setImgs(confused(_imgs));
-    }).catch(imgErr => {
-      Log(`获取封面失败\n`, imgErr);
-    });
+    getImageList()
+      .then(_imgs => {
+        setImgs(confused(_imgs));
+      })
+      .catch(imgErr => {
+        Log(`获取封面失败\n`, imgErr);
+      });
   }, []);
 
-  const onUpdateList = useCallback((routeKey, payload: {list: any, loadAll: boolean}) => {
+  const onUpdateList = useCallback((routeKey, payload: { list: any; loadAll: boolean }) => {
     updateListStore(draft => {
       draft[routeKey] = payload;
     });
@@ -73,24 +76,38 @@ export default function GitlabPage() {
 
   // 全部加载
   const [nowDirLoadForAll, setNowDirLoadForAll] = useState(0);
-  const getFilePath = useCallback((nextDir?: boolean) => {
-    // Log('1 musicDirs:\n%o nowDirLoadForAll:%d', musicDirs, nowDirLoadForAll);
-    if (!musicDirs || !musicDirs.length) {
-      return 'null';
-    }
-    if (nextDir) {
-      // Log('切换到下一个目录，当前目录:', nowDirLoadForAll);
-      // 所有目录全部加载
-      if (nowDirLoadForAll >= musicDirs.length - 1) {
-        return 'load_all_finished';
+  const getFilePath = useCallback(
+    (nextDir?: boolean) => {
+      // Log('1 musicDirs:\n%o nowDirLoadForAll:%d', musicDirs, nowDirLoadForAll);
+      if (!musicDirs || !musicDirs.length) {
+        return 'null';
       }
-      setNowDirLoadForAll(nowDirLoadForAll + 1);
-      return musicDirs[nowDirLoadForAll + 1].filePath;
-    }
-    return musicDirs[nowDirLoadForAll]?.filePath;
-  }, [musicDirs, nowDirLoadForAll]);
+      if (nextDir) {
+        // Log('切换到下一个目录，当前目录:', nowDirLoadForAll);
+        // 所有目录全部加载
+        if (nowDirLoadForAll >= musicDirs.length - 1) {
+          return 'load_all_finished';
+        }
+        setNowDirLoadForAll(nowDirLoadForAll + 1);
+        return musicDirs[nowDirLoadForAll + 1].filePath;
+      }
+      return musicDirs[nowDirLoadForAll]?.filePath;
+    },
+    [musicDirs, nowDirLoadForAll],
+  );
 
   const currentMusics = listStore[routeKey]?.list || [];
+
+  const navigate = useNavigate();
+  const navMenu = useMemo(() => {
+    return [
+      {
+        title: '添加歌曲',
+        icon: 'square-edit-outline',
+        onPress: () => navigate(ROUTE_PATH.Add_Gitlab_Music),
+      },
+    ];
+  }, []);
 
   if (pageState === 'loading') {
     return <Loading />;
@@ -100,7 +117,7 @@ export default function GitlabPage() {
   }
   return (
     <VerticalSafeAreaView style={globalStyle.fwflex1}>
-      <NavBar musicList={currentMusics} navTitle="Gitlab" />
+      <NavBar musicList={currentMusics} navTitle="Gitlab" moreMenu={navMenu} />
       <TabView
         lazy
         navigationState={{
@@ -108,7 +125,7 @@ export default function GitlabPage() {
           routes,
         }}
         renderTabBar={TabHeader}
-        renderScene={args => (<TabBody {...args} imgs={imgs} emitList={onUpdateList} getFilePath={getFilePath} />)}
+        renderScene={args => <TabBody {...args} imgs={imgs} emitList={onUpdateList} getFilePath={getFilePath} />}
         onIndexChange={setIndex}
         initialLayout={{ width: vw(100) }}
         swipeEnabled={true}
