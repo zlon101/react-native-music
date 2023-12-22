@@ -80,7 +80,7 @@ export function ImageViewComponent() {
 }
 
 export default {
-  show(url: string) {
+  show(url?: string) {
     if (url) {
       currentImgSrcState.setValue(url);
     }

@@ -7,3 +7,4 @@
 // const NativeUtils = NativeModules.NativeUtils;
 
 // export default NativeUtils as INativeUtils;
+export {};

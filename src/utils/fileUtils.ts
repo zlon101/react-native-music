@@ -156,7 +156,7 @@ export function getFileName(path: string, withoutExt?: boolean) {
 
 export async function mkdirR(directory: string) {
   let folder = directory;
-  const checkStack = [];
+  const checkStack: string[] = [];
   while (folder.length > 15) {
     checkStack.push(folder);
     folder = path.dirname(folder);

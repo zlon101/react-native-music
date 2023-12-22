@@ -14,7 +14,7 @@ const localSheetStateMapper = new StateMapper(() => localSheet);
 export async function setup() {
   const sheet = await getStorage(StorageKeys.LocalMusicSheet);
   if (sheet) {
-    let validSheet = [];
+    let validSheet: any[] = [];
     for (let musicItem of sheet) {
       const localPath = getInternalData<string>(musicItem, InternalDataType.LOCALPATH);
       if (localPath && (await FileSystem.exists(localPath))) {

@@ -27,3 +27,4 @@
 // const Mp3Util = NativeModules.Mp3Util;
 
 // export default Mp3Util as IMp3Util;
+export {};

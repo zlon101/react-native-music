@@ -11,3 +11,4 @@
 // const LyricUtil: ILyricUtil = NativeModules.LyricUtil;
 
 // export default LyricUtil;
+export {};

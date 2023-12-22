@@ -72,7 +72,7 @@ export default () => {
         getList();
         Toast.success('添加成功');
       } else {
-        trace('添加失败\n', res?.status, res?.statusText);
+        trace('添加失败', res, 'error');
       }
       setLoading(false);
       ToastMsg.hide();
