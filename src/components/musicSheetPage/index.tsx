@@ -5,7 +5,6 @@ import SheetMusicList from './components/sheetMusicList';
 import StatusBar from '@/components/base/statusBar';
 import globalStyle from '@/constants/globalStyle';
 import VerticalSafeAreaView from '../base/verticalSafeAreaView';
-import { Log } from '@/utils/tool';
 
 interface IMusicSheetPageProps {
   navTitle: string;

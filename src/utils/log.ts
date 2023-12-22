@@ -1,45 +1,62 @@
-import { logger, fileAsyncTransport } from 'react-native-logs';
+import { logger, fileAsyncTransport, consoleTransport } from 'react-native-logs';
 import RNFS, { readDir, readFile } from 'react-native-fs';
 import pathConst from '@/constants/pathConst';
 import Config from '../core/config';
 import { addLog } from '@/lib/react-native-vdebug/src/log';
 import { getType } from '@/utils/tool';
 
+const colorCfg = {
+  info: '#fff',
+  warn: 'yellowBright',
+  error: 'redBright',
+};
+
+const DefaultLogCfg = {
+  levels: {
+    debug: 0,
+    info: 1,
+    warn: 2,
+    error: 3,
+  },
+  severity: 'debug',
+  transport: __DEV__ ? consoleTransport : fileAsyncTransport,
+  stringifyFunc: function(msg: any) {
+    if (msg && getType(msg, 'object')) {
+      return '\n\n' + JSON.stringify(msg, null, 2);
+    }
+    return '\n\n' + msg;
+  },
+  async: true,
+  dateFormat: 'local',
+  printLevel: false,
+  printDate: false,
+  enabled: true,
+};
+
 const config = {
-  transport: fileAsyncTransport,
-  transportOptions: {
+  ...DefaultLogCfg,
+  transport: __DEV__ ? consoleTransport : fileAsyncTransport,
+  severity: __DEV__ ? 'debug' : 'error',
+  transportOptions: __DEV__ ? {colors: colorCfg} : {
+    colors: colorCfg,
     FS: RNFS,
     filePath: pathConst.logPath,
     fileName: `error-log-{date-today}.log`,
   },
-  dateFormat: 'local',
 };
 
 const traceConfig = {
-  transport: fileAsyncTransport,
-  transportOptions: {
+  ...DefaultLogCfg,
+  transportOptions: __DEV__ ? {colors: colorCfg} : {
+    colors: colorCfg,
     FS: RNFS,
     filePath: pathConst.logPath,
     fileName: `trace-log.log`,
   },
-  dateFormat: 'local',
 };
 
 const log = logger.createLogger(config);
 const traceLogger = logger.createLogger(traceConfig);
-
-export function trace(desc: string, message?: any, level: 'info' | 'error' = 'info') {
-  if (__DEV__) {
-    console.log(desc, message);
-  }
-  // 特殊情况记录操作路径
-  if (Config.get('setting.basic.debug.traceLog')) {
-    traceLogger[level]({
-      desc,
-      message,
-    });
-  }
-}
 
 export async function clearLog() {
   const files = await RNFS.readDir(pathConst.logPath);
@@ -57,7 +74,6 @@ export async function clearLog() {
 export async function getErrorLogContent() {
   try {
     const files = await readDir(pathConst.logPath);
-    console.log(files);
     const today = new Date();
     // 两天的错误日志
     const yesterday = new Date();
@@ -85,21 +101,27 @@ export async function getErrorLogContent() {
   }
 }
 
-export function errorLog(desc: string, message: any) {
-  if (message && getType(message, 'object')) {
-    message = JSON.stringify(message, null, 2);
+export function trace(desc: string, message?: any, level: 'info' | 'error' = 'info') {
+  // 记录详细日志
+  if (__DEV__ || Config.get('setting.basic.debug.traceLog')) {
+    traceLogger[level](message ? {desc, message} : desc);
   }
-  if (Config.get('setting.basic.debug.errorLog')) {
-    log.error({
-      desc,
-      message,
-    });
-    trace(desc, message, 'error');
-  }
+  devLog(level, desc, message);
 }
 
-export function devLog(method: 'log' | 'error' | 'warn' | 'info', ...args: any[]) {
-  if (Config.get('setting.basic.debug.devLog')) {
+export function errorLog(desc: string, message: any) {
+  // 记录错误日志
+  if (__DEV__ || Config.get('setting.basic.debug.errorLog')) {
+    log.error(message ? {desc, message} : desc);
+    trace(desc, message, 'error');
+  }
+  devLog('error', desc, message);
+}
+
+type ILevel = 'log' | 'error' | 'warn' | 'info';
+export function devLog(method: ILevel, ...args: any[]) {
+  // 调试面板
+  if (__DEV__ || Config.get('setting.basic.debug.devLog')) {
     addLog(method, args);
   }
 }

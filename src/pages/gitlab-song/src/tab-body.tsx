@@ -8,7 +8,7 @@ import SheetMusicList from '@/components/musicSheetPage/components/sheetMusicLis
 import { getMusicList, GitlabBuff, GitlabPlugin, getFileUrl } from '@/plugins/gitlab';
 import { GitlabMusicSheetId } from '@/constants/commonConst';
 import MusicQueue, {PlayListEndEvent} from '@/core/musicQueue';
-import {Log} from '@/utils/tool';
+import {trace} from '@/utils/log';
 import musicQueue from "@/core/musicQueue";
 
 /**
@@ -80,13 +80,13 @@ function TabBody(props: ITabBodyProps) {
         filePath = getFilePath(nextDir);
         // 【全部】tab下，并且所有文件全部加载
         if (filePath === 'load_all_finished' || filePath === 'null') {
-          // Log('load_all_finished', filePath);
+          // trace('load_all_finished', filePath);
           setLoadMore('done');
           return;
         }
       }
 
-      // Log(`加载数据 page: ${page}  filePath: ${filePath}`);
+      // trace(`加载数据 page: ${page}  filePath: ${filePath}`);
       const list: IGitlabResponseItem[] = await getMusicList(page, filePath);
       //#region 当前目录文件已经全部加载
       if (!list || !list.length) {
@@ -200,7 +200,7 @@ function TabBody(props: ITabBodyProps) {
     }
     setLoadMore('loading');
     const nextPage = page + 1;
-    Log('加载更多', nextPage);
+    trace('加载更多', nextPage);
     fetchPage(nextPage);
     setPage(nextPage);
   }, [page, fetchPage, loadMore, sheetInfo.musicList.length]);
@@ -208,7 +208,7 @@ function TabBody(props: ITabBodyProps) {
   // 列表播放完成，加载下一页
   useEffect(() => {
     MusicQueue.EventBusPlayer.register(PlayListEndEvent, () => {
-      Log('useEffect 列表播放完成，加载下一页');
+      trace('useEffect 列表播放完成，加载下一页');
       handleEndReached();
     });
 

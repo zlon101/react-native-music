@@ -31,7 +31,6 @@ import { FileSystem } from 'react-native-file-access';
 import { useEffect, useState } from 'react';
 import { addRandomHash, getFileName } from '@/utils/fileUtils';
 import { GitlabPlugin, getFileUrl } from '@/plugins/gitlab';
-import { Log } from '@/utils/tool';
 import { PluginMeta } from './pluginMeta';
 import Config from '@/core/config';
 // import Mp3Util from '@/native/mp3Util';
@@ -131,7 +130,7 @@ export class Plugin {
       }
       this.checkValid(_instance);
     } catch (e: any) {
-      Log(
+      trace(
         `插件实例化失败
         路径：${pluginPath}
         error: %o
@@ -742,9 +741,9 @@ async function setup() {
     const pluginsPaths = await readDir(pathConst.pluginPath);
     // 当没有安装插件时自动安装
     if (!pluginsPaths.length) {
-      installPluginFromUrl2(getFileUrl('plugins.json', 52975221, 'master'))
+      installPluginFromUrl2(getFileUrl('plugins.json', 52975221, 'master') as string)
         .catch(err1 => {
-          Log('自动安装插件失败\n', err1);
+          trace('自动安装插件失败\n', err1);
         })
         .finally(() => {
           setup();

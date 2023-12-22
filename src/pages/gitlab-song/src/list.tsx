@@ -11,7 +11,7 @@ import MusicBar from '@/components/musicBar';
 import Loading from '@/components/base/loading';
 import { confused } from '@/utils/array';
 import { ROUTE_PATH, useNavigate } from '@/entry/router';
-import { Log } from '@/utils/tool';
+import { trace } from '@/utils/log';
 import TabHeader from './tab-header';
 import TabBody, { IGitlabResponseItem } from './tab-body';
 
@@ -64,7 +64,7 @@ export default function GitlabPage() {
         setImgs(confused(_imgs));
       })
       .catch(imgErr => {
-        Log(`获取封面失败\n`, imgErr);
+        trace(`获取封面失败\n`, imgErr);
       });
   }, []);
 
@@ -78,12 +78,12 @@ export default function GitlabPage() {
   const [nowDirLoadForAll, setNowDirLoadForAll] = useState(0);
   const getFilePath = useCallback(
     (nextDir?: boolean) => {
-      // Log('1 musicDirs:\n%o nowDirLoadForAll:%d', musicDirs, nowDirLoadForAll);
+      // trace('1 musicDirs:\n%o nowDirLoadForAll:%d', musicDirs, nowDirLoadForAll);
       if (!musicDirs || !musicDirs.length) {
         return 'null';
       }
       if (nextDir) {
-        // Log('切换到下一个目录，当前目录:', nowDirLoadForAll);
+        // trace('切换到下一个目录，当前目录:', nowDirLoadForAll);
         // 所有目录全部加载
         if (nowDirLoadForAll >= musicDirs.length - 1) {
           return 'load_all_finished';

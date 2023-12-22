@@ -26,7 +26,6 @@ import musicHistory from './musicHistory';
 import getUrlExt from '@/utils/getUrlExt';
 import { DeviceEventEmitter } from 'react-native';
 import LyricManager from './lyricManager';
-import { Log } from '@/utils/tool';
 import { GitlabBuff } from '@/plugins/gitlab';
 import {createEventBus} from '@/utils/subscribe';
 
@@ -158,8 +157,7 @@ const setup = async () => {
   });
 
   TrackPlayer.addEventListener(Event.PlaybackError, async e => {
-    Log('PlaybackError:\n', e);
-    errorLog('Player播放失败', e);
+    trace('PlaybackError 事件', e);
     await _playFail('setup');
   });
 
@@ -420,7 +418,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
       );
       let source: IPlugin.IMediaSourceResult | null = null;
 
-      // Log('1111111111111111');
+      // trace('1111111111111111');
       for (let quality of qualityOrder) {
         if (isSameMediaItem(musicQueue[currentIndex], _musicItem)) {
           source = (await plugin?.methods?.getMediaSource(_musicItem, quality)) ?? null;
@@ -435,7 +433,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
         }
       }
 
-      // Log('22222222222', source);
+      // trace('22222222222', source);
       if (!source) {
         if (!_musicItem.url) {
           throw new Error('播放失败');
@@ -464,7 +462,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
 
       musicHistory.addMusic(_musicItem);
 
-      // Log('33333333333', track);
+      // trace('33333333333', track);
       await replaceTrack(track as Track);
       currentMusicStateMapper.notify();
       let info: Partial<IMusic.IMusicItem> | null = null;
@@ -487,7 +485,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
       }
     } catch (e) {
       // 播放失败
-      console.log('播放失败', e);
+      trace('播放失败，play() catch', e);
       if (isSameMediaItem(_musicItem, musicQueue[currentIndex])) {
         await _playFail('play函数');
       }

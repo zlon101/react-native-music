@@ -343,5 +343,5 @@ export const traceLog = () => {
 };
 
 export const addLog = (level, ...args) => {
-  logStack.addLog(level, args);
+  logStack && logStack.addLog(level, args);
 };

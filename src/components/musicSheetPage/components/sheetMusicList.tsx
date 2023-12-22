@@ -7,7 +7,6 @@ import Config from '@/core/config';
 import MusicQueue from '@/core/musicQueue';
 import globalStyle from '@/constants/globalStyle';
 import HorizonalSafeAreaView from '@/components/base/horizonalSafeAreaView';
-import { Log } from '@/utils/tool';
 
 interface IMusicListProps {
   sheetInfo: IMusic.IMusicSheetItem | null;

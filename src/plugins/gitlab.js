@@ -9,7 +9,7 @@ import { readDir, downloadFile, unlink, exists, mkdir, stopDownload } from 'reac
 import { PERMISSIONS, check } from 'react-native-permissions';
 import CustomPath from '@/constants/pathConst';
 import { supportLocalMediaType } from '@/constants/commonConst';
-import { Log } from '@/utils/tool';
+import { trace } from '@/utils/log';
 import Toast from '@/utils/toast';
 
 const baseURL = 'https://gitlab.com/api/v4';
@@ -221,10 +221,10 @@ class GitlabBuffClass {
           this.buffNames.add(item.name);
         }
       });
-      // Log('读取缓存 musicFiles:\n', musicFiles);
+      // trace('读取缓存 musicFiles:\n', musicFiles);
       return musicFiles;
     } catch (e) {
-      Log(`读取 ${BuffDir} 失败：`, e);
+      trace(`读取 ${BuffDir} 失败：`, e);
       throw e;
     }
   }
@@ -270,7 +270,7 @@ class GitlabBuffClass {
       await promise;
       this.buffNames.add(fileName);
     } catch (e) {
-      Log(`下载 ${fileName} 失败，error:\n`, e);
+      trace(`下载 ${fileName} 失败，error:\n`, e);
     }
     this.downloadQueue = this.downloadQueue.filter(t => t.name !== fileName);
   }
@@ -297,7 +297,7 @@ class GitlabBuffClass {
       this.buffDirExist = false;
       await this.createDir();
     } catch (e) {
-      Log(`删除 ${BuffDir} 失败, e:\n`, e);
+      trace(`删除 ${BuffDir} 失败, e:\n`, e);
     }
   }
 }

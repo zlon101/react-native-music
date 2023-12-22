@@ -17,10 +17,6 @@ import globalStyle from '@/constants/globalStyle';
 import Theme from '@/core/theme';
 import { BootstrapComp } from './useBootstrap';
 
-/**
- * 字体颜色
- */
-
 bootstrap();
 const Stack = createNativeStackNavigator<any>();
 

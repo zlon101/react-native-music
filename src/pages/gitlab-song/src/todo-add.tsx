@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import { colorMap } from '@/constants/uiConst';
 import useColors from '@/hooks/useColors';
 import Toast from '@/utils/toast';
-import { Log } from '@/utils/tool';
+import { trace } from '@/utils/log';
 import rpx from '@/utils/rpx';
 
 const FilePath = 'todo-add.json';
@@ -72,7 +72,7 @@ export default () => {
         getList();
         Toast.success('添加成功');
       } else {
-        Log('添加失败\n', res?.status, res?.statusText);
+        trace('添加失败\n', res?.status, res?.statusText);
       }
       setLoading(false);
       ToastMsg.hide();
