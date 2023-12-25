@@ -7,7 +7,7 @@ import Toast from 'react-native-toast-message';
 import SheetMusicList from '@/components/musicSheetPage/components/sheetMusicList';
 import { getMusicList, GitlabBuff, GitlabPlugin, getFileUrl } from '@/plugins/gitlab';
 import { GitlabMusicSheetId } from '@/constants/commonConst';
-import MusicQueue, {PlayListEndEvent} from '@/core/musicQueue';
+import MusicQueue from '@/core/musicQueue';
 import {trace} from '@/utils/log';
 
 /**
@@ -42,6 +42,7 @@ interface ITabBodyProps {
 }
 
 function TabBody(props: ITabBodyProps) {
+  // const [hasListenLoadMore, setListenLoadMore] = useState(false);
   const [sheetInfo, updateSheetInfo] = useImmer<IMusic.IMusicSheetItem>(SheetInfoInit);
   const playQueue = MusicQueue.useMusicQueue();
   const [page, setPage] = useState(1);
@@ -167,12 +168,35 @@ function TabBody(props: ITabBodyProps) {
     }
   }, [imgs]);
 
+  // 下拉加载更多
+  const handleEndReached = useCallback(async () => {
+    // 已经全部加载或者首次进入
+    if (loadMore === 'done' || !sheetInfo.musicList.length) {
+      return;
+    }
+    setLoadMore('loading');
+    const nextPage = page + 1;
+    trace('加载更多', nextPage);
+    const newMusics: any = fetchPage(nextPage);
+    setPage(nextPage);
+    if (newMusics) {
+      MusicQueue.add(newMusics);
+    }
+  }, [page, fetchPage, loadMore, sheetInfo.musicList.length]);
+
   const onItemPress = useCallback(
     async (musicItem) => {
-      Toast.show({
-        type: 'info',
-        text1: '加载中...',
-      });
+      Toast.show({type: 'info', text1: '加载中...'});
+
+      // if (!hasListenLoadMore) {
+      //   // 列表播放完成，加载下一页
+      //   MusicQueue.setLoadMore(() => {
+      //     trace(`列表播放完成，加载下一页，routeKey:${routeKey}`, null, 'debug');
+      //     handleEndReached();
+      //   });
+      // }
+      // setListenLoadMore(true);
+
       // const itemName = musicItem.name;
       // 不在缓存目录中，先下载
       await GitlabBuff.write(musicItem.path);
@@ -188,33 +212,6 @@ function TabBody(props: ITabBodyProps) {
     },
     [sheetInfo.musicList, playQueue?.length, imgs],
   );
-
-  // 下拉加载更多
-  const handleEndReached = useCallback(async () => {
-    // 已经全部加载或者首次进入
-    if (loadMore === 'done' || !sheetInfo.musicList.length) {
-      return;
-    }
-    setLoadMore('loading');
-    const nextPage = page + 1;
-    trace('加载更多', nextPage);
-    const newMusics = fetchPage(nextPage);
-    setPage(nextPage);
-    return newMusics;
-  }, [page, fetchPage, loadMore, sheetInfo.musicList.length]);
-
-  // 列表播放完成，加载下一页
-  useEffect(() => {
-    MusicQueue.EventBusPlayer.register(PlayListEndEvent, async () => {
-      const addMusics: any = await handleEndReached();
-      trace('useEffect 列表播放完成，加载下一页', addMusics ? addMusics[0] : addMusics);
-      if (addMusics) {
-        MusicQueue.add(addMusics);
-      }
-    });
-
-    return () => MusicQueue.EventBusPlayer.unregister(PlayListEndEvent);
-  }, [handleEndReached])
 
   return (
     <SheetMusicList

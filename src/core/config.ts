@@ -160,7 +160,6 @@ async function setup() {
       }
     }
   };
-  trace('初始化config', config);
   // await checkValidPath(['setting.theme.background']);
   notify();
 }

@@ -28,6 +28,7 @@ import { DeviceEventEmitter } from 'react-native';
 import LyricManager from './lyricManager';
 import { GitlabBuff } from '@/plugins/gitlab';
 import {createEventBus} from '@/utils/subscribe';
+import {getType} from '@/utils/tool';
 
 enum MusicRepeatMode {
   /** 随机播放 */
@@ -39,7 +40,6 @@ enum MusicRepeatMode {
 }
 
 const EventBusPlayer = createEventBus();
-export const PlayListEndEvent = 'end_of_list';
 
 /** 核心的状态 */
 let currentIndex: number = -1;
@@ -147,11 +147,6 @@ const setup = async () => {
         ) {
           return;
         }
-        trace('当前歌曲播放完成，自动播放下一首', {
-          '当前歌曲': evt?.lastTrack?.title,
-          '下一首': evt?.track?.title,
-          queue: queue.map(_item => _item.title),
-        });
         await skipToNext();
       }
     }
@@ -548,6 +543,7 @@ const pause = async () => {
   await TrackPlayer.pause();
 };
 
+let loadMoreCb: any = null;
 const skipToNext = async () => {
   const N = musicQueue.length;
   if (N === 0) {
@@ -555,11 +551,19 @@ const skipToNext = async () => {
     return;
   }
 
-  // 列表最后一个播放完成，尝试获取下一页数据
-  if (currentIndex >= N - 2) {
-    EventBusPlayer.emit(PlayListEndEvent);
-  }
-  await play(musicQueue[getNextPlayIndex(currentIndex, musicQueue.length)], true);
+  const nextIndex = getNextPlayIndex(currentIndex, N);
+  // trace('当前歌曲播放完成，自动播放下一首', {
+  //   N,
+  //   currentIndex,
+  //   nextIndex,
+  //   nextTrack: musicQueue[nextIndex]?.name,
+  //   loadMoreCb: getType(loadMoreCb),
+  // }, 'debug');
+  // // 列表最后一个播放完成，尝试获取下一页数据
+  // if (currentIndex >= N - 2 && loadMoreCb) {
+  //   loadMoreCb();
+  // }
+  await play(musicQueue[nextIndex], true);
 };
 
 const skipToPrevious = async () => {
@@ -650,6 +654,9 @@ const MusicQueue = {
   useCurrentQuality: currentQualityStateMapper.useMappedState,
   getNextPlayIndex,
   EventBusPlayer,
+  setLoadMore(cb: any) {
+    loadMoreCb = cb;
+  },
 };
 
 export default MusicQueue;

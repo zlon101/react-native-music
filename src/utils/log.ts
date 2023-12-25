@@ -5,9 +5,12 @@ import Config from '../core/config';
 import { addLog } from '@/lib/react-native-vdebug/src/log';
 import { getType } from '@/utils/tool';
 
+type ILevel = 'debug' | 'info' | 'warn' | 'error';
+
 const ISDEV = __DEV__; // __DEV__
 
 const colorCfg = {
+  debug: 'green',
   info: '#fff',
   warn: 'yellowBright',
   error: 'redBright',
@@ -103,7 +106,7 @@ export async function getErrorLogContent() {
   }
 }
 
-export function trace(desc: string, message?: any, level: 'info' | 'error' = 'info') {
+export function trace(desc: string, message?: any, level: ILevel = 'info') {
   // 记录详细日志
   if (ISDEV || Config.get('setting.basic.debug.traceLog')) {
     traceLogger[level](message ? {desc, message} : desc);
@@ -120,7 +123,6 @@ export function errorLog(desc: string, message: any) {
   devLog('error', desc, message);
 }
 
-type ILevel = 'log' | 'error' | 'warn' | 'info';
 export function devLog(method: ILevel, ...args: any[]) {
   // 调试面板
   if (ISDEV || Config.get('setting.basic.debug.devLog')) {

@@ -125,7 +125,7 @@ export default function GitlabPage() {
           routes,
         }}
         renderTabBar={TabHeader}
-        renderScene={args => <TabBody {...args} imgs={imgs} emitList={onUpdateList} getFilePath={getFilePath} />}
+        renderScene={args => <TabBody {...args} key={index} imgs={imgs} emitList={onUpdateList} getFilePath={getFilePath} />}
         onIndexChange={setIndex}
         initialLayout={{ width: vw(100) }}
         swipeEnabled={true}
