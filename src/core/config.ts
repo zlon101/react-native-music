@@ -1,8 +1,9 @@
-// import {Quality} from '@/constants/commonConst';
+import { useEffect, useState } from 'react';
+import { produce } from 'immer';
 import { CustomizedColors } from '@/hooks/useColors';
 import { getStorage, setStorage } from '@/utils/storage';
-import { produce } from 'immer';
-import { useEffect, useState } from 'react';
+import {trace} from '@/utils/log';
+// import {Quality} from '@/constants/commonConst';
 
 type ExceptionType = IMusic.IMusicItem | IMusic.IMusicItem[] | IMusic.IQuality;
 interface IConfig {
@@ -149,7 +150,17 @@ type IConfigPathsObj = KeyPathsObj<DeepPartial<IConfig>, IConfigPaths>;
 let config: PartialConfig = null;
 /** 初始化config */
 async function setup() {
-  config = (await getStorage('local-config')) ?? {};
+  config = (await getStorage('local-config')) ?? {
+    setting: {
+      basic: {
+        debug: {
+          errorLog: true,
+          traceLog: true,
+        }
+      }
+    }
+  };
+  trace('初始化config', config);
   // await checkValidPath(['setting.theme.background']);
   notify();
 }

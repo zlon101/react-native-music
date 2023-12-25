@@ -147,9 +147,10 @@ const setup = async () => {
         ) {
           return;
         }
-        trace('PlaybackTrackChanged-shouldskip', {
-          evt,
-          queue,
+        trace('当前歌曲播放完成，自动播放下一首', {
+          '当前歌曲': evt?.lastTrack?.title,
+          '下一首': evt?.track?.title,
+          queue: queue.map(_item => _item.title),
         });
         await skipToNext();
       }
@@ -157,8 +158,7 @@ const setup = async () => {
   });
 
   TrackPlayer.addEventListener(Event.PlaybackError, async e => {
-    trace('PlaybackError 事件', e);
-    await _playFail('setup');
+    await _playFail('PlaybackError 事件', e);
   });
 
   currentMusicStateMapper.notify();
@@ -363,7 +363,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
   deleteArtwork(musicItem);
 
   try {
-    trace('播放', musicItem);
+    trace('播放', musicItem?.title);
     //#region 移动网络时 根据设置重置player
     if (
       Network.isCellular() &&
@@ -485,9 +485,9 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
       }
     } catch (e) {
       // 播放失败
-      trace('播放失败，play() catch', e);
+      trace('播放失败，play() catch', e, 'error');
       if (isSameMediaItem(_musicItem, musicQueue[currentIndex])) {
-        await _playFail('play函数');
+        await _playFail();
       }
       return;
     }
@@ -514,10 +514,9 @@ const replaceTrack = async (track: Track, autoPlay = true) => {
   Config.set('status.music.progress', 0, false);
 };
 
-const _playFail = async (msg = '') => {
-  errorLog(`${msg} 播放失败，自动跳过`, {
-    currentIndex,
-  });
+const _playFail = async (msg?: string, e?: any) => {
+  msg && trace(msg, e, 'error');
+
   await TrackPlayer.reset();
   await TrackPlayer.add([
     (musicQueue[currentIndex] ?? {

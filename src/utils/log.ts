@@ -5,6 +5,8 @@ import Config from '../core/config';
 import { addLog } from '@/lib/react-native-vdebug/src/log';
 import { getType } from '@/utils/tool';
 
+const ISDEV = __DEV__; // __DEV__
+
 const colorCfg = {
   info: '#fff',
   warn: 'yellowBright',
@@ -19,7 +21,7 @@ const DefaultLogCfg = {
     error: 3,
   },
   severity: 'debug',
-  transport: __DEV__ ? consoleTransport : fileAsyncTransport,
+  transport: ISDEV ? consoleTransport : fileAsyncTransport,
   stringifyFunc: function(msg: any) {
     if (msg && getType(msg, 'object')) {
       return '\n\n' + JSON.stringify(msg, null, 2);
@@ -35,23 +37,23 @@ const DefaultLogCfg = {
 
 const config = {
   ...DefaultLogCfg,
-  transport: __DEV__ ? consoleTransport : fileAsyncTransport,
-  severity: __DEV__ ? 'debug' : 'error',
-  transportOptions: __DEV__ ? {colors: colorCfg} : {
+  transport: ISDEV ? consoleTransport : fileAsyncTransport,
+  severity: ISDEV ? 'debug' : 'error',
+  transportOptions: ISDEV ? {colors: colorCfg} : {
     colors: colorCfg,
     FS: RNFS,
     filePath: pathConst.logPath,
-    fileName: `error-log-{date-today}.log`,
+    fileName: `error-log-{date-today}.txt`,
   },
 };
 
 const traceConfig = {
   ...DefaultLogCfg,
-  transportOptions: __DEV__ ? {colors: colorCfg} : {
+  transportOptions: ISDEV ? {colors: colorCfg} : {
     colors: colorCfg,
     FS: RNFS,
     filePath: pathConst.logPath,
-    fileName: `trace-log.log`,
+    fileName: `trace-log.txt`,
   },
 };
 
@@ -103,7 +105,7 @@ export async function getErrorLogContent() {
 
 export function trace(desc: string, message?: any, level: 'info' | 'error' = 'info') {
   // 记录详细日志
-  if (__DEV__ || Config.get('setting.basic.debug.traceLog')) {
+  if (ISDEV || Config.get('setting.basic.debug.traceLog')) {
     traceLogger[level](message ? {desc, message} : desc);
   }
   devLog(level, desc, message);
@@ -111,7 +113,7 @@ export function trace(desc: string, message?: any, level: 'info' | 'error' = 'in
 
 export function errorLog(desc: string, message: any) {
   // 记录错误日志
-  if (__DEV__ || Config.get('setting.basic.debug.errorLog')) {
+  if (ISDEV || Config.get('setting.basic.debug.errorLog')) {
     log.error(message ? {desc, message} : desc);
     trace(desc, message, 'error');
   }
@@ -121,7 +123,7 @@ export function errorLog(desc: string, message: any) {
 type ILevel = 'log' | 'error' | 'warn' | 'info';
 export function devLog(method: ILevel, ...args: any[]) {
   // 调试面板
-  if (__DEV__ || Config.get('setting.basic.debug.devLog')) {
+  if (ISDEV || Config.get('setting.basic.debug.devLog')) {
     addLog(method, args);
   }
 }

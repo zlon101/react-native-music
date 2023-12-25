@@ -9,7 +9,6 @@ import { getMusicList, GitlabBuff, GitlabPlugin, getFileUrl } from '@/plugins/gi
 import { GitlabMusicSheetId } from '@/constants/commonConst';
 import MusicQueue, {PlayListEndEvent} from '@/core/musicQueue';
 import {trace} from '@/utils/log';
-import musicQueue from "@/core/musicQueue";
 
 /**
  * url: 'https://music.163.com/song/media/outer/url?id=2024600749.mp3'
@@ -132,13 +131,13 @@ function TabBody(props: ITabBodyProps) {
       updateSheetInfo(draft => {
         draft.musicList = newMusics;
       });
-      MusicQueue.add(_list as any);
 
       emitList(routeKey, {
         list: newMusics,
         filePath,
       });
       setLoadMore('idle');
+      return _list;
     },
     [sheetInfo.musicList, routeKey, isAllPage, filePath, getFilePath, emitList, imgs],
   );
@@ -146,7 +145,6 @@ function TabBody(props: ITabBodyProps) {
 
   //#region 读缓存、获取封面图像、按页码获取文件列表
   useEffect(() => {
-    musicQueue.clear();
     GitlabBuff.read();
     fetchPage(1);
   }, []);
@@ -168,7 +166,6 @@ function TabBody(props: ITabBodyProps) {
       });
     }
   }, [imgs]);
-
 
   const onItemPress = useCallback(
     async (musicItem) => {
@@ -193,7 +190,7 @@ function TabBody(props: ITabBodyProps) {
   );
 
   // 下拉加载更多
-  const handleEndReached = useCallback(() => {
+  const handleEndReached = useCallback(async () => {
     // 已经全部加载或者首次进入
     if (loadMore === 'done' || !sheetInfo.musicList.length) {
       return;
@@ -201,15 +198,19 @@ function TabBody(props: ITabBodyProps) {
     setLoadMore('loading');
     const nextPage = page + 1;
     trace('加载更多', nextPage);
-    fetchPage(nextPage);
+    const newMusics = fetchPage(nextPage);
     setPage(nextPage);
+    return newMusics;
   }, [page, fetchPage, loadMore, sheetInfo.musicList.length]);
 
   // 列表播放完成，加载下一页
   useEffect(() => {
-    MusicQueue.EventBusPlayer.register(PlayListEndEvent, () => {
-      trace('useEffect 列表播放完成，加载下一页');
-      handleEndReached();
+    MusicQueue.EventBusPlayer.register(PlayListEndEvent, async () => {
+      const addMusics: any = await handleEndReached();
+      trace('useEffect 列表播放完成，加载下一页', addMusics ? addMusics[0] : addMusics);
+      if (addMusics) {
+        MusicQueue.add(addMusics);
+      }
     });
 
     return () => MusicQueue.EventBusPlayer.unregister(PlayListEndEvent);

@@ -343,8 +343,8 @@ export default function BasicSetting() {
     {
       title: '开发选项',
       data: [
-        createSwitch('记录错误日志', 'setting.basic.debug.errorLog', basicSetting?.debug?.errorLog ?? true),
-        createSwitch('记录详细日志', 'setting.basic.debug.traceLog', basicSetting?.debug?.traceLog ?? true),
+        createSwitch('记录错误日志', 'setting.basic.debug.errorLog', basicSetting?.debug?.errorLog ?? false),
+        createSwitch('记录详细日志', 'setting.basic.debug.traceLog', basicSetting?.debug?.traceLog ?? false),
         createSwitch('调试面板', 'setting.basic.debug.devLog', basicSetting?.debug?.devLog ?? false),
         {
           title: '查看错误日志',
