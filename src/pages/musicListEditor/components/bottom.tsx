@@ -10,13 +10,17 @@ import { editingMusicListAtom, musicListChangedAtom } from '../store/atom';
 import MusicQueue from '@/core/musicQueue';
 import Toast from '@/utils/toast';
 import Download from '@/core/download';
-
 import { produce } from 'immer';
 import { useParams } from '@/entry/router';
 import { showPanel } from '@/components/panels/usePanel';
 
-export default function Bottom() {
-  const { musicSheet } = useParams<'music-list-editor'>();
+interface IProps {
+  onDel?: (...args: any[]) => void;
+}
+export default function Bottom(props: IProps) {
+  const {onDel} = props;
+  const urlQuery = useParams<'music-list-editor'>();
+  const { musicSheet } = urlQuery;
   const [editingMusicList, setEditingMusicList] = useAtom(editingMusicListAtom);
   const setMusicListChanged = useSetAtom(musicListChangedAtom);
 
@@ -72,6 +76,10 @@ export default function Bottom() {
         title="删除"
         color={selectedItems.length && musicSheet?.id ? 'text' : 'textSecondary'}
         onPress={() => {
+          if (onDel) {
+            onDel(editingMusicList.filter(obj => obj.checked));
+            return;
+          }
           if (selectedItems.length && musicSheet?.id) {
             setEditingMusicList(produce(prev => prev.filter(_ => !_.checked)));
             setMusicListChanged(true);

@@ -18,7 +18,7 @@ const PRIVATE_TOKEN = 'glpat-4jvu2R5etMDtVXJsDx33';
 const ProjectCfg = {
   projectId: 52878930,
   branch: 'main',
-  rootDir: 'music-lin',
+  rootDir: 'music-琳',
 };
 
 const ReqHeader = {
@@ -49,7 +49,7 @@ export const getRepositoryTree = async () => {
     const response = await fetch(url, RequestCfg);
     return await response.json();
   } catch (err) {
-    console.error('getRepositoryTree 错误', err);
+    trace('getRepositoryTree 错误', err, 'error');
   }
 };
 
@@ -79,7 +79,7 @@ export async function getMusicList(page = 1, path) {
     const resJson = await response.json();
     return resJson.filter(item => MusicFileReg.test(item.name));
   } catch (err) {
-    console.error('getAllMusic 错误', err);
+    trace('getAllMusic 错误', err, 'error');
   }
 }
 
@@ -100,7 +100,7 @@ export async function getImageList(page = 1) {
     const resJson = await response.json();
     return resJson.filter(item => /\.(jpg|png|jpeg)$/i.test(item.name));
   } catch (err) {
-    console.error('getImageList 错误', err);
+    trace('getImageList 错误', err, 'error');
   }
 }
 
@@ -109,11 +109,12 @@ export async function getImageList(page = 1) {
  * **/
 export async function downFile(filePath, pId = ProjectCfg.projectId, ref = ReqParam.ref) {
   filePath = encodeURIComponent(filePath);
-  const url = `${baseURL}/projects/${pId}/repository/files/${filePath}/raw?${formatQuery({...ReqParam, ref})}`;
+  const url = `${baseURL}/projects/${pId}/repository/files/${filePath}/raw?${formatQuery({ ...ReqParam, ref })}`;
   try {
-    return await fetch(url, RequestCfg);
+    const response = await fetch(url, RequestCfg);
+    return await response.json();
   } catch (err) {
-    console.error('downFile 错误', err);
+    trace('downFile 错误', err, 'error');
   }
 }
 
@@ -153,12 +154,43 @@ export async function updateFile(filePath, content, pId = ProjectCfg.projectId, 
       method: 'PUT',
       headers: {
         ...ReqHeader,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body,
     });
   } catch (err) {
-    console.error('updateFile 错误:\n', err);
+    trace('updateFile 错误', err, 'error');
+  }
+}
+
+// 删除文件
+// 创建一个commit: https://docs.gitlab.com/ee/api/commits.html#create-a-commit-with-multiple-files-and-actions
+export async function delFiles(filePath, pId = ProjectCfg.projectId, ref = ProjectCfg.branch) {
+  if (!filePath || !filePath?.length) return;
+  if (!Array.isArray(filePath)) {
+    filePath = [filePath];
+  }
+  const actions = filePath.map(s => ({
+    file_path: s,
+    action: 'delete',
+  }));
+  const param = { ...ReqParam, ref };
+  const url = `${baseURL}/projects/${pId}/repository/commits`;
+  const body = JSON.stringify({
+    branch: param.ref,
+    commit_message: `删除 ${filePath.join('、')}`,
+    id: pId,
+    actions,
+  });
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { ...ReqHeader, 'Content-Type': 'application/json' },
+      body,
+    });
+    return await response.json();
+  } catch (err) {
+    trace('delFiles 错误', err, 'error');
   }
 }
 
@@ -224,7 +256,7 @@ class GitlabBuffClass {
       // trace('读取缓存 musicFiles:\n', musicFiles);
       return musicFiles;
     } catch (e) {
-      trace(`读取 ${BuffDir} 失败：`, e);
+      trace(`读取 ${BuffDir} 失败`, e, 'error');
       throw e;
     }
   }
@@ -270,7 +302,7 @@ class GitlabBuffClass {
       await promise;
       this.buffNames.add(fileName);
     } catch (e) {
-      trace(`下载 ${fileName} 失败，error:\n`, e);
+      trace(`下载 ${fileName} 失败，error`, e, 'error');
     }
     this.downloadQueue = this.downloadQueue.filter(t => t.name !== fileName);
   }
@@ -297,7 +329,7 @@ class GitlabBuffClass {
       this.buffDirExist = false;
       await this.createDir();
     } catch (e) {
-      trace(`删除 ${BuffDir} 失败`, e);
+      trace(`删除 ${BuffDir} 失败`, e, 'error');
     }
   }
 }

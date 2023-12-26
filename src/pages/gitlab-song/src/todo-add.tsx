@@ -94,8 +94,7 @@ export default () => {
   }, [dialogOk]);
 
   const getList = useCallback(() => {
-    downFile(FilePath).then(async (res: any) => {
-      res = await res.json();
+    downFile(FilePath).then((res: any) => {
       setList(res.list || []);
       setUpdateDate(res.date);
     });

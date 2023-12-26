@@ -13,6 +13,7 @@ import { ROUTE_PATH, useNavigate } from '@/entry/router';
 import { trace } from '@/utils/log';
 import TabHeader from './tab-header';
 import TabBody from './tab-body';
+import { GitlabMusicSheetId } from '@/constants/commonConst';
 
 export default function GitlabPage() {
   const [index, setIndex] = useState(0);
@@ -108,7 +109,7 @@ export default function GitlabPage() {
   }
   return (
     <VerticalSafeAreaView style={globalStyle.fwflex1}>
-      <NavBar musicList={currentMusics} navTitle="Gitlab" moreMenu={navMenu} />
+      <NavBar sheetInfo={{id: GitlabMusicSheetId, title: 'Gitlab'}} musicList={currentMusics} navTitle="Gitlab" moreMenu={navMenu} />
       <TabView
         lazy
         navigationState={{

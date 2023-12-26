@@ -508,7 +508,7 @@ const replaceTrack = async (track: Track, autoPlay = true) => {
 
 const _playFail = async (msg?: string, e?: any) => {
   msg && trace(msg, e, 'error');
-
+  // TODO
   /***
   await TrackPlayer.reset();
   await TrackPlayer.add([
