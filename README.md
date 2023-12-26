@@ -1,5 +1,9 @@
 # TODO
 
+- 上传本地音乐
+- 上传、删除封面图像
+- gitlab api 搜索
+
 - 循环引用
 
 WARN  `new NativeEventEmitter()` was called with a non-null argument without the required `addListener` method.

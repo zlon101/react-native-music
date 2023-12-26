@@ -106,12 +106,14 @@ export async function getErrorLogContent() {
   }
 }
 
+// 记录详细日志
 export function trace(desc: string, message?: any, level: ILevel = 'info') {
-  // 记录详细日志
-  if (ISDEV || Config.get('setting.basic.debug.traceLog')) {
+  if (level === 'error') {
+    errorLog(desc, message);
+  } else if (ISDEV || Config.get('setting.basic.debug.traceLog')) {
     traceLogger[level](message ? {desc, message} : desc);
+    devLog(level, desc, message);
   }
-  level === 'error' ? errorLog(desc, message) : devLog(level, desc, message);
 }
 
 export function errorLog(desc: string, message: any) {
