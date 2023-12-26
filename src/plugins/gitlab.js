@@ -297,7 +297,7 @@ class GitlabBuffClass {
       this.buffDirExist = false;
       await this.createDir();
     } catch (e) {
-      trace(`删除 ${BuffDir} 失败, e:\n`, e);
+      trace(`删除 ${BuffDir} 失败`, e);
     }
   }
 }

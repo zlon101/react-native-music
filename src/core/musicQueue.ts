@@ -12,7 +12,7 @@ import shuffle from 'lodash.shuffle';
 import musicIsPaused from '@/utils/musicIsPaused';
 import Config from './config';
 import { EDeviceEvents, internalFakeSoundKey, internalSymbolKey } from '@/constants/commonConst';
-import StateMapper from '@/utils/stateMapper';
+import StateMapper, { GlobalState } from "@/utils/stateMapper";
 import delay from '@/utils/delay';
 import { errorLog, trace } from '../utils/log';
 import { isSameMediaItem, mergeProps } from '@/utils/mediaItem';
@@ -27,7 +27,6 @@ import getUrlExt from '@/utils/getUrlExt';
 import { DeviceEventEmitter } from 'react-native';
 import LyricManager from './lyricManager';
 import { GitlabBuff } from '@/plugins/gitlab';
-import {createEventBus} from '@/utils/subscribe';
 import {getType} from '@/utils/tool';
 
 enum MusicRepeatMode {
@@ -38,8 +37,6 @@ enum MusicRepeatMode {
   /** 单曲循环 */
   SINGLE = 'SINGLE',
 }
-
-const EventBusPlayer = createEventBus();
 
 /** 核心的状态 */
 let currentIndex: number = -1;
@@ -111,7 +108,7 @@ const setup = async () => {
       await TrackPlayer.seekTo(config.progress);
     }
 
-    trace('状态恢复', config);
+    trace('状态恢复', {...config, musicQueue: musicQueue?.length});
   } catch (e) {
     errorLog('状态恢复失败', e);
   }
@@ -358,7 +355,7 @@ const play = async (musicItem?: IMusic.IMusicItem, forcePlay?: boolean) => {
   deleteArtwork(musicItem);
 
   try {
-    trace('播放', musicItem?.title);
+    trace(`播放: ${musicItem?.title}`);
     //#region 移动网络时 根据设置重置player
     if (
       Network.isCellular() &&
@@ -552,17 +549,18 @@ const skipToNext = async () => {
   }
 
   const nextIndex = getNextPlayIndex(currentIndex, N);
-  // trace('当前歌曲播放完成，自动播放下一首', {
-  //   N,
-  //   currentIndex,
-  //   nextIndex,
-  //   nextTrack: musicQueue[nextIndex]?.name,
-  //   loadMoreCb: getType(loadMoreCb),
-  // }, 'debug');
-  // // 列表最后一个播放完成，尝试获取下一页数据
-  // if (currentIndex >= N - 2 && loadMoreCb) {
-  //   loadMoreCb();
-  // }
+  trace('当前歌曲播放完成，自动播放下一首', {
+    N,
+    currentIndex,
+    nextIndex,
+    nextTrack: musicQueue[nextIndex]?.name,
+    loadMoreCb: getType(loadMoreCb),
+  }, 'debug');
+  // 列表最后一个播放完成，尝试获取下一页数据
+  if (loadMoreCb && currentIndex >= N - 2) {
+    playPage.setValue(playPage.getValue() + 1);
+    loadMoreCb(playPage.getValue());
+  }
   await play(musicQueue[nextIndex], true);
 };
 
@@ -653,10 +651,18 @@ const MusicQueue = {
   changeQuality,
   useCurrentQuality: currentQualityStateMapper.useMappedState,
   getNextPlayIndex,
-  EventBusPlayer,
   setLoadMore(cb: any) {
     loadMoreCb = cb;
   },
+  // 页码
+  // getPlayPage,
+  // setPlayPage: (v: number) => {
+  //   playPage = v;
+  //   playQueuePage.notify();
+  // },
+  // useQueuePage: playQueuePage.useMappedState,
 };
 
 export default MusicQueue;
+
+export const playPage = new GlobalState(1);

@@ -5,10 +5,11 @@ import { Route } from 'react-native-tab-view';
 import { useImmer } from 'use-immer';
 import Toast from 'react-native-toast-message';
 import SheetMusicList from '@/components/musicSheetPage/components/sheetMusicList';
-import { getMusicList, GitlabBuff, GitlabPlugin, getFileUrl } from '@/plugins/gitlab';
+import { getMusicList, GitlabBuff, GitlabPlugin, getFileUrl, getImageList } from "@/plugins/gitlab";
 import { GitlabMusicSheetId } from '@/constants/commonConst';
-import MusicQueue from '@/core/musicQueue';
+import MusicQueue, {playPage} from '@/core/musicQueue';
 import {trace} from '@/utils/log';
+import { confused } from '@/utils/array';
 
 /**
  * url: 'https://music.163.com/song/media/outer/url?id=2024600749.mp3'
@@ -38,18 +39,19 @@ interface ITabBodyProps {
   };
   emitList: any;
   getFilePath: any;
-  imgs: any[];
 }
 
 function TabBody(props: ITabBodyProps) {
-  // const [hasListenLoadMore, setListenLoadMore] = useState(false);
   const [sheetInfo, updateSheetInfo] = useImmer<IMusic.IMusicSheetItem>(SheetInfoInit);
-  const playQueue = MusicQueue.useMusicQueue();
-  const [page, setPage] = useState(1);
+  // const playQueue = MusicQueue.useMusicQueue();
+  const [page, setPage] = [playPage.useValue(), playPage.setValue];
+  const [imgs, setImgs] = useState<IGitlabResponseItem[]>([]);
   // idle: 闲置  done: 数据全部加载
   const [loadMore, setLoadMore] = useState<'loading' | 'done' | 'idle'>('loading');
+  // 切换播放列表
+  const [changeQueue, setChangeQueue] = useState(false);
 
-  const { route, emitList, getFilePath, imgs } = props;
+  const { route, emitList, getFilePath } = props;
   const routeKey = route.key;
   const isAllPage = routeKey === 'all';
   let filePath = route.filePath;
@@ -88,6 +90,7 @@ function TabBody(props: ITabBodyProps) {
 
       // trace(`加载数据 page: ${page}  filePath: ${filePath}`);
       const list: IGitlabResponseItem[] = await getMusicList(page, filePath);
+      trace(`fetch 列表长度: ${list?.length}`);
       //#region 当前目录文件已经全部加载
       if (!list || !list.length) {
         emitList(routeKey, {
@@ -100,10 +103,9 @@ function TabBody(props: ITabBodyProps) {
         if (isAllPage) {
           setPage(1);
           // setLoadMore('idle');
-          fetchPage(1, true);
-        } else {
-          setLoadMore('done');
+          return await fetchPage(1, true);
         }
+        setLoadMore('done');
         return;
       }
       //#endregion
@@ -144,64 +146,38 @@ function TabBody(props: ITabBodyProps) {
   );
   //#endregion
 
-  //#region 读缓存、获取封面图像、按页码获取文件列表
-  useEffect(() => {
-    GitlabBuff.read();
-    fetchPage(1);
-  }, []);
-  //#endregion
-
-  // 设置封面
-  useEffect(() => {
-    const musics = sheetInfo.musicList;
-    if (imgs && imgs.length && musics.length && !musics[0].artwork) {
-      const imgNum = imgs.length;
-      const _musics = musics.map((item3, idx3) => {
-        return {
-          ...item3,
-          artwork: getFileUrl( imgs[idx3 % imgNum]?.path ),
-        }
-      });
-      updateSheetInfo(draft => {
-        draft.musicList = _musics;
-      });
-    }
-  }, [imgs]);
-
   // 下拉加载更多
-  const handleEndReached = useCallback(async () => {
+  const handleEndReached = useCallback(async (_page?: number) => {
     // 已经全部加载或者首次进入
     if (loadMore === 'done' || !sheetInfo.musicList.length) {
       return;
     }
     setLoadMore('loading');
-    const nextPage = page + 1;
-    trace('加载更多', nextPage);
-    const newMusics: any = fetchPage(nextPage);
+    const nextPage = _page || (page + 1);
+    trace(`加载第 ${nextPage} 页`);
+    const newMusics: any = await fetchPage(nextPage);
     setPage(nextPage);
     if (newMusics) {
       MusicQueue.add(newMusics);
     }
   }, [page, fetchPage, loadMore, sheetInfo.musicList.length]);
 
+
   const onItemPress = useCallback(
     async (musicItem) => {
       Toast.show({type: 'info', text1: '加载中...'});
 
-      // if (!hasListenLoadMore) {
-      //   // 列表播放完成，加载下一页
-      //   MusicQueue.setLoadMore(() => {
-      //     trace(`列表播放完成，加载下一页，routeKey:${routeKey}`, null, 'debug');
-      //     handleEndReached();
-      //   });
-      // }
-      // setListenLoadMore(true);
+      const nowChangeQueue = changeQueue;
+      if (!nowChangeQueue) {
+        playPage.setValue(1);
+      }
+      setChangeQueue(true);
 
       // const itemName = musicItem.name;
       // 不在缓存目录中，先下载
       await GitlabBuff.write(musicItem.path);
       try {
-        if (playQueue?.length) {
+        if (nowChangeQueue) {
           await MusicQueue.play(musicItem);
         } else {
           await MusicQueue.playWithReplaceQueue(musicItem, sheetInfo.musicList);
@@ -210,8 +186,45 @@ function TabBody(props: ITabBodyProps) {
       }
       setTimeout(() => Toast.hide(), 200);
     },
-    [sheetInfo.musicList, playQueue?.length, imgs],
+    [sheetInfo.musicList, changeQueue],
   );
+
+  // 读缓存、获取封面图像、按页码获取文件列表
+  useEffect(() => {
+    GitlabBuff.read();
+    Promise.all([
+      fetchPage(1),
+      getImageList(),
+    ]).then(([_musics, _imgs]) => {
+      const imgNum = _imgs?.length;
+      if (!_musics?.length || !imgNum) {
+        return;
+      }
+      const _images = confused(_imgs);
+      setImgs(_images);
+
+      const _musics2: any = _musics.map((item3, idx3) => {
+        return {
+          ...item3,
+          artwork: getFileUrl( _images[idx3 % imgNum]?.path ),
+        }
+      });
+      updateSheetInfo(draft => {
+        draft.musicList = _musics2;
+      });
+    }).catch(imgErr => {
+      trace(`获取封面失败`, imgErr, 'error');
+    });
+  }, []);
+
+  // 列表播放完成，加载下一页
+  useEffect(() => {
+    if (!changeQueue) return;
+    MusicQueue.setLoadMore((_page) => {
+      trace(`列表播放完成，加载下一页，routeKey:${routeKey}`, null, 'debug');
+      handleEndReached(_page);
+    });
+  }, [changeQueue, handleEndReached]);
 
   return (
     <SheetMusicList

@@ -244,12 +244,11 @@ class PluginMethods implements IPlugin.IPluginInstanceMethods {
     // console.log('\n\nlocalPath:', localPath);
 
     if (localPath && (localPath.startsWith('content://') || (await FileSystem.exists(localPath)))) {
-      trace('本地播放', localPath);
+      // trace('本地播放', localPath);
       return {
         url: localPath,
       };
     }
-    console.log('BFFF2');
 
     if (musicItem.platform === localPluginPlatform) {
       throw new Error('本地音乐不存在');

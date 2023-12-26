@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { TabView } from 'react-native-tab-view';
 import { useImmer } from 'use-immer';
-import { getImageList, getRepositoryTree } from '@/plugins/gitlab';
+import { getRepositoryTree } from '@/plugins/gitlab';
 import NoPlugin from '@/components/base/noPlugin';
 import VerticalSafeAreaView from '@/components/base/verticalSafeAreaView';
 import globalStyle from '@/constants/globalStyle';
@@ -9,11 +9,10 @@ import NavBar from '@/components/musicSheetPage/components/navBar';
 import { vw } from '@/utils/rpx';
 import MusicBar from '@/components/musicBar';
 import Loading from '@/components/base/loading';
-import { confused } from '@/utils/array';
 import { ROUTE_PATH, useNavigate } from '@/entry/router';
 import { trace } from '@/utils/log';
 import TabHeader from './tab-header';
-import TabBody, { IGitlabResponseItem } from './tab-body';
+import TabBody from './tab-body';
 
 export default function GitlabPage() {
   const [index, setIndex] = useState(0);
@@ -27,7 +26,6 @@ export default function GitlabPage() {
       key: string;
     }[]
   >([]);
-  const [imgs, setImgs] = useState<IGitlabResponseItem[]>([]);
 
   const [listStore, updateListStore] = useImmer<any>({});
 
@@ -59,13 +57,6 @@ export default function GitlabPage() {
       setMusicDirs(dirs);
       setPageState('normal');
     });
-    getImageList()
-      .then(_imgs => {
-        setImgs(confused(_imgs));
-      })
-      .catch(imgErr => {
-        trace(`获取封面失败\n`, imgErr);
-      });
   }, []);
 
   const onUpdateList = useCallback((routeKey, payload: { list: any; loadAll: boolean }) => {
@@ -125,7 +116,7 @@ export default function GitlabPage() {
           routes,
         }}
         renderTabBar={TabHeader}
-        renderScene={args => <TabBody {...args} key={index} imgs={imgs} emitList={onUpdateList} getFilePath={getFilePath} />}
+        renderScene={args => <TabBody {...args} key={index} emitList={onUpdateList} getFilePath={getFilePath} />}
         onIndexChange={setIndex}
         initialLayout={{ width: vw(100) }}
         swipeEnabled={true}
