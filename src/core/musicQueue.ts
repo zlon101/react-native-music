@@ -509,6 +509,7 @@ const replaceTrack = async (track: Track, autoPlay = true) => {
 const _playFail = async (msg?: string, e?: any) => {
   msg && trace(msg, e, 'error');
 
+  /***
   await TrackPlayer.reset();
   await TrackPlayer.add([
     (musicQueue[currentIndex] ?? {
@@ -521,6 +522,7 @@ const _playFail = async (msg?: string, e?: any) => {
     await delay(300);
     await skipToNext();
   }
+  ***/
 };
 
 const playWithReplaceQueue = async (musicItem: IMusic.IMusicItem, newQueue: IMusic.IMusicItem[]) => {
