@@ -37,6 +37,7 @@ export default function MainPage() {
                   return new Promise(resolve => {
                     showDialog('LoadingDialog', {
                       title: '扫描本地音乐',
+                      desc: '扫描中...',
                       promise: LocalMusicSheet.importLocal(selectedFiles.map(_ => _.path)),
                       onResolve(data, hideDialog) {
                         Toast.success('导入成功~');

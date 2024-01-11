@@ -1,6 +1,11 @@
 import ToastMessage from 'react-native-toast-message';
 
-const Toast = {
+interface IToast {
+  success: (msg: string) => void;
+  warn: (msg: string) => void;
+  error: (msg: string) => void;
+}
+const Toast: IToast = {
   success(msg: string) {
     ToastMessage.show({
       type: 'success',
@@ -13,6 +18,12 @@ const Toast = {
       text1: msg,
     });
   },
+  error(msg: string) {
+    ToastMessage.show({
+      type: 'error',
+      text1: msg,
+    });
+  }
 };
 
 export default Toast;

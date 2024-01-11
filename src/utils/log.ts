@@ -124,7 +124,7 @@ export function errorLog(desc: string, message: any) {
   devLog('error', desc, message);
 }
 
-export function devLog(method: ILevel, ...args: any[]) {
+export function devLog(method: ILevel | 'log', ...args: any[]) {
   // 调试面板
   if (ISDEV || Config.get('setting.basic.debug.devLog')) {
     addLog(method, args);

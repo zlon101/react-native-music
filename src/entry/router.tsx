@@ -212,9 +212,7 @@ interface RouterParams extends RouterParamsBase {
 /** 路由参数Hook */
 export function useParams<T extends RoutePaths>(): RouterParams[T] {
   const route = useRoute<any>();
-
-  const routeParams = route?.params as RouterParams[T];
-  return routeParams;
+  return route?.params as RouterParams[T];
 }
 
 /** 导航 */

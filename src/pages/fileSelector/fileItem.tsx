@@ -10,6 +10,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 const ITEM_HEIGHT = rpx(96);
 
 interface IProps {
+  expectType: 'folder' | 'file' | 'file-and-folder';
   type: 'folder' | 'file';
   path: string;
   parentPath: string;
@@ -18,12 +19,12 @@ interface IProps {
   onCheckedChange: (checked: boolean) => void;
 }
 function FileItem(props: IProps) {
-  const { type, path, parentPath, checked, onItemPress, onCheckedChange: onCheckChange } = props;
+  const { expectType, type, path, parentPath, checked, onItemPress, onCheckedChange: onCheckChange } = props;
 
   const textColor = useTextColor();
 
   // 返回逻辑
-
+  const showCheckbox = type === 'file' ? ['file', 'file-and-folder'].includes(expectType) : ['folder', 'file-and-folder'].includes(expectType);
   return (
     <View style={styles.container}>
       <Pressable
@@ -40,13 +41,15 @@ function FileItem(props: IProps) {
           {path.substring(parentPath === '/' ? 1 : parentPath.length + 1)}
         </ThemeText>
       </Pressable>
-      <TouchableOpacity
-        onPress={() => {
-          onCheckChange(!checked);
-        }}
-        style={styles.checkIcon}>
-        <Checkbox checked={checked} />
-      </TouchableOpacity>
+      {showCheckbox &&
+        <TouchableOpacity
+          onPress={() => {
+            onCheckChange(!checked);
+          }}
+          style={styles.checkIcon}>
+          <Checkbox checked={checked} />
+        </TouchableOpacity>
+      }
     </View>
   );
 }

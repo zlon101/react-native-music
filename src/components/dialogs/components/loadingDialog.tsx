@@ -8,12 +8,13 @@ import Dialog from './base';
 interface ILoadingDialogProps<T extends any = any> {
   promise: Promise<T>;
   title: string;
+  desc?: string;
   onResolve?: (data: T, hideDialog: () => void) => void;
   onReject?: (reason: any, hideDialog: () => void) => void;
   onCancel?: (hideDialog: () => void) => void;
 }
 export default function LoadingDialog(props: ILoadingDialogProps) {
-  const { title, onResolve, onReject, promise, onCancel } = props;
+  const { title, onResolve, onReject, promise, onCancel, desc = '加载中...' } = props;
 
   useEffect(() => {
     promise
@@ -29,7 +30,7 @@ export default function LoadingDialog(props: ILoadingDialogProps) {
     <Dialog onDismiss={hideDialog}>
       <Dialog.Title>{title}</Dialog.Title>
       <Dialog.Content style={style.content}>
-        <Loading text="扫描中..." />
+        <Loading text={desc} />
       </Dialog.Content>
       <Dialog.Actions
         actions={[

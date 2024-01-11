@@ -10,8 +10,8 @@ import {
   unlink,
   writeFile,
 } from 'react-native-fs';
-import { errorLog } from './log';
 import path from 'path-browserify';
+import { errorLog, trace } from './log';
 
 export const galleryBasePath = `${PicturesDirectoryPath}/MusicFree/`;
 

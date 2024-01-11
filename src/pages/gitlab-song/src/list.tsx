@@ -1,7 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, useRef, forwardRef, useImperativeHandle } from 'react';
+import {StyleSheet} from 'react-native';
 import { TabView } from 'react-native-tab-view';
+import { Radio } from 'native-base';
 import { useImmer } from 'use-immer';
-import { getRepositoryTree } from '@/plugins/gitlab';
+import {useMemoizedFn} from 'ahooks';
+import { delFiles, getRepositoryTree, uploadLocalFiles } from "@/plugins/gitlab";
 import NoPlugin from '@/components/base/noPlugin';
 import VerticalSafeAreaView from '@/components/base/verticalSafeAreaView';
 import globalStyle from '@/constants/globalStyle';
@@ -9,13 +12,49 @@ import NavBar from '@/components/musicSheetPage/components/navBar';
 import { vw } from '@/utils/rpx';
 import MusicBar from '@/components/musicBar';
 import Loading from '@/components/base/loading';
+import ThemeText from '@/components/base/themeText';
 import { ROUTE_PATH, useNavigate } from '@/entry/router';
 import { trace } from '@/utils/log';
 import TabHeader from './tab-header';
 import TabBody from './tab-body';
 import { GitlabMusicSheetId } from '@/constants/commonConst';
+import { hideDialog, showDialog } from "@/components/dialogs/useDialog";
+import Toast from "@/utils/toast";
+
+const styles = StyleSheet.create({
+  radio: {
+    marginBottom: 8,
+  }
+});
+
+const UploadInput = forwardRef((props: any, ref) => {
+  const opts = props.options || [];
+  const [value, setValue] = useState('');
+
+  useImperativeHandle(ref, () => {
+    return {
+      getValue() {
+        return value;
+      }
+    };
+  });
+
+  return (
+    <Radio.Group name="uploadDir" accessibilityLabel="选择将文件上传到哪个目录下"
+      value={value}
+      onChange={setValue}
+    >
+      {
+        opts.map(item => <Radio style={styles.radio} value={item.filePath} key={item.title}>
+          <ThemeText>{item.title}</ThemeText>
+        </Radio>)
+      }
+    </Radio.Group>
+  );
+});
 
 export default function GitlabPage() {
+  const navigate = useNavigate();
   const [index, setIndex] = useState(0);
   const [pageState, setPageState] = useState<'loading' | 'empty' | 'normal'>('loading');
   // 所有music目录
@@ -90,7 +129,30 @@ export default function GitlabPage() {
 
   const currentMusics = listStore[routeKey]?.list || [];
 
-  const navigate = useNavigate();
+  const inputRef = useRef<any>(null);
+  const onUpload = useMemoizedFn(selectedFiles => {
+    return new Promise<boolean>(async (resolve, _) => {
+      showDialog('SimpleDialog', {
+        title: '输入上传文件目录',
+        content: <UploadInput ref={inputRef} options={routes.slice(1)} />,
+        onOk: async () => {
+          const uploadDir = inputRef.current.getValue();
+          if (!uploadDir) {
+            Toast.warn('请选择将文件上传到哪个目录');
+            resolve(false);
+            return;
+          }
+          try {
+            await uploadLocalFiles({files: selectedFiles, dir: 'music-龙'});
+            resolve(true);
+          } catch (_) {
+            resolve(true);
+          }
+        },
+      });
+    });
+  });
+
   const navMenu = useMemo(() => {
     return [
       {
@@ -98,8 +160,20 @@ export default function GitlabPage() {
         icon: 'square-edit-outline',
         onPress: () => navigate(ROUTE_PATH.Add_Gitlab_Music),
       },
+      {
+        title: '上传歌曲',
+        icon: 'cloud-upload-outline',
+        async onPress() {
+          navigate(ROUTE_PATH.FILE_SELECTOR, {
+            fileType: 'file',
+            multi: true,
+            actionText: '开始上传',
+            onAction: onUpload,
+          });
+        },
+      },
     ];
-  }, []);
+  }, [onUpload]);
 
   if (pageState === 'loading') {
     return <Loading />;

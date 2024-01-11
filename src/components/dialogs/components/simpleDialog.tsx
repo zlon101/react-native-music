@@ -1,6 +1,7 @@
 import React from 'react';
 import { hideDialog } from '../useDialog';
 import Dialog from './base';
+import { trace } from "@/utils/log";
 
 interface ISimpleDialogProps {
   title: string;
@@ -22,8 +23,8 @@ export default function SimpleDialog(props: ISimpleDialogProps) {
           {
             title: '确认',
             onPress() {
-              onOk?.();
               hideDialog();
+              onOk?.();
             },
           },
         ]}

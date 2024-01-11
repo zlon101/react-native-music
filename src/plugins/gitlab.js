@@ -5,15 +5,16 @@
  * gitlab api url 中的 query 必须与文档上的一致，不能随意使用 encodeURIComponent
  * *******/
 
-import { readDir, downloadFile, unlink, exists, mkdir, stopDownload } from 'react-native-fs';
+import { readDir, downloadFile, unlink, exists, mkdir, stopDownload, readFile } from 'react-native-fs';
 import { PERMISSIONS, check } from 'react-native-permissions';
 import CustomPath from '@/constants/pathConst';
 import { supportLocalMediaType } from '@/constants/commonConst';
 import { trace } from '@/utils/log';
 import Toast from '@/utils/toast';
+import { showDialog } from "@/components/dialogs/useDialog";
 
 const baseURL = 'https://gitlab.com/api/v4';
-const PRIVATE_TOKEN = 'glpat-4jvu2R5etMDtVXJsDx33';
+const PRIVATE_TOKEN = 'glpat-fwNsd2XqsyQxoxehva3U';
 
 const ProjectCfg = {
   projectId: 52878930,
@@ -129,6 +130,89 @@ export function getFileUrl(filePath, projectId = ProjectCfg.projectId, ref = Pro
   return `${baseURL}/projects/${projectId}/repository/files/${filePath}/raw?${formatQuery({ ...ReqParam, ref })}`;
 }
 
+/**
+ * 创建一个commit: https://docs.gitlab.com/ee/api/commits.html#create-a-commit-with-multiple-files-and-actions
+ * ********/
+async function createCommit(actions, commitMsg, pId = ProjectCfg.projectId, ref = ProjectCfg.branch) {
+  const param = { ...ReqParam, ref };
+  const url = `${baseURL}/projects/${pId}/repository/commits`;
+  const body = JSON.stringify({
+    branch: param.ref,
+    commit_message: commitMsg,
+    id: pId,
+    actions,
+  });
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { ...ReqHeader, 'Content-Type': 'application/json' },
+      body,
+    });
+    return await response.json();
+  } catch (err) {
+    trace('createCommit 错误', err, 'error');
+  }
+}
+
+/**
+ * 上传文件
+ * type IFiles = {path: string, type: "folder" | "file"}[];
+ * *****/
+export async function uploadLocalFiles(param) {
+  let {files, dir, pId, ref} = param;
+  files = files.filter(item => item.type === 'file');
+  if (!files || !files.length) return Promise.resolve(true);
+
+  const promises = Promise.all(files.map(fileItem => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const str = await readFile(fileItem.path, 'base64');
+        resolve(str);
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }));
+
+  const promise= new Promise(async (resolve, reject) => {
+    try {
+      const fileContents = await promises;
+      const fileNames = files.map(item => item.path.split('/').pop());
+      const actions = fileContents.map((content, idx) => ({
+        file_path: `${dir}/${fileNames[idx]}`,
+        action: 'create',
+        encoding: 'base64',
+        content,
+      }));
+      // 上传
+      await createCommit(actions, `上传 ${fileNames.join('、')}`, pId, ref);
+      Toast.error(`成功上传${fileNames.join('、')}`);
+      resolve();
+    } catch (e) {
+      trace('uploadLocalFiles 失败', e, 'error');
+      Toast.error('上传失败');
+      reject(e);
+    }
+  });
+
+  return new Promise(resolve => {
+    showDialog('LoadingDialog', {
+      title: '上传本地文件',
+      desc: '上传中...',
+      promise,
+      onResolve(data, hideDialog) {
+        Toast.success('~ 上传成功 ~');
+        hideDialog();
+        resolve(true);
+      },
+      onCancel(hideDialog) {
+        hideDialog();
+        resolve(true);
+      },
+    });
+  });
+}
+
 // 更新文件
 export async function updateFile(filePath, content, pId = ProjectCfg.projectId, ref = ProjectCfg.branch) {
   filePath = encodeURIComponent(filePath);
@@ -164,7 +248,6 @@ export async function updateFile(filePath, content, pId = ProjectCfg.projectId, 
 }
 
 // 删除文件
-// 创建一个commit: https://docs.gitlab.com/ee/api/commits.html#create-a-commit-with-multiple-files-and-actions
 export async function delFiles(filePath, pId = ProjectCfg.projectId, ref = ProjectCfg.branch) {
   if (!filePath || !filePath?.length) return;
   if (!Array.isArray(filePath)) {
@@ -174,24 +257,8 @@ export async function delFiles(filePath, pId = ProjectCfg.projectId, ref = Proje
     file_path: s,
     action: 'delete',
   }));
-  const param = { ...ReqParam, ref };
-  const url = `${baseURL}/projects/${pId}/repository/commits`;
-  const body = JSON.stringify({
-    branch: param.ref,
-    commit_message: `删除 ${filePath.join('、')}`,
-    id: pId,
-    actions,
-  });
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { ...ReqHeader, 'Content-Type': 'application/json' },
-      body,
-    });
-    return await response.json();
-  } catch (err) {
-    trace('delFiles 错误', err, 'error');
-  }
+  const names = filePath.map(item => item.split('/').pop());
+  return createCommit(actions, `删除 ${names.join('、')}`, pId, ref);
 }
 
 /**

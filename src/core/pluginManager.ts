@@ -130,13 +130,7 @@ export class Plugin {
       }
       this.checkValid(_instance);
     } catch (e: any) {
-      trace(
-        `插件实例化失败
-        路径：${pluginPath}
-        error: %o
-      `,
-        e,
-      );
+      trace('插件实例化失败', {'路径': pluginPath, e}, 'error');
 
       this.state = 'error';
       this.stateCode = PluginStateCode.CannotParse;

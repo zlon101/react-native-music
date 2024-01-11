@@ -16,6 +16,7 @@ import StatusBar from '@/components/base/statusBar';
 import VerticalSafeAreaView from '@/components/base/verticalSafeAreaView';
 import globalStyle from '@/constants/globalStyle';
 import Button from '@/components/base/button';
+import { trace } from "@/utils/log";
 
 interface IPathItem {
   path: string;
@@ -30,13 +31,14 @@ interface IFileItem {
 const ITEM_HEIGHT = rpx(96);
 
 export default function FileSelector() {
+  const urlParam = useParams<'file-selector'>() ?? {};
   const {
     fileType = 'file-and-folder',
     multi = true,
     actionText = '确定',
-    matchExtension,
     onAction,
-  } = useParams<'file-selector'>() ?? {};
+  } = urlParam;
+  const matchExtension: any = urlParam.matchExtension || (() => true);
 
   const [currentPath, setCurrentPath] = useState<IPathItem>({
     path: '/',
@@ -84,26 +86,26 @@ export default function FileSelector() {
             return;
           }
         } else {
-          const res = (await readDir(currentPath.path)) ?? [];
-          let folders: IFileItem[] = [];
-          let files: IFileItem[] = [];
-          if (fileType === 'folder' || fileType === 'file-and-folder') {
-            folders = res
-              .filter(_ => _.isDirectory())
-              .map(_ => ({
-                type: 'folder',
-                path: _.path,
-              }));
-          }
-          if (fileType === 'file' || fileType === 'file-and-folder') {
-            files = res
-              .filter(_ => _.isFile() && (matchExtension ? matchExtension(_.path) : true))
-              .map(_ => ({
-                type: 'file',
-                path: _.path,
-              }));
-          }
-          setFilesData([...folders, ...files]);
+          let res = (await readDir(currentPath.path)) ?? [];
+          res = res.filter(_obj => !/^\./.test(_obj.name));
+          res.sort((a, b) => {
+            let aCode = a.name[0].toLowerCase().charCodeAt(0);
+            let bCode = b.name[0].toLowerCase().charCodeAt(0);
+            if (aCode !== bCode) return aCode - bCode;
+            aCode = a.name[1]?.toLowerCase().charCodeAt(0) ?? 0;
+            bCode = b.name[1]?.toLowerCase().charCodeAt(0) ?? 0;
+            return aCode - bCode;
+          });
+
+          const items: IFileItem[] = res.filter(_item => {
+            if (fileType === 'folder') {
+              return _item.isDirectory();
+            }
+            return _item.isDirectory() || matchExtension(_item.path);
+          }).map(_item => {
+            return {path: _item.path, type: _item.isDirectory() ? 'folder' : 'file'};
+          });
+          setFilesData(items);
         }
       } catch {
         setFilesData([]);
@@ -145,6 +147,7 @@ export default function FileSelector() {
 
   const renderItem = ({ item }: { item: IFileItem }) => (
     <FileItem
+      expectType={fileType}
       path={item.path}
       type={item.type}
       parentPath={currentPath.path}
