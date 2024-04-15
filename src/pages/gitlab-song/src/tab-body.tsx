@@ -11,12 +11,6 @@ import MusicQueue, {playPage} from '@/core/musicQueue';
 import {trace} from '@/utils/log';
 import { confused } from '@/utils/array';
 
-/**
- * url: 'https://music.163.com/song/media/outer/url?id=2024600749.mp3'
- * url: 'https://gitlab.com/api/v4/projects/48952022/repository/files/mp3%2Ffaded.mp3/raw?private_token%3Dglpat-4jvu2R5etMDtVXJsDx33%26ref%3Dmaster'
- * url: '/storage/emulated/0/Android/data/com.musicrn/files/download/music/夜曲.mp3'
- * *****/
-
 // gitlab 响应的列表数据
 export interface IGitlabResponseItem {
   id: string;

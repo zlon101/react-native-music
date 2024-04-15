@@ -14,7 +14,7 @@ import Toast from '@/utils/toast';
 import { showDialog } from "@/components/dialogs/useDialog";
 
 const baseURL = 'https://gitlab.com/api/v4';
-const PRIVATE_TOKEN = 'glpat-fwNsd2XqsyQxoxehva3U';
+const PRIVATE_TOKEN = '';
 
 const ProjectCfg = {
   projectId: 52878930,
@@ -122,7 +122,7 @@ export async function downFile(filePath, pId = ProjectCfg.projectId, ref = ReqPa
 /**
  * 获取单个 raw 文件
  * @fileName: mp3/少年.mp3
- * https://gitlab.com/api/v4/projects/52878930/repository/files/images%2FWechatIMG29.jpg/raw?private_token=glpat-4jvu2R5etMDtVXJsDx33&ref=main
+ * https://gitlab.com/api/v4/projects/52878930/repository/files/images%2FWechatIMG29.jpg/raw?private_token=xxx&ref=main
  * **/
 export function getFileUrl(filePath, projectId = ProjectCfg.projectId, ref = ProjectCfg.branch) {
   if (!filePath) return undefined;
