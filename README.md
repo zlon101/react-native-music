@@ -1,6 +1,5 @@
 # TODO
 
-- 上传本地音乐
 - 上传、删除封面图像
 - gitlab api 搜索
 
@@ -17,6 +16,54 @@ Require cycles are allowed, but can result in uninitialized values. Consider ref
 WARN  Require cycle: src/core/musicQueue.ts -> src/core/lyricManager.ts -> src/core/musicQueue.ts
 
 Require cycles are allowed, but can result in uninitialized values. Consider refactoring to remove the need for a cycle.
+
+
+# 项目配置
+
+1. 创建项目
+
+```shell
+npx react-native init demo --template react-native-template-typescript --skip-install CocoaPods
+```
+
+2. 应用配置
+
+[React Native 中设置 APP 名称、图标和启动页](https://www.jianshu.com/p/727c6057fc0a) 
+
+## 本地开发
+
+开发配置： mac + npm@9.8.1 + node@18.18.1 + Java@11 + Gradle@8.0.1 + Kotlin@1.8.10
+
+1. 开发分支: fork-dev
+
+2. 运行本地服务
+
+执行 `npm start`，然后在键盘上按 `a`
+
+需要连接真机调试时，用 USB 连接手机并在终端输入  `adb devices` 查询当前手机，若能查询到手机再在终端输入 `npm run connect-device`
+
+3. 清除本地缓存
+
+`npm run clean:all`
+
+4. 构建apk
+
+`npm run generate:release`
+
+## 调试
+
+[真机调试](https://reactnative.dev/docs/running-on-device) 
+
+http://localhost:8081/index.bundle?platform=android&dev=true&minify=false&modulesOnly=false&runModule=true
+
+开启【debug】模式时 TabView 无法使用点击切换 tab
+
+
+## 编译apk
+
+https://reactnative.dev/docs/signed-apk-android
+
+编译 apk 时，代码中不能使用 `console.clear`，否则会报错导致白屏
 
 
 # 源码记录
@@ -46,35 +93,6 @@ commit: 8eb7504dc648f883639b6394c78f95c7497f6075
 介绍: https://musicfree.upup.fun/plugin/introduction.html
 
 原理: https://mp.weixin.qq.com/s/pjyOjTDrV85ImRQ6EWbgAg
-
-
-# 项目配置
-
-1. 创建项目
-
-```shell
-npx react-native init demo --template react-native-template-typescript --skip-install CocoaPods
-```
-
-2. 应用配置
-
-[React Native 中设置 APP 名称、图标和启动页](https://www.jianshu.com/p/727c6057fc0a) 
-
-
-# 调试
-
-[真机调试](https://reactnative.dev/docs/running-on-device) 
-
-http://localhost:8081/index.bundle?platform=android&dev=true&minify=false&modulesOnly=false&runModule=true
-
-开启【debug】模式时 TabView 无法使用点击切换 tab
-
-
-# 编译apk
-
-https://reactnative.dev/docs/signed-apk-android
-
-编译 apk 时，代码中不能使用 `console.clear`，否则会报错导致白屏
 
 
 # 依赖

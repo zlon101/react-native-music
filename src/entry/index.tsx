@@ -33,7 +33,7 @@ export default function () {
             <NativeBaseProvider>
               <PageBackground />
               <Stack.Navigator
-                initialRouteName={'gitlab-list'}
+                initialRouteName={routes[0].path}
                 screenOptions={{
                   headerShown: false,
                   animation: 'slide_from_right',
