@@ -1,3 +1,5 @@
+> 基于 [MusicFree](https://github.com/maotoumao/MusicFree) 进行二次开发
+
 # TODO
 
 - 上传、删除封面图像
